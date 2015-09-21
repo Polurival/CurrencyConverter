@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/i">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout1"
+            android:layout_marginLeft="10pt"
+            android:layout_marginRight="10pt"
+            android:layout_marginTop="3pt">
+
+        <EditText
+                android:id="@+id/etNum1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:background="@color/White"
+                android:hint="@string/HowMuch"
+                android:inputType="numberDecimal"
+                android:textSize="24sp">
+
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout2"
+            android:layout_marginTop="3pt"
+            android:layout_marginLeft="5pt"
+            android:layout_marginRight="5pt">
+
+        <Button
+                android:id="@+id/btnTRYtoRUB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:alpha="0.6"
+                android:background="@color/White"
+                android:minHeight="24dp"
+                android:text="@string/TRYtoRUB"
+                android:textSize="24sp">
+
+        </Button>
+
+        <Button
+                android:id="@+id/btnTRYtoDOL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:alpha="0.6"
+                android:background="@color/White"
+                android:minHeight="24dp"
+                android:text="@string/TRYtoDOL"
+                android:textSize="24sp">
+
+        </Button>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linearLayout3"
+            android:layout_marginTop="3pt"
+            android:layout_marginLeft="5pt"
+            android:layout_marginRight="5pt">
+
+        <Button
+                android:id="@+id/btnRUBtoTRY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:alpha="0.6"
+                android:background="@color/White"
+                android:minHeight="24dp"
+                android:text="@string/RUBtoTRY"
+                android:textSize="24sp">
+
+        </Button>
+
+        <Button
+                android:id="@+id/btnDOLtoTRY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:alpha="0.6"
+                android:background="@color/White"
+                android:minHeight="24dp"
+                android:text="@string/DOLtoTRY"
+                android:textSize="24sp">
+
+        </Button>
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/tvResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5pt"
+            android:layout_marginRight="5pt"
+            android:layout_marginTop="3pt"
+            android:alpha="0.6"
+            android:background="@color/White"
+            android:gravity="center_horizontal"
+            android:textSize="24sp">
+
+    </TextView>
+</LinearLayout>
