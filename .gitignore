@@ -1,8 +1,5 @@
-.idea
-out
-target
-*.iml
-log
+.gradle
+app/build
 
 
 
