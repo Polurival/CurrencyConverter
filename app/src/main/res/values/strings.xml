@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Турецкая лира</string>
+    <string name="app_name">Конвертер валют</string>
     <string name="action_settings">Settings</string>
-    <string name="TRYtoDOL">TRY -&gt; $</string>
-    <string name="TRYtoRUB">TRY -&gt; P</string>
-    <string name="DOLtoTRY">$ -&gt; TRY</string>
-    <string name="RUBtoTRY">P -&gt; TRY</string>
-    <string name="HowMuch">Сколько бабок?</string>
+    <string name="IRRtoUSD">IRR -&gt; $</string>
+    <string name="IRRtoRUB">IRR -&gt; P</string>
+    <string name="USDtoIRR">$ -&gt; IRR</string>
+    <string name="RUBtoIRR">P -&gt; IRR</string>
+    <string name="HowMuch">введите число для конвертации</string>
+    <string name="updateRate">тукущий курс доллара</string>
     <color name="White">#FFFFFF</color><string name="Wine">Wine</string>
 
 </resources>
