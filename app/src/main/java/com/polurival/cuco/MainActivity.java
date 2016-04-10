@@ -40,7 +40,6 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private Spinner fromSpinner;
     private Spinner toSpinner;
-    private ArrayAdapter<String> adapter;
 
     private TextView tvResult;
 
@@ -199,8 +198,8 @@ public class MainActivity extends Activity implements OnClickListener {
     }
 
     private void initSpinners() {
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item,
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                R.layout.spinner_item,
                 getFilledValuteArray());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         fromSpinner = (Spinner) findViewById(R.id.fromSpinner);

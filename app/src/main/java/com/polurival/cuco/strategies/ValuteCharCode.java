@@ -26,7 +26,7 @@ public enum ValuteCharCode {
     GBP {
         @Override
         public String getName() {
-            return "Фунт стерлингов Соединенного королевства";
+            return "Фунт стерлингов";
         }
     },
     AMD {
@@ -134,7 +134,7 @@ public enum ValuteCharCode {
     XDR {
         @Override
         public String getName() {
-            return "Специальные права заимствования";
+            return "СДР";
         }
     },
     SGD {
@@ -158,7 +158,7 @@ public enum ValuteCharCode {
     TMT {
         @Override
         public String getName() {
-            return "Новый туркменский манат";
+            return "Туркменский манат";
         }
     },
     UZS {

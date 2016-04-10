@@ -7,9 +7,8 @@
     <string name="IRRtoRUB">IRR -&gt; P</string>
     <string name="USDtoIRR">$ -&gt; IRR</string>
     <string name="RUBtoIRR">P -&gt; IRR</string>
-    <string name="HowMuch">введите число для конвертации</string>
+    <string name="HowMuch">введите число</string>
     <string name="updateRate">текущий курс доллара</string>
-    <string name="btnChangeFromTo">поменять местами</string>
     <string name="transferFrom">Перевести из:</string>
     <string name="transferTo">Перевести в:</string>
     <string name="btnTransfer">конвертировать</string>
