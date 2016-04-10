@@ -3,96 +3,153 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/prince_of_persia_ending"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <EditText
         android:id="@+id/etNum1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:alpha="0.6"
-        android:background="@color/White"
+        android:background="@color/white"
         android:hint="@string/HowMuch"
         android:inputType="numberDecimal"
-        android:textSize="24sp"
-        android:layout_marginBottom="10dp"/>
+        android:minHeight="28dp"
+        android:textSize="20sp" />
 
     <Button
-        android:id="@+id/btnIRRtoRUB"
+        android:id="@+id/btnTransfer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
         android:alpha="0.6"
-        android:background="@color/White"
-        android:minHeight="24dp"
-        android:text="@string/IRRtoRUB"
-        android:textSize="24sp"
+        android:background="@color/gold"
+        android:onClick="transfer"
+        android:text="@string/btnTransfer"
         android:layout_below="@+id/etNum1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentEnd="false"
-        android:layout_marginBottom="5dp"/>
-
-    <Button
-        android:id="@+id/btnIRRtoUSD"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:background="@color/White"
-        android:minHeight="24dp"
-        android:text="@string/IRRtoUSD"
-        android:textSize="24sp"
-        android:layout_below="@+id/btnIRRtoRUB"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp" />
-
-    <Button
-        android:id="@+id/btnRUBtoIRR"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:background="@color/White"
-        android:minHeight="24dp"
-        android:text="@string/RUBtoIRR"
-        android:textSize="24sp"
-        android:layout_below="@+id/btnIRRtoUSD"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="5dp" />
-
-    <Button
-        android:id="@+id/btnUSDtoIRR"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:background="@color/White"
-        android:minHeight="24dp"
-        android:text="@string/USDtoIRR"
-        android:textSize="24sp"
-        android:layout_below="@+id/btnRUBtoIRR"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:textSize="24sp" />
 
     <TextView
         android:id="@+id/tvResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.6"
-        android:background="@color/White"
-        android:gravity="center_horizontal"
-        android:textSize="24sp"
-        android:layout_below="@+id/btnUSDtoIRR"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnTransfer"
+        android:layout_marginBottom="10dp"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:minHeight="70dp"
+        android:textSize="24sp"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btnIRRtoRUB"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="false"
+        android:layout_below="@+id/tvResult"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:text="@string/IRRtoRUB"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnIRRtoUSD"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnIRRtoRUB"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:text="@string/IRRtoUSD"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnRUBtoIRR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnIRRtoUSD"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:text="@string/RUBtoIRR"
+        android:textSize="24sp" />
+
+    <Button
+        android:id="@+id/btnUSDtoIRR"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btnRUBtoIRR"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:minHeight="24dp"
+        android:text="@string/USDtoIRR"
+        android:textSize="24sp" />
+
+    <Spinner
+        android:id="@+id/fromSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnUSDtoIRR"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="10dp"
-        android:visibility="invisible"/>
+        android:alpha="0.6"
+        android:prompt="@string/transferFrom" />
+
+    <LinearLayout
+        android:id="@+id/swapAndTransferLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fromSpinner"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnChangeFromTo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:alpha="0.6"
+            android:background="@color/white"
+            android:onClick="swapFromTo"
+            android:text="@string/btnChangeFromTo"
+            android:minHeight="28dp"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <Spinner
+        android:id="@+id/toSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/swapAndTransferLayout"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:alpha="0.6"
+        android:prompt="@string/transferTo" />
 
     <Button
         android:id="@+id/btnUpdateRate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/updateRate"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:onClick="updateRate" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:alpha="0.6"
+        android:background="@color/white"
+        android:onClick="showUsdToRubRate"
+        android:text="@string/updateRate"
+        android:textSize="20sp" />
 </RelativeLayout>
