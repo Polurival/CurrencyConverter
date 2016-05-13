@@ -190,7 +190,8 @@ public class MainActivity extends Activity {
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         fromSpinner = (Spinner) findViewById(R.id.fromSpinner);
-        fromSpinner.setAdapter(adapter);
+        //fromSpinner.setAdapter(adapter);
+        fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -203,8 +204,8 @@ public class MainActivity extends Activity {
         });
 
         toSpinner = (Spinner) findViewById(R.id.toSpinner);
-        //toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
-        toSpinner.setAdapter(adapter);
+        toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
+        //toSpinner.setAdapter(adapter);
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -221,7 +222,7 @@ public class MainActivity extends Activity {
         countryFlagIds.add(R.drawable.rub);
     }
 
-    /*public class SpinnerApapter extends ArrayAdapter<String> {
+    public class SpinnerApapter extends ArrayAdapter<String> {
 
         public SpinnerApapter(Context context, int resource, String[] objects) {
             super(context, resource, objects);
@@ -244,15 +245,15 @@ public class MainActivity extends Activity {
             TextView label = (TextView) row.findViewById(R.id.spinnerValuteName);
             label.setText(getFilledValuteArray()[position]);
 
-            *//*TextView sub = (TextView) row.findViewById(R.id.spinnerValuteName);
-            sub.setText(getFilledValuteArray()[position]);*//*
+            /*TextView sub = (TextView) row.findViewById(R.id.spinnerValuteName);
+            sub.setText(getFilledValuteArray()[position]);*/
 
             ImageView icon = (ImageView) row.findViewById(R.id.spinnerFlagIcon);
             Integer[] arr_images = new Integer[countryFlagIds.size()];
             countryFlagIds.toArray(arr_images);
-            icon.setImageResource(arr_images[position]);
+            icon.setImageResource(arr_images[0]);
 
             return row;
         }
-    }*/
+    }
 }
