@@ -1,53 +1,60 @@
 package com.polurival.cuco;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.polurival.cuco.strategies.CBRateUpdater;
+import com.polurival.cuco.strategies.RateUpdater;
 import com.polurival.cuco.strategies.Valute;
 import com.polurival.cuco.strategies.ValuteCharCode;
+import com.polurival.cuco.util.DateUtil;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 
-public class MainActivity extends Activity implements OnClickListener {
+/**
+ * Created by Polurival
+ * on 24.03.2016.
+ */
+public class MainActivity extends Activity {
 
-    private CBRateUpdater rateUpdater;
+    private static MainActivity mainActivity;
+    private RateUpdater rateUpdater;
+
     private EnumMap<ValuteCharCode, Valute> valuteMap;
+    private static final ArrayList<Integer> countryFlagIds = new ArrayList<>();
 
-    private static final double RUB_TO_IRR_RATE = 438.8;
-    private static final double USD_TO_IRR_RATE = 30250;
-
-    private final int MENU_RESET_ID = 1;
-    private final int MENU_QUIT_ID = 2;
-
-    private Button btnIRRtoRUB;
-    private Button btnIRRtoUSD;
-    private Button btnRUBtoIRR;
-    private Button btnUSDtoIRR;
-    private Button btnUpdateRate;
-
-    private EditText etNum1;
+    private EditText editAmount;
 
     private Spinner fromSpinner;
     private Spinner toSpinner;
 
     private TextView tvResult;
-
-    private String oper1 = "";
-    private String oper2 = "";
+    private TextView tvDateTime;
 
     public void setValuteMap(EnumMap<ValuteCharCode, Valute> valuteMap) {
         this.valuteMap = valuteMap;
+    }
+
+    public RateUpdater getRateUpdater() {
+        return rateUpdater;
+    }
+
+    public static MainActivity getInstance() {
+        return mainActivity;
     }
 
     /**
@@ -58,69 +65,43 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        btnIRRtoRUB = (Button) findViewById(R.id.btnIRRtoRUB);
-        btnIRRtoUSD = (Button) findViewById(R.id.btnIRRtoUSD);
-        btnRUBtoIRR = (Button) findViewById(R.id.btnRUBtoIRR);
-        btnUSDtoIRR = (Button) findViewById(R.id.btnUSDtoIRR);
-        btnUpdateRate = (Button) findViewById(R.id.btnUpdateRate);
+        if (mainActivity == null) {
+            mainActivity = this;
+        }
 
-        etNum1 = (EditText) findViewById(R.id.etNum1);
+        initCountryFlagIds(countryFlagIds);
+        initEditAmount();
 
         tvResult = (TextView) findViewById(R.id.tvResult);
 
-        btnIRRtoRUB.setOnClickListener(this);
-        btnIRRtoUSD.setOnClickListener(this);
-        btnRUBtoIRR.setOnClickListener(this);
-        btnUSDtoIRR.setOnClickListener(this);
+        rateUpdater = new CBRateUpdater();
+        if (rateUpdater instanceof CBRateUpdater) {
+            ((CBRateUpdater) rateUpdater).execute();
+        }
 
-        rateUpdater = new CBRateUpdater(this);
-        rateUpdater.execute();
 
-        initSpinners();
+        tvDateTime = (TextView) findViewById(R.id.tvDateTime);
+        tvDateTime.setText(DateUtil.getCurrentDateTime());
     }
 
-    @Override
-    public void onClick(View v) {
-        double result = 0;
-        double inputedAmountOfMoney = getInputedAmountOfMoney();
+    private void initEditAmount() {
+        editAmount = (EditText) findViewById(R.id.editAmount);
+        editAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-        switch (v.getId()) {
-            case R.id.btnIRRtoRUB:
-                oper1 = "IRR";
-                oper2 = "P";
-                result = inputedAmountOfMoney / RUB_TO_IRR_RATE;
-                break;
-            case R.id.btnIRRtoUSD:
-                oper1 = "IRR";
-                oper2 = "$";
-                result = inputedAmountOfMoney / USD_TO_IRR_RATE;
-                break;
-            case R.id.btnRUBtoIRR:
-                oper1 = "P";
-                oper2 = "IRR";
-                result = inputedAmountOfMoney * RUB_TO_IRR_RATE;
-                break;
-            case R.id.btnUSDtoIRR:
-                oper1 = "$";
-                oper2 = "IRR";
-                result = inputedAmountOfMoney * USD_TO_IRR_RATE;
-                break;
-            default:
-                break;
-        }
-        String text = String.format("%.2f %s = %.2f %s", inputedAmountOfMoney, oper1, result, oper2);
-        setTvResultText(text);
-    }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+                    convert(editAmount);
+                }
+            }
 
-    public void showUsdToRubRate(View v) {
-        if (valuteMap != null) {
-            String text = String.format("%s %s = %s %s",
-                    valuteMap.get(ValuteCharCode.RUB).getValuteToRubRate(),
-                    ValuteCharCode.USD.getName(),
-                    valuteMap.get(ValuteCharCode.USD).getValuteToRubRate(),
-                    ValuteCharCode.RUB.getName());
-            setTvResultText(text);
-        }
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     public void swapFromTo(View v) {
@@ -129,111 +110,149 @@ public class MainActivity extends Activity implements OnClickListener {
         toSpinner.setSelection(fromSpinnerSelectedItemPos);
     }
 
-    public void transfer(View v) {
-        if (valuteMap != null) {
-            String fromCharCode = (String) fromSpinner.getSelectedItem();
-            String toCharCode = (String) toSpinner.getSelectedItem();
-            Valute valuteFrom = null;
-            Valute valuteTo = null;
-            ValuteCharCode codeFrom = null;
-            ValuteCharCode codeTo = null;
-            for (ValuteCharCode code : ValuteCharCode.values()) {
-                if (code.getName().equals(fromCharCode)) {
-                    valuteFrom = valuteMap.get(code);
-                    codeFrom = code;
-                }
-                if (code.getName().equals(toCharCode)) {
-                    valuteTo = valuteMap.get(code);
-                    codeTo = code;
-                }
-                if (valuteFrom != null && valuteTo != null) {
-                    break;
-                }
-            }
-
-            assert valuteFrom != null;
-            double valuteFromNominal = Double.valueOf(valuteFrom.getNominal());
-            double valuteFromToRubRate = Double.valueOf(valuteFrom.getValuteToRubRate());
-
-            assert valuteTo != null;
-            double valuteToNominal = Integer.valueOf(valuteTo.getNominal());
-            double valuteToToRubRate = Double.valueOf(valuteTo.getValuteToRubRate());
-
-            double inputedAmountOfMoney = getInputedAmountOfMoney();
-            double result = inputedAmountOfMoney *
-                    (valuteFromToRubRate / valuteToToRubRate) *
-                    (valuteToNominal / valuteFromNominal);
-
-
-            String text = String.format("%.2f %s = %.2f %s",
-                    inputedAmountOfMoney,
-                    codeFrom.getName(),
-                    result,
-                    codeTo.getName());
-            setTvResultText(text);
+    public void convert(View v) {
+        if (valuteMap == null
+                || fromSpinner.getSelectedItem() == null
+                || toSpinner.getSelectedItem() == null) {
+            return;
         }
+        String fromCharCode = (String) fromSpinner.getSelectedItem();
+        String toCharCode = (String) toSpinner.getSelectedItem();
+        Valute valuteFrom = null;
+        Valute valuteTo = null;
+        ValuteCharCode codeFrom = null;
+        ValuteCharCode codeTo = null;
+        for (ValuteCharCode code : ValuteCharCode.values()) {
+            if (code.getName().equals(fromCharCode)) {
+                valuteFrom = valuteMap.get(code);
+                codeFrom = code;
+            }
+            if (code.getName().equals(toCharCode)) {
+                valuteTo = valuteMap.get(code);
+                codeTo = code;
+            }
+            if (valuteFrom != null && valuteTo != null) {
+                break;
+            }
+        }
+
+        assert valuteFrom != null;
+        double valuteFromNominal = Double.valueOf(valuteFrom.getNominal());
+        double valuteFromToRubRate = Double.valueOf(valuteFrom.getValuteToRubRate());
+
+        assert valuteTo != null;
+        double valuteToNominal = Integer.valueOf(valuteTo.getNominal());
+        double valuteToToRubRate = Double.valueOf(valuteTo.getValuteToRubRate());
+
+        double inputedAmountOfMoney = getInputedAmountOfMoney();
+        double result = inputedAmountOfMoney *
+                (valuteFromToRubRate / valuteToToRubRate) *
+                (valuteToNominal / valuteFromNominal);
+
+        String text = String.format("%.2f %s\n=\n%.2f %s",
+                inputedAmountOfMoney,
+                codeFrom.getName(),
+                result,
+                codeTo.getName());
+        setTvResultText(text);
     }
 
     private double getInputedAmountOfMoney() {
-        if (TextUtils.isEmpty(etNum1.getText().toString())) {
+        if (TextUtils.isEmpty(editAmount.getText().toString())) {
             return 1d;
         }
-        return (double) Float.parseFloat(etNum1.getText().toString());
+        return (double) Float.parseFloat(editAmount.getText().toString());
     }
 
     private String[] getFilledValuteArray() {
-        int len = ValuteCharCode.values().length;
-        String[] str = new String[len];
+        if (valuteMap == null) {
+            return new String[]{};
+        }
+        int len = valuteMap.size();
+        String[] valuteNameArray = new String[len];
         int i = 0;
-        for (ValuteCharCode code : ValuteCharCode.values()) {
-            str[i] = code.getName();
+
+        for (ValuteCharCode code : valuteMap.keySet()) {
+            valuteNameArray[i] = code.getName();
             i++;
         }
-        return str;
+        return valuteNameArray;
     }
 
     private void setTvResultText(String text) {
         tvResult.setText(text);
-        tvResult.setVisibility(View.VISIBLE);
     }
 
-    private void initSpinners() {
+    public void initSpinners() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item,
                 getFilledValuteArray());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         fromSpinner = (Spinner) findViewById(R.id.fromSpinner);
         fromSpinner.setAdapter(adapter);
-        fromSpinner.setSelection(0);
+        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                convert(fromSpinner);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
         toSpinner = (Spinner) findViewById(R.id.toSpinner);
+        //toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
         toSpinner.setAdapter(adapter);
-        toSpinner.setSelection(0);
+        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                convert(toSpinner);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
-    // создание меню
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_RESET_ID, 0, "Reset");
-        menu.add(0, MENU_QUIT_ID, 0, "Quit");
-        return super.onCreateOptionsMenu(menu);
+    private void initCountryFlagIds(ArrayList<Integer> countryFlagIds) {
+        countryFlagIds.add(R.drawable.rub);
     }
 
-    // обработка нажатий на пункты меню
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case MENU_RESET_ID:
-                // очищаем поля
-                etNum1.setText("");
-                tvResult.setVisibility(View.INVISIBLE);
-                break;
-            case MENU_QUIT_ID:
-                // выход из приложения
-                finish();
-                break;
+    /*public class SpinnerApapter extends ArrayAdapter<String> {
+
+        public SpinnerApapter(Context context, int resource, String[] objects) {
+            super(context, resource, objects);
         }
-        return super.onOptionsItemSelected(item);
-    }
+
+        @Override
+        public View getDropDownView(int position, View convertView, ViewGroup parent) {
+            return getCustomView(position, convertView, parent);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return getCustomView(position, convertView, parent);
+        }
+
+        public View getCustomView(int position, View convertView, ViewGroup parent) {
+
+            LayoutInflater inflater = getLayoutInflater();
+            View row = inflater.inflate(R.layout.spinner_item, parent, false);
+            TextView label = (TextView) row.findViewById(R.id.spinnerValuteName);
+            label.setText(getFilledValuteArray()[position]);
+
+            *//*TextView sub = (TextView) row.findViewById(R.id.spinnerValuteName);
+            sub.setText(getFilledValuteArray()[position]);*//*
+
+            ImageView icon = (ImageView) row.findViewById(R.id.spinnerFlagIcon);
+            Integer[] arr_images = new Integer[countryFlagIds.size()];
+            countryFlagIds.toArray(arr_images);
+            icon.setImageResource(arr_images[position]);
+
+            return row;
+        }
+    }*/
 }

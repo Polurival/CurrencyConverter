@@ -1,5 +1,7 @@
 package com.polurival.cuco.strategies;
 
+import android.graphics.drawable.Drawable;
+
 /**
  * Created by Polurival
  * on 10.04.2016.
@@ -7,6 +9,7 @@ package com.polurival.cuco.strategies;
 public class Valute {
     private String nominal;
     private String valuteToRubRate;
+    private Drawable flag;
 
     public Valute(String nominal, String value) {
         this.nominal = nominal;
@@ -19,5 +22,9 @@ public class Valute {
 
     public String getValuteToRubRate() {
         return valuteToRubRate;
+    }
+
+    public Drawable getFlag() {
+        return flag;
     }
 }

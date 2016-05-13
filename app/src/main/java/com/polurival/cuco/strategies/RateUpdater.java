@@ -1,6 +1,6 @@
 package com.polurival.cuco.strategies;
 
-import org.w3c.dom.NodeList;
+import org.w3c.dom.Document;
 
 import java.util.EnumMap;
 
@@ -10,7 +10,9 @@ import java.util.EnumMap;
  */
 public interface RateUpdater {
 
-    void fillValuteMap(NodeList descNodes);
+    void fillValuteMap(Document doc);
 
     EnumMap<ValuteCharCode, Valute> getValuteMap();
+
+    String getName();
 }

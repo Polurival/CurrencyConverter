@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#ffffff</color>
+    <color name="gold">#ffd700</color>
+    <color name="blue">#4682B4</color>
+    <color name="green">#41bb8a</color>
+    <color name="lazure">#2A52BE</color>
+    <color name="app_background">#ededed</color>
+
+</resources>
