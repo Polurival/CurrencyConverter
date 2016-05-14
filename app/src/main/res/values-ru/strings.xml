@@ -21,8 +21,8 @@
     <string name="AOA">Ангольская кванза</string>
     <string name="ARS">Аргентинский песо</string>
     <string name="AUD">Австралийский доллар, $</string>
-    <string name="AWG">Арубский флорин</string>
-    <string name="AZN">Азербайджанский манат</string>
+    <string name="AWG">Арубанский флорин</string>
+    <string name="AZN">Азербайджанский манат, ₼</string>
 
     <string name="BAM">Боснии и Герцеговины конвертируемая марка</string>
     <string name="BBD">Барбадосский доллар</string>
@@ -160,13 +160,11 @@
     <string name="SEK">Шведская крона</string>
     <string name="SGD">Сингапурский доллар</string>
     <string name="SHP">Святой Елены фунт</string>
-    <string name="SKK">Словацкая крона</string>
     <string name="SLL">Сьерра-Леонский леоне</string>
     <string name="SOS">Сомалийский шиллинг</string>
     <string name="SPL">Себорга луиджино</string>
     <string name="SRD">Суринамский доллар</string>
     <string name="STD">Добра Сан-Томе и Принсипи</string>
-    <string name="SVC">Сальвадорский колон</string>
     <string name="SYP">Сирийский фунт</string>
     <string name="SZL">Свазилендский лилангени</string>
 
@@ -175,7 +173,7 @@
     <string name="TMT">Туркменский манат</string>
     <string name="TND">Тунисский динар</string>
     <string name="TOP">Тонганская паанга</string>
-    <string name="TRY">Турецкая лира</string>
+    <string name="TRY">Турецкая лира, ₺</string>
     <string name="TTD">Тринидада и Тобаго доллар</string>
     <string name="TVD">Доллар Тувалу</string>
     <string name="TWD">Новый тайваньский доллар</string>

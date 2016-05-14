@@ -41,7 +41,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/view_vertical_margin"
         android:alpha="0.7"
-        android:background="@drawable/exchange_vertical"
+        android:background="@drawable/swap"
         android:onClick="swapFromTo" />
 
     <Spinner

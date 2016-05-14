@@ -22,7 +22,7 @@
     <string name="ARS">Argentine Peso</string>
     <string name="AUD">Australian Dollar, $</string>
     <string name="AWG">Aruban or Dutch Guilder</string>
-    <string name="AZN">Azerbaijani New Manat</string>
+    <string name="AZN">Azerbaijani New Manat, ₼</string>
 
     <string name="BAM">Bosnian Convertible Marka</string>
     <string name="BBD">Barbadian or Bajan Dollar</string>
@@ -32,7 +32,7 @@
     <string name="BIF">Burundian Franc</string>
     <string name="BMD">Bermudian Dollar</string>
     <string name="BND">Bruneian Dollar</string>
-    <string name="BOB">Bolivian Bolíviano</string>
+    <string name="BOB">Bolivian Boliviano</string>
     <string name="BRL">Brazilian Real</string>
     <string name="BSD">Bahamian Dollar</string>
     <string name="BTN">Bhutanese Ngultrum</string>
@@ -98,7 +98,7 @@
     <string name="KES">Kenyan Shilling</string>
     <string name="KGS">Kyrgyzstani Som</string>
     <string name="KHR">Cambodian Riel</string>
-    <string name="KMF">Comoran Franc</string>
+    <string name="KMF">Comorian franc</string>
     <string name="KPW">North Korean Won</string>
     <string name="KRW">South Korean Won</string>
     <string name="KWD">Kuwaiti Dinar</string>
@@ -109,7 +109,7 @@
     <string name="LBP">Lebanese Pound</string>
     <string name="LKR">Sri Lankan Rupee</string>
     <string name="LRD">Liberian Dollar</string>
-    <string name="LSL">Basotho Loti</string>
+    <string name="LSL">Lesotho loti</string>
     <string name="LTL">Lithuanian Lita</string>
     <string name="LVL">Latvian Lat</string>
     <string name="LYD">Libyan Dinar</string>
@@ -160,13 +160,11 @@
     <string name="SEK">Swedish Krona</string>
     <string name="SGD">Singapore Dollar</string>
     <string name="SHP">Saint Helenian Pound</string>
-    <string name="SKK">Slovak Koruna</string>
     <string name="SLL">Sierra Leonean Leone</string>
     <string name="SOS">Somali Shilling</string>
     <string name="SPL">Seborga Luigino</string>
     <string name="SRD">Surinamese Dollar</string>
     <string name="STD">Sao Tomean Dobra</string>
-    <string name="SVC">Salvadoran Colon</string>
     <string name="SYP">Syrian Pound</string>
     <string name="SZL">Swazi Lilangeni</string>
 
@@ -175,7 +173,7 @@
     <string name="TMT">Turkmenistani Manat</string>
     <string name="TND">Tunisian Dinar</string>
     <string name="TOP">Tongan Pa\'anga</string>
-    <string name="TRY">Turkish Lira</string>
+    <string name="TRY">Turkish Lira, ₺</string>
     <string name="TTD">Trinidadian Dollar</string>
     <string name="TVD">Tuvaluan Dollar</string>
     <string name="TWD">Taiwan New Dollar</string>

@@ -710,12 +710,6 @@ public enum ValuteCharCode {
             return AppContext.getContext().getString(R.string.SHP);
         }
     },
-    SKK {
-        @Override
-        public String getName() {
-            return AppContext.getContext().getString(R.string.SKK);
-        }
-    },
     SLL {
         @Override
         public String getName() {
@@ -732,12 +726,6 @@ public enum ValuteCharCode {
         @Override
         public String getName() {
             return AppContext.getContext().getString(R.string.STD);
-        }
-    },
-    SVC {
-        @Override
-        public String getName() {
-            return AppContext.getContext().getString(R.string.SVC);
         }
     },
     SYP {
