@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 public class Valute {
     private String nominal;
     private String valuteToRubRate;
-    private Drawable flag;
 
     public Valute(String nominal, String value) {
         this.nominal = nominal;
@@ -22,9 +21,5 @@ public class Valute {
 
     public String getValuteToRubRate() {
         return valuteToRubRate;
-    }
-
-    public Drawable getFlag() {
-        return flag;
     }
 }

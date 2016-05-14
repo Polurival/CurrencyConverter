@@ -1,5 +1,8 @@
 package com.polurival.cuco.strategies;
 
+import com.polurival.cuco.AppContext;
+import com.polurival.cuco.R;
+
 /**
  * Created by Polurival
  * on 10.04.2016.
@@ -8,205 +11,205 @@ public enum ValuteCharCode {
     RUB {
         @Override
         public String getName() {
-            return "Российский рубль";
+            return AppContext.getContext().getString(R.string.RUB);
         }
     },
     AUD {
         @Override
         public String getName() {
-            return "Австралийский доллар";
+            return AppContext.getContext().getString(R.string.AUD);
         }
     },
     AZN {
         @Override
         public String getName() {
-            return "Азербайджанский манат";
+            return AppContext.getContext().getString(R.string.AZN);
         }
     },
     GBP {
         @Override
         public String getName() {
-            return "Фунт стерлингов";
+            return AppContext.getContext().getString(R.string.GBP);
         }
     },
     AMD {
         @Override
         public String getName() {
-            return "Армянский драм";
+            return AppContext.getContext().getString(R.string.AMD);
         }
     },
     BYR {
         @Override
         public String getName() {
-            return "Белорусский рубль";
+            return AppContext.getContext().getString(R.string.BYR);
         }
     },
     BGN {
         @Override
         public String getName() {
-            return "Болгарский лев";
+            return AppContext.getContext().getString(R.string.BGN);
         }
     },
     BRL {
         @Override
         public String getName() {
-            return "Бразильский реал";
+            return AppContext.getContext().getString(R.string.BRL);
         }
     },
     HUF {
         @Override
         public String getName() {
-            return "Венгерский форинт";
+            return AppContext.getContext().getString(R.string.HUF);
         }
     },
     DKK {
         @Override
         public String getName() {
-            return "Датская крона";
+            return AppContext.getContext().getString(R.string.DKK);
         }
     },
     USD {
         @Override
         public String getName() {
-            return "Доллар США";
+            return AppContext.getContext().getString(R.string.USD);
         }
     },
     EUR {
         @Override
         public String getName() {
-            return "Евро";
+            return AppContext.getContext().getString(R.string.EUR);
         }
     },
     INR {
         @Override
         public String getName() {
-            return "Индийских рупий";
+            return AppContext.getContext().getString(R.string.INR);
         }
     },
     KZT {
         @Override
         public String getName() {
-            return "Казахстанский тенге";
+            return AppContext.getContext().getString(R.string.KZT);
         }
     },
     CAD {
         @Override
         public String getName() {
-            return "Канадский доллар";
+            return AppContext.getContext().getString(R.string.CAD);
         }
     },
     KGS {
         @Override
         public String getName() {
-            return "Киргизский сом";
+            return AppContext.getContext().getString(R.string.KGS);
         }
     },
     CNY {
         @Override
         public String getName() {
-            return "Китайский юань";
+            return AppContext.getContext().getString(R.string.CNY);
         }
     },
     MDL {
         @Override
         public String getName() {
-            return "Молдавских лей";
+            return AppContext.getContext().getString(R.string.MDL);
         }
     },
     NOK {
         @Override
         public String getName() {
-            return "Норвежская крона";
+            return AppContext.getContext().getString(R.string.NOK);
         }
     },
     PLN {
         @Override
         public String getName() {
-            return "Польский злотый";
+            return AppContext.getContext().getString(R.string.PLN);
         }
     },
     RON {
         @Override
         public String getName() {
-            return "Румынский лей";
+            return AppContext.getContext().getString(R.string.RON);
         }
     },
     XDR {
         @Override
         public String getName() {
-            return "СДР";
+            return AppContext.getContext().getString(R.string.XDR);
         }
     },
     SGD {
         @Override
         public String getName() {
-            return "Сингапурский доллар";
+            return AppContext.getContext().getString(R.string.SGD);
         }
     },
     TJS {
         @Override
         public String getName() {
-            return "Таджикский сомони";
+            return AppContext.getContext().getString(R.string.TJS);
         }
     },
     TRY {
         @Override
         public String getName() {
-            return "Турецкая лира";
+            return AppContext.getContext().getString(R.string.TRY);
         }
     },
     TMT {
         @Override
         public String getName() {
-            return "Туркменский манат";
+            return AppContext.getContext().getString(R.string.TMT);
         }
     },
     UZS {
         @Override
         public String getName() {
-            return "Узбекский сум";
+            return AppContext.getContext().getString(R.string.UZS);
         }
     },
     UAH {
         @Override
         public String getName() {
-            return "Украинская гривна";
+            return AppContext.getContext().getString(R.string.UAH);
         }
     },
     CZK {
         @Override
         public String getName() {
-            return "Чешская крона";
+            return AppContext.getContext().getString(R.string.CZK);
         }
     },
     SEK {
         @Override
         public String getName() {
-            return "Шведская крона";
+            return AppContext.getContext().getString(R.string.SEK);
         }
     },
     CHF {
         @Override
         public String getName() {
-            return "Швейцарский франк";
+            return AppContext.getContext().getString(R.string.CHF);
         }
     },
     ZAR {
         @Override
         public String getName() {
-            return "Южноафриканский рэнд";
+            return AppContext.getContext().getString(R.string.ZAR);
         }
     },
     KRW {
         @Override
         public String getName() {
-            return "Вон Республики Корея";
+            return AppContext.getContext().getString(R.string.KRW);
         }
     },
     JPY {
         @Override
         public String getName() {
-            return "Японская иена";
+            return AppContext.getContext().getString(R.string.JPY);
         }
     };
 

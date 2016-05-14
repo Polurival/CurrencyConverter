@@ -20,7 +20,7 @@
     <string name="ANG">Dutch Guilder</string>
     <string name="AOA">Angolan Kwanza</string>
     <string name="ARS">Argentine Peso</string>
-    <string name="AUD">Australian Dollar</string>
+    <string name="AUD">Australian Dollar, $</string>
     <string name="AWG">Aruban or Dutch Guilder</string>
     <string name="AZN">Azerbaijani New Manat</string>
 
@@ -159,7 +159,7 @@
     <string name="SHP">Saint Helenian Pound</string>
     <string name="SLL">Sierra Leonean Leone</string>
     <string name="SOS">Somali Shilling</string>
-    <string name="SPL">Seborgan Luigino</string>
+    <string name="SPL">Seborga Luigino</string>
     <string name="SRD">Surinamese Dollar</string>
     <string name="STD">Sao Tomean Dobra</string>
     <string name="SVC">Salvadoran Colon</string>
@@ -204,5 +204,13 @@
     <string name="ZAR">South African Rand</string>
     <string name="ZMW">Zambian Kwacha</string>
     <string name="ZWD">Zimbabwean Dollar</string>
+
+    <string name="BTC">Bitcoin</string>
+    <string name="ETH">Ethereum</string>
+    <string name="XRP">Ripple</string>
+    <string name="LTC">Litecoin</string>
+    <string name="DASH">Dash</string>
+    <string name="DOGE">Dogecoin</string>
+    <string name="DGD">DigixDAO</string>
 
 </resources>

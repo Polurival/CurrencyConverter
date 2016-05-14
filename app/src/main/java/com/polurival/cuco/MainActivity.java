@@ -35,7 +35,7 @@ public class MainActivity extends Activity {
     private RateUpdater rateUpdater;
 
     private EnumMap<ValuteCharCode, Valute> valuteMap;
-    private static final ArrayList<Integer> countryFlagIds = new ArrayList<>();
+    private Integer[] countryFlagIds;
 
     private EditText editAmount;
 
@@ -69,7 +69,6 @@ public class MainActivity extends Activity {
             mainActivity = this;
         }
 
-        initCountryFlagIds(countryFlagIds);
         initEditAmount();
 
         tvResult = (TextView) findViewById(R.id.tvResult);
@@ -168,12 +167,16 @@ public class MainActivity extends Activity {
         if (valuteMap == null) {
             return new String[]{};
         }
+
         int len = valuteMap.size();
         String[] valuteNameArray = new String[len];
-        int i = 0;
+        countryFlagIds = new Integer[len];
 
+        int i = 0;
         for (ValuteCharCode code : valuteMap.keySet()) {
             valuteNameArray[i] = code.getName();
+            //countryFlagIds[i] = Integer.valueOf("R.drawable." + code.toString().toLowerCase());
+            countryFlagIds[i] = R.drawable.rub;
             i++;
         }
         return valuteNameArray;
@@ -222,6 +225,7 @@ public class MainActivity extends Activity {
         countryFlagIds.add(R.drawable.rub);
     }
 
+    //http://www.coderzheaven.com/2011/07/18/customizing-a-spinner-in-android/
     public class SpinnerApapter extends ArrayAdapter<String> {
 
         public SpinnerApapter(Context context, int resource, String[] objects) {
@@ -239,19 +243,14 @@ public class MainActivity extends Activity {
         }
 
         public View getCustomView(int position, View convertView, ViewGroup parent) {
-
             LayoutInflater inflater = getLayoutInflater();
             View row = inflater.inflate(R.layout.spinner_item, parent, false);
+
             TextView label = (TextView) row.findViewById(R.id.spinnerValuteName);
             label.setText(getFilledValuteArray()[position]);
 
-            /*TextView sub = (TextView) row.findViewById(R.id.spinnerValuteName);
-            sub.setText(getFilledValuteArray()[position]);*/
-
             ImageView icon = (ImageView) row.findViewById(R.id.spinnerFlagIcon);
-            Integer[] arr_images = new Integer[countryFlagIds.size()];
-            countryFlagIds.toArray(arr_images);
-            icon.setImageResource(arr_images[0]);
+            icon.setImageResource(countryFlagIds[0]);
 
             return row;
         }
