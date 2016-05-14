@@ -176,7 +176,7 @@ public class MainActivity extends Activity {
         for (ValuteCharCode code : valuteMap.keySet()) {
             valuteNameArray[i] = code.getName();
             //countryFlagIds[i] = Integer.valueOf("R.drawable." + code.toString().toLowerCase());
-            countryFlagIds[i] = R.drawable.rub;
+            //countryFlagIds[i] = R.drawable.rub;
             i++;
         }
         return valuteNameArray;
@@ -222,7 +222,7 @@ public class MainActivity extends Activity {
     }
 
     private void initCountryFlagIds(ArrayList<Integer> countryFlagIds) {
-        countryFlagIds.add(R.drawable.rub);
+        //countryFlagIds.add(R.drawable.rub);
     }
 
     //http://www.coderzheaven.com/2011/07/18/customizing-a-spinner-in-android/
