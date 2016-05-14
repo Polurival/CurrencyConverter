@@ -42,6 +42,7 @@ public class MainActivity extends Activity {
     private Spinner fromSpinner;
     private Spinner toSpinner;
 
+
     private TextView tvResult;
     private TextView tvDateTime;
 
@@ -175,9 +176,15 @@ public class MainActivity extends Activity {
         int i = 0;
         for (ValuteCharCode code : valuteMap.keySet()) {
             valuteNameArray[i] = code.getName();
-            int id = getDrawable(this, code.toString().toLowerCase());
+
+            String codeInLowerCase = code.toString().toLowerCase();
+            if ("try".equals(codeInLowerCase)) {
+                codeInLowerCase += '_';
+            }
+
+            int id = getDrawable(this, codeInLowerCase);
             if (id != 0) {
-                countryFlagIds[i] = getDrawable(this, code.toString().toLowerCase());
+                countryFlagIds[i] = id;
             } else {
                 countryFlagIds[i] = R.drawable.empty;
             }

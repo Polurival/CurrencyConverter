@@ -46,8 +46,10 @@ public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<ValuteCharCode,
     @Override
     protected void onPostExecute(EnumMap<ValuteCharCode, Valute> result) {
         super.onPostExecute(result);
-        MainActivity.getInstance().setValuteMap(result);
-        MainActivity.getInstance().initSpinners();
+
+        MainActivity instance = MainActivity.getInstance();
+        instance.setValuteMap(result);
+        instance.initSpinners();
 
         if (valuteMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
