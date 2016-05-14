@@ -59,6 +59,7 @@
 
     <string name="EGP">Египетский фунт</string>
     <string name="ERN">Эритрейская накфа</string>
+    <string name="EEK">Эстонская крона</string>
     <string name="ETB">Эфиопский быр</string>
     <string name="EUR">Евро, €</string>
 
@@ -109,6 +110,8 @@
     <string name="LKR">Шри-Ланскийская рупия</string>
     <string name="LRD">Либерийский доллар</string>
     <string name="LSL">Лесотский лоти</string>
+    <string name="LTL">Литовский лит</string>
+    <string name="LVL">Латвийский лат</string>
     <string name="LYD">Ливийский динар</string>
 
     <string name="MAD">Мароканский дирхам</string>
@@ -157,6 +160,7 @@
     <string name="SEK">Шведская крона</string>
     <string name="SGD">Сингапурский доллар</string>
     <string name="SHP">Святой Елены фунт</string>
+    <string name="SKK">Словацкая крона</string>
     <string name="SLL">Сьерра-Леонский леоне</string>
     <string name="SOS">Сомалийский шиллинг</string>
     <string name="SPL">Себорга луиджино</string>

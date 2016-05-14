@@ -59,6 +59,7 @@
 
     <string name="EGP">Egyptian Pound</string>
     <string name="ERN">Eritrean Nakfa</string>
+    <string name="EEK">Estonian Kroon</string>
     <string name="ETB">Ethiopian Birr</string>
     <string name="EUR">Euro</string>
 
@@ -109,6 +110,8 @@
     <string name="LKR">Sri Lankan Rupee</string>
     <string name="LRD">Liberian Dollar</string>
     <string name="LSL">Basotho Loti</string>
+    <string name="LTL">Lithuanian Lita</string>
+    <string name="LVL">Latvian Lat</string>
     <string name="LYD">Libyan Dinar</string>
 
     <string name="MAD">Moroccan Dirham</string>
@@ -157,6 +160,7 @@
     <string name="SEK">Swedish Krona</string>
     <string name="SGD">Singapore Dollar</string>
     <string name="SHP">Saint Helenian Pound</string>
+    <string name="SKK">Slovak Koruna</string>
     <string name="SLL">Sierra Leonean Leone</string>
     <string name="SOS">Somali Shilling</string>
     <string name="SPL">Seborga Luigino</string>
