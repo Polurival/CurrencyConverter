@@ -175,11 +175,20 @@ public class MainActivity extends Activity {
         int i = 0;
         for (ValuteCharCode code : valuteMap.keySet()) {
             valuteNameArray[i] = code.getName();
-            //countryFlagIds[i] = Integer.valueOf("R.drawable." + code.toString().toLowerCase());
-            //countryFlagIds[i] = R.drawable.rub;
+            int id = getDrawable(this, code.toString().toLowerCase());
+            if (id != 0) {
+                countryFlagIds[i] = getDrawable(this, code.toString().toLowerCase());
+            } else {
+                countryFlagIds[i] = R.drawable.empty;
+            }
             i++;
         }
         return valuteNameArray;
+    }
+
+    public int getDrawable(Context context, String name) {
+        return context.getResources().getIdentifier(name,
+                "drawable", context.getPackageName());
     }
 
     private void setTvResultText(String text) {
@@ -250,7 +259,7 @@ public class MainActivity extends Activity {
             label.setText(getFilledValuteArray()[position]);
 
             ImageView icon = (ImageView) row.findViewById(R.id.spinnerFlagIcon);
-            icon.setImageResource(countryFlagIds[0]);
+            icon.setImageResource(countryFlagIds[position]);
 
             return row;
         }
