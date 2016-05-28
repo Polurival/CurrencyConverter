@@ -1,4 +1,4 @@
-package com.polurival.cuco.model;
+package com.github.polurival.cc.model;
 
 import org.w3c.dom.Document;
 
@@ -14,5 +14,5 @@ public interface RateUpdater {
 
     EnumMap<CurrencyCharCode, Currency> getCurrencyMap();
 
-    String getName();
+    String getDescription();
 }

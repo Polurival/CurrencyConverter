@@ -1,4 +1,4 @@
-package com.polurival.cuco;
+package com.github.polurival.cc;
 
 import android.app.Application;
 import android.content.Context;

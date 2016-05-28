@@ -1,4 +1,4 @@
-package com.polurival.cuco.model;
+package com.github.polurival.cc.model;
 
 /**
  * Created by Polurival

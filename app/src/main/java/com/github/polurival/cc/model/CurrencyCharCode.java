@@ -1,7 +1,7 @@
-package com.polurival.cuco.model;
+package com.github.polurival.cc.model;
 
-import com.polurival.cuco.AppContext;
-import com.polurival.cuco.R;
+import com.github.polurival.cc.AppContext;
+import com.github.polurival.cc.R;
 
 /**
  * Created by Polurival

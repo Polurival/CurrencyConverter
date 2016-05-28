@@ -1,4 +1,4 @@
-# Currency-Converter
+# CurrencyConverter
 
 Simple Currency Converter
 

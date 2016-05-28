@@ -1,8 +1,10 @@
-package com.polurival.cuco;
+package com.github.polurival.cc;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,13 +18,12 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.polurival.cuco.model.CBRateUpdater;
-import com.polurival.cuco.model.RateUpdater;
-import com.polurival.cuco.model.Currency;
-import com.polurival.cuco.model.CurrencyCharCode;
-import com.polurival.cuco.util.DateUtil;
+import com.github.polurival.cc.model.CBRateUpdater;
+import com.github.polurival.cc.model.RateUpdater;
+import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.CurrencyCharCode;
+import com.github.polurival.cc.util.DateUtil;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 
 /**
@@ -72,16 +73,18 @@ public class MainActivity extends Activity {
 
         initEditAmount();
 
+        loadProperties();
+
         tvResult = (TextView) findViewById(R.id.tvResult);
 
-        rateUpdater = new CBRateUpdater();
+        //rateUpdater = new CBRateUpdater();
         if (rateUpdater instanceof CBRateUpdater) {
             ((CBRateUpdater) rateUpdater).execute();
         }
 
-
         tvDateTime = (TextView) findViewById(R.id.tvDateTime);
         tvDateTime.setText(DateUtil.getCurrentDateTime());
+
     }
 
     private void initEditAmount() {
@@ -268,5 +271,61 @@ public class MainActivity extends Activity {
 
             return row;
         }
+    }
+
+    @Override
+    protected void onStop() {
+        saveProperties();
+        super.onStop();
+    }
+
+    private void saveProperties() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt(getString(R.string.saved_from_spinner_pos),
+                fromSpinner.getSelectedItemPosition());
+        editor.putInt(getString(R.string.saved_to_spinner_pos),
+                toSpinner.getSelectedItemPosition());
+        editor.putString(getString(R.string.saved_edit_amount_text),
+                editAmount.getText().toString());
+        editor.putString(getString(R.string.saved_rate_updater_class),
+                rateUpdater.getClass().getName());
+
+        editor.apply();
+    }
+
+    private void loadProperties() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        String editAmountText =
+                preferences.getString(getString(R.string.saved_edit_amount_text),
+                        getString(R.string.saved_edit_amount_text_default));
+        editAmount.setText(editAmountText);
+
+        String rateUpdaterName =
+                preferences.getString(getString(R.string.saved_rate_updater_class),
+                        getString(R.string.saved_rate_updater_class_default));
+        try {
+            rateUpdater
+                    = (RateUpdater) Class.forName(rateUpdaterName).getConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadSpinnerProperties() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        int fromSpinnerSelectedPos =
+                preferences.getInt(getString(R.string.saved_from_spinner_pos), 0);
+        fromSpinner.setSelection(fromSpinnerSelectedPos);
+
+        int toSpinnerSelectedPos =
+                preferences.getInt(getString(R.string.saved_to_spinner_pos), 0);
+        toSpinner.setSelection(toSpinnerSelectedPos);
     }
 }

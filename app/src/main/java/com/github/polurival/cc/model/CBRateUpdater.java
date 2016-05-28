@@ -1,11 +1,11 @@
-package com.polurival.cuco.model;
+package com.github.polurival.cc.model;
 
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.polurival.cuco.AppContext;
-import com.polurival.cuco.MainActivity;
-import com.polurival.cuco.R;
+import com.github.polurival.cc.AppContext;
+import com.github.polurival.cc.MainActivity;
+import com.github.polurival.cc.R;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -22,11 +22,14 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Polurival
  * on 26.03.2016.
  */
-public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<CurrencyCharCode, Currency>> implements RateUpdater {
+public class CBRateUpdater
+        extends AsyncTask<Void, Void, EnumMap<CurrencyCharCode, Currency>>
+        implements RateUpdater {
 
     public static final String CBR_URL = AppContext.getContext().getString(R.string.cbr_url);
 
-    private EnumMap<CurrencyCharCode, Currency> currencyMap = new EnumMap<>(CurrencyCharCode.class);
+    private EnumMap<CurrencyCharCode, Currency> currencyMap
+            = new EnumMap<>(CurrencyCharCode.class);
 
     @Override
     protected EnumMap<CurrencyCharCode, Currency> doInBackground(Void... params) {
@@ -49,6 +52,7 @@ public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<CurrencyCharCod
         MainActivity instance = MainActivity.getInstance();
         instance.setCurrencyMap(result);
         instance.initSpinners();
+        instance.loadSpinnerProperties();
 
         if (currencyMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
@@ -113,7 +117,7 @@ public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<CurrencyCharCod
     }
 
     @Override
-    public String getName() {
+    public String getDescription() {
         return AppContext.getContext().getString(R.string.cbr);
     }
 }
