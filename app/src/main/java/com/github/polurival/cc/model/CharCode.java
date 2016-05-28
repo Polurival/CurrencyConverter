@@ -7,7 +7,7 @@ import com.github.polurival.cc.R;
  * Created by Polurival
  * on 10.04.2016.
  */
-public enum CurrencyCharCode {
+public enum CharCode {
     AED {
         @Override
         public String getName() {
@@ -658,7 +658,7 @@ public enum CurrencyCharCode {
     RUB {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.RUB);
+            return AppContext.getContext().getString(R.string.rub);
         }
     },
     RWF {

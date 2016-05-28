@@ -8,7 +8,7 @@ import java.util.EnumMap;
  */
 public interface RateUpdaterListener {
 
-    void setCurrencyMap(EnumMap<CurrencyCharCode, Currency> currencyMap);
+    void setCurrencyMap(EnumMap<CharCode, Currency> currencyMap);
 
     void initSpinners();
 

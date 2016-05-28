@@ -14,7 +14,7 @@ public interface RateUpdater {
 
     void fillCurrencyMap(Document doc);
 
-    EnumMap<CurrencyCharCode, Currency> getCurrencyMap();
+    EnumMap<CharCode, Currency> getCurrencyMap();
 
     String getDescription();
 

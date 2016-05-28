@@ -21,10 +21,11 @@ import android.widget.TextView;
 import com.github.polurival.cc.model.CBRateUpdater;
 import com.github.polurival.cc.model.RateUpdater;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.CurrencyCharCode;
+import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.RateUpdaterListener;
 import com.github.polurival.cc.util.DateUtil;
 
+import java.util.Calendar;
 import java.util.EnumMap;
 
 /**
@@ -34,8 +35,9 @@ import java.util.EnumMap;
 public class MainActivity extends Activity implements RateUpdaterListener {
 
     private RateUpdater rateUpdater;
+    private Calendar upDateTime;
 
-    private EnumMap<CurrencyCharCode, Currency> currencyMap;
+    private EnumMap<CharCode, Currency> currencyMap;
     private Integer[] countryFlagIds;
 
     private EditText editAmount;
@@ -48,7 +50,7 @@ public class MainActivity extends Activity implements RateUpdaterListener {
     private TextView tvDateTime;
 
     @Override
-    public void setCurrencyMap(EnumMap<CurrencyCharCode, Currency> currencyMap) {
+    public void setCurrencyMap(EnumMap<CharCode, Currency> currencyMap) {
         this.currencyMap = currencyMap;
     }
 
@@ -70,7 +72,7 @@ public class MainActivity extends Activity implements RateUpdaterListener {
 
         tvDateTime = (TextView) findViewById(R.id.tvDateTime);
         tvDateTime.setText(String.format("%s%s",
-                rateUpdater.getDescription(), DateUtil.getCurrentDateTime()));
+                rateUpdater.getDescription(), DateUtil.getCurrentDateTimeStr()));
 
     }
 
@@ -112,9 +114,9 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         String toCharCode = (String) toSpinner.getSelectedItem();
         Currency currencyFrom = null;
         Currency currencyTo = null;
-        CurrencyCharCode codeFrom = null;
-        CurrencyCharCode codeTo = null;
-        for (CurrencyCharCode code : CurrencyCharCode.values()) {
+        CharCode codeFrom = null;
+        CharCode codeTo = null;
+        for (CharCode code : CharCode.values()) {
             if (code.getName().equals(fromCharCode)) {
                 currencyFrom = currencyMap.get(code);
                 codeFrom = code;
@@ -166,7 +168,7 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         countryFlagIds = new Integer[len];
 
         int i = 0;
-        for (CurrencyCharCode code : currencyMap.keySet()) {
+        for (CharCode code : currencyMap.keySet()) {
             currencyNameArray[i] = code.getName();
 
             String codeInLowerCase = code.toString().toLowerCase();
@@ -280,6 +282,10 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                 editAmount.getText().toString());
         editor.putString(getString(R.string.saved_rate_updater_class),
                 rateUpdater.getClass().getName());
+        if (rateUpdater instanceof CBRateUpdater) {
+            editor.putString(getString(R.string.saved_cb_rf_up_date_time),
+                    DateUtil.getUpDateTimeStr(upDateTime));
+        }
 
         editor.apply();
     }
@@ -302,6 +308,14 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        String formattedUpDateTime = null;
+        if (rateUpdater instanceof CBRateUpdater) {
+            formattedUpDateTime =
+                    preferences.getString(getString(R.string.saved_cb_rf_up_date_time),
+                            DateUtil.getCurrentDateTimeStr());
+        }
+        upDateTime = DateUtil.getUpDateTime(formattedUpDateTime);
     }
 
     @Override

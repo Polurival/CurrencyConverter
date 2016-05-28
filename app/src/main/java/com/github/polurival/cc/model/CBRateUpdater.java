@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
-import com.github.polurival.cc.MainActivity;
 import com.github.polurival.cc.R;
 
 import org.w3c.dom.Document;
@@ -23,18 +22,18 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * on 26.03.2016.
  */
 public class CBRateUpdater
-        extends AsyncTask<Void, Void, EnumMap<CurrencyCharCode, Currency>>
+        extends AsyncTask<Void, Void, EnumMap<CharCode, Currency>>
         implements RateUpdater {
 
     public static final String CBR_URL = AppContext.getContext().getString(R.string.cbr_url);
 
     private RateUpdaterListener rateUpdaterListener;
 
-    private EnumMap<CurrencyCharCode, Currency> currencyMap
-            = new EnumMap<>(CurrencyCharCode.class);
+    private EnumMap<CharCode, Currency> currencyMap
+            = new EnumMap<>(CharCode.class);
 
     @Override
-    protected EnumMap<CurrencyCharCode, Currency> doInBackground(Void... params) {
+    protected EnumMap<CharCode, Currency> doInBackground(Void... params) {
         try {
             URL url = new URL(CBR_URL);
             URLConnection connection = url.openConnection();
@@ -48,7 +47,7 @@ public class CBRateUpdater
     }
 
     @Override
-    protected void onPostExecute(EnumMap<CurrencyCharCode, Currency> result) {
+    protected void onPostExecute(EnumMap<CharCode, Currency> result) {
         super.onPostExecute(result);
 
         rateUpdaterListener.setCurrencyMap(result);
@@ -73,7 +72,7 @@ public class CBRateUpdater
 
         for (int i = 0; i < descNodes.getLength(); i++) {
             NodeList currencyNodeList = descNodes.item(i).getChildNodes();
-            CurrencyCharCode charCode = null;
+            CharCode charCode = null;
             String nominal = null;
             String value = null;
 
@@ -82,7 +81,7 @@ public class CBRateUpdater
                 String textContent = currencyNodeList.item(j).getTextContent();
 
                 if ("CharCode".equals(nodeName)) {
-                    charCode = CurrencyCharCode.valueOf(textContent);
+                    charCode = CharCode.valueOf(textContent);
                 } else if ("Nominal".equals(nodeName)) {
                     nominal = textContent;
                 } else if ("Value".equals(nodeName)) {
@@ -95,13 +94,13 @@ public class CBRateUpdater
                 }
             }
         }
-        if (!currencyMap.containsKey(CurrencyCharCode.RUB)) {
-            currencyMap.put(CurrencyCharCode.RUB, new Currency("1", "1.0"));
+        if (!currencyMap.containsKey(CharCode.RUB)) {
+            currencyMap.put(CharCode.RUB, new Currency("1", "1.0"));
         }
     }
 
     @Override
-    public EnumMap<CurrencyCharCode, Currency> getCurrencyMap() {
+    public EnumMap<CharCode, Currency> getCurrencyMap() {
         return currencyMap;
     }
 

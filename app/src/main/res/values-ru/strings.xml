@@ -149,7 +149,7 @@
 
     <string name="RON">Румынский новый лей</string>
     <string name="RSD">Сербский динар</string>
-    <string name="RUB">Российский рубль, ₽</string>
+    <string name="rub">Российский рубль, ₽</string>
     <string name="RWF">Руандский франк</string>
 
     <string name="SAR">Саудовский риял</string>

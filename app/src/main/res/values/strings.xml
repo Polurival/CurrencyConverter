@@ -19,6 +19,7 @@
     <string name="saved_rate_updater_class">saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default">
         com.github.polurival.cc.model.CBRateUpdater</string>
+    <string name="saved_cb_rf_up_date_time">saved_up_date_time</string>
 
     <!-- currencies -->
     <string name="AED">Emirati Dirham</string>
@@ -158,7 +159,7 @@
 
     <string name="RON">Romanian New Leu</string>
     <string name="RSD">Serbian Dinar</string>
-    <string name="RUB">Russian Ruble, ₽</string>
+    <string name="rub">Russian Ruble, ₽</string>
     <string name="RWF">Rwandan Franc</string>
 
     <string name="SAR">Saudi Arabian Riyal</string>
