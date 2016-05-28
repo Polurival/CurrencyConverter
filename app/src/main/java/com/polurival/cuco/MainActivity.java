@@ -16,10 +16,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.polurival.cuco.strategies.CBRateUpdater;
-import com.polurival.cuco.strategies.RateUpdater;
-import com.polurival.cuco.strategies.Valute;
-import com.polurival.cuco.strategies.ValuteCharCode;
+import com.polurival.cuco.model.CBRateUpdater;
+import com.polurival.cuco.model.RateUpdater;
+import com.polurival.cuco.model.Currency;
+import com.polurival.cuco.model.CurrencyCharCode;
 import com.polurival.cuco.util.DateUtil;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
     private static MainActivity mainActivity;
     private RateUpdater rateUpdater;
 
-    private EnumMap<ValuteCharCode, Valute> valuteMap;
+    private EnumMap<CurrencyCharCode, Currency> currencyMap;
     private Integer[] countryFlagIds;
 
     private EditText editAmount;
@@ -46,8 +46,8 @@ public class MainActivity extends Activity {
     private TextView tvResult;
     private TextView tvDateTime;
 
-    public void setValuteMap(EnumMap<ValuteCharCode, Valute> valuteMap) {
-        this.valuteMap = valuteMap;
+    public void setCurrencyMap(EnumMap<CurrencyCharCode, Currency> currencyMap) {
+        this.currencyMap = currencyMap;
     }
 
     public RateUpdater getRateUpdater() {
@@ -105,77 +105,79 @@ public class MainActivity extends Activity {
     }
 
     public void swapFromTo(View v) {
-        int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
-        fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
-        toSpinner.setSelection(fromSpinnerSelectedItemPos);
+        if (fromSpinner != null && toSpinner != null) {
+            int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
+            fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
+            toSpinner.setSelection(fromSpinnerSelectedItemPos);
+        }
     }
 
     public void convert(View v) {
-        if (valuteMap == null
+        if (currencyMap == null
                 || fromSpinner.getSelectedItem() == null
                 || toSpinner.getSelectedItem() == null) {
             return;
         }
         String fromCharCode = (String) fromSpinner.getSelectedItem();
         String toCharCode = (String) toSpinner.getSelectedItem();
-        Valute valuteFrom = null;
-        Valute valuteTo = null;
-        ValuteCharCode codeFrom = null;
-        ValuteCharCode codeTo = null;
-        for (ValuteCharCode code : ValuteCharCode.values()) {
+        Currency currencyFrom = null;
+        Currency currencyTo = null;
+        CurrencyCharCode codeFrom = null;
+        CurrencyCharCode codeTo = null;
+        for (CurrencyCharCode code : CurrencyCharCode.values()) {
             if (code.getName().equals(fromCharCode)) {
-                valuteFrom = valuteMap.get(code);
+                currencyFrom = currencyMap.get(code);
                 codeFrom = code;
             }
             if (code.getName().equals(toCharCode)) {
-                valuteTo = valuteMap.get(code);
+                currencyTo = currencyMap.get(code);
                 codeTo = code;
             }
-            if (valuteFrom != null && valuteTo != null) {
+            if (currencyFrom != null && currencyTo != null) {
                 break;
             }
         }
 
-        assert valuteFrom != null;
-        double valuteFromNominal = Double.valueOf(valuteFrom.getNominal());
-        double valuteFromToRubRate = Double.valueOf(valuteFrom.getValuteToRubRate());
+        assert currencyFrom != null;
+        double currencyFromNominal = Double.valueOf(currencyFrom.getNominal());
+        double currencyFromToRubRate = Double.valueOf(currencyFrom.getCurrencyToRubRate());
 
-        assert valuteTo != null;
-        double valuteToNominal = Integer.valueOf(valuteTo.getNominal());
-        double valuteToToRubRate = Double.valueOf(valuteTo.getValuteToRubRate());
+        assert currencyTo != null;
+        double currencyToNominal = Integer.valueOf(currencyTo.getNominal());
+        double currencyToToRubRate = Double.valueOf(currencyTo.getCurrencyToRubRate());
 
-        double inputedAmountOfMoney = getInputedAmountOfMoney();
-        double result = inputedAmountOfMoney *
-                (valuteFromToRubRate / valuteToToRubRate) *
-                (valuteToNominal / valuteFromNominal);
+        double enteredAmountOfMoney = getEnteredAmountOfMoney();
+        double result = enteredAmountOfMoney *
+                (currencyFromToRubRate / currencyToToRubRate) *
+                (currencyToNominal / currencyFromNominal);
 
         String text = String.format("%.2f %s\n=\n%.2f %s",
-                inputedAmountOfMoney,
+                enteredAmountOfMoney,
                 codeFrom.getName(),
                 result,
                 codeTo.getName());
         setTvResultText(text);
     }
 
-    private double getInputedAmountOfMoney() {
+    private double getEnteredAmountOfMoney() {
         if (TextUtils.isEmpty(editAmount.getText().toString())) {
             return 1d;
         }
         return (double) Float.parseFloat(editAmount.getText().toString());
     }
 
-    private String[] getFilledValuteArray() {
-        if (valuteMap == null) {
+    private String[] getFilledCurrencyArray() {
+        if (currencyMap == null) {
             return new String[]{};
         }
 
-        int len = valuteMap.size();
-        String[] valuteNameArray = new String[len];
+        int len = currencyMap.size();
+        String[] currencyNameArray = new String[len];
         countryFlagIds = new Integer[len];
 
         int i = 0;
-        for (ValuteCharCode code : valuteMap.keySet()) {
-            valuteNameArray[i] = code.getName();
+        for (CurrencyCharCode code : currencyMap.keySet()) {
+            currencyNameArray[i] = code.getName();
 
             String codeInLowerCase = code.toString().toLowerCase();
             if ("try".equals(codeInLowerCase)) {
@@ -190,7 +192,7 @@ public class MainActivity extends Activity {
             }
             i++;
         }
-        return valuteNameArray;
+        return currencyNameArray;
     }
 
     public int getDrawable(Context context, String name) {
@@ -205,12 +207,12 @@ public class MainActivity extends Activity {
     public void initSpinners() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item,
-                getFilledValuteArray());
+                getFilledCurrencyArray());
         //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         fromSpinner = (Spinner) findViewById(R.id.fromSpinner);
         //fromSpinner.setAdapter(adapter);
-        fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
+        fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledCurrencyArray()));
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -223,7 +225,7 @@ public class MainActivity extends Activity {
         });
 
         toSpinner = (Spinner) findViewById(R.id.toSpinner);
-        toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledValuteArray()));
+        toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, getFilledCurrencyArray()));
         //toSpinner.setAdapter(adapter);
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -235,10 +237,6 @@ public class MainActivity extends Activity {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-    }
-
-    private void initCountryFlagIds(ArrayList<Integer> countryFlagIds) {
-        //countryFlagIds.add(R.drawable.rub);
     }
 
     //http://www.coderzheaven.com/2011/07/18/customizing-a-spinner-in-android/
@@ -263,7 +261,7 @@ public class MainActivity extends Activity {
             View row = inflater.inflate(R.layout.spinner_item, parent, false);
 
             TextView label = (TextView) row.findViewById(R.id.spinnerValuteName);
-            label.setText(getFilledValuteArray()[position]);
+            label.setText(getFilledCurrencyArray()[position]);
 
             ImageView icon = (ImageView) row.findViewById(R.id.spinnerFlagIcon);
             icon.setImageResource(countryFlagIds[position]);

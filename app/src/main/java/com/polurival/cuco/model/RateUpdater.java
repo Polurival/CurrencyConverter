@@ -1,4 +1,4 @@
-package com.polurival.cuco.strategies;
+package com.polurival.cuco.model;
 
 import org.w3c.dom.Document;
 
@@ -10,9 +10,9 @@ import java.util.EnumMap;
  */
 public interface RateUpdater {
 
-    void fillValuteMap(Document doc);
+    void fillCurrencyMap(Document doc);
 
-    EnumMap<ValuteCharCode, Valute> getValuteMap();
+    EnumMap<CurrencyCharCode, Currency> getCurrencyMap();
 
     String getName();
 }

@@ -1,4 +1,4 @@
-package com.polurival.cuco.strategies;
+package com.polurival.cuco.model;
 
 import com.polurival.cuco.AppContext;
 import com.polurival.cuco.R;
@@ -7,7 +7,7 @@ import com.polurival.cuco.R;
  * Created by Polurival
  * on 10.04.2016.
  */
-public enum ValuteCharCode {
+public enum CurrencyCharCode {
     AED {
         @Override
         public String getName() {

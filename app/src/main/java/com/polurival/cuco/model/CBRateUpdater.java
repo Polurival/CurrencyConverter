@@ -1,6 +1,5 @@
-package com.polurival.cuco.strategies;
+package com.polurival.cuco.model;
 
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
@@ -23,35 +22,35 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Polurival
  * on 26.03.2016.
  */
-public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<ValuteCharCode, Valute>> implements RateUpdater {
+public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<CurrencyCharCode, Currency>> implements RateUpdater {
 
     public static final String CBR_URL = AppContext.getContext().getString(R.string.cbr_url);
 
-    private EnumMap<ValuteCharCode, Valute> valuteMap = new EnumMap<>(ValuteCharCode.class);
+    private EnumMap<CurrencyCharCode, Currency> currencyMap = new EnumMap<>(CurrencyCharCode.class);
 
     @Override
-    protected EnumMap<ValuteCharCode, Valute> doInBackground(Void... params) {
+    protected EnumMap<CurrencyCharCode, Currency> doInBackground(Void... params) {
         try {
             URL url = new URL(CBR_URL);
             URLConnection connection = url.openConnection();
 
             Document doc = parseXML(connection.getInputStream());
 
-            fillValuteMap(doc);
+            fillCurrencyMap(doc);
         } catch (Exception e) {
         }
-        return valuteMap;
+        return currencyMap;
     }
 
     @Override
-    protected void onPostExecute(EnumMap<ValuteCharCode, Valute> result) {
+    protected void onPostExecute(EnumMap<CurrencyCharCode, Currency> result) {
         super.onPostExecute(result);
 
         MainActivity instance = MainActivity.getInstance();
-        instance.setValuteMap(result);
+        instance.setCurrencyMap(result);
         instance.initSpinners();
 
-        if (valuteMap.size() == 0) {
+        if (currencyMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.update_error),
                     Toast.LENGTH_LONG).show();
@@ -59,21 +58,21 @@ public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<ValuteCharCode,
     }
 
     @Override
-    public void fillValuteMap(Document doc) {
+    public void fillCurrencyMap(Document doc) {
         NodeList descNodes = doc.getElementsByTagName("Valute");
 
         for (int i = 0; i < descNodes.getLength(); i++) {
-            NodeList valuteNodeList = descNodes.item(i).getChildNodes();
-            ValuteCharCode charCode = null;
+            NodeList currencyNodeList = descNodes.item(i).getChildNodes();
+            CurrencyCharCode charCode = null;
             String nominal = null;
             String value = null;
 
-            for (int j = 0; j < valuteNodeList.getLength(); j++) {
-                String nodeName = valuteNodeList.item(j).getNodeName();
-                String textContent = valuteNodeList.item(j).getTextContent();
+            for (int j = 0; j < currencyNodeList.getLength(); j++) {
+                String nodeName = currencyNodeList.item(j).getNodeName();
+                String textContent = currencyNodeList.item(j).getTextContent();
 
                 if ("CharCode".equals(nodeName)) {
-                    charCode = ValuteCharCode.valueOf(textContent);
+                    charCode = CurrencyCharCode.valueOf(textContent);
                 } else if ("Nominal".equals(nodeName)) {
                     nominal = textContent;
                 } else if ("Value".equals(nodeName)) {
@@ -81,19 +80,19 @@ public class CBRateUpdater extends AsyncTask<Void, Void, EnumMap<ValuteCharCode,
                 }
 
                 if (charCode != null && nominal != null && value != null) {
-                    valuteMap.put(charCode, new Valute(nominal, value));
+                    currencyMap.put(charCode, new Currency(nominal, value));
                     break;
                 }
             }
         }
-        if (!valuteMap.containsKey(ValuteCharCode.RUB)) {
-            valuteMap.put(ValuteCharCode.RUB, new Valute("1", "1.0"));
+        if (!currencyMap.containsKey(CurrencyCharCode.RUB)) {
+            currencyMap.put(CurrencyCharCode.RUB, new Currency("1", "1.0"));
         }
     }
 
     @Override
-    public EnumMap<ValuteCharCode, Valute> getValuteMap() {
-        return valuteMap;
+    public EnumMap<CurrencyCharCode, Currency> getCurrencyMap() {
+        return currencyMap;
     }
 
     private Document parseXML(InputStream stream) throws Exception {
