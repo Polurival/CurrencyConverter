@@ -22,6 +22,7 @@ import com.github.polurival.cc.model.CBRateUpdater;
 import com.github.polurival.cc.model.RateUpdater;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.CurrencyCharCode;
+import com.github.polurival.cc.model.RateUpdaterListener;
 import com.github.polurival.cc.util.DateUtil;
 
 import java.util.EnumMap;
@@ -30,9 +31,8 @@ import java.util.EnumMap;
  * Created by Polurival
  * on 24.03.2016.
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements RateUpdaterListener {
 
-    private static MainActivity mainActivity;
     private RateUpdater rateUpdater;
 
     private EnumMap<CurrencyCharCode, Currency> currencyMap;
@@ -47,29 +47,15 @@ public class MainActivity extends Activity {
     private TextView tvResult;
     private TextView tvDateTime;
 
+    @Override
     public void setCurrencyMap(EnumMap<CurrencyCharCode, Currency> currencyMap) {
         this.currencyMap = currencyMap;
     }
 
-    public RateUpdater getRateUpdater() {
-        return rateUpdater;
-    }
-
-    public static MainActivity getInstance() {
-        return mainActivity;
-    }
-
-    /**
-     * Called when the activity is first created.
-     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
-        if (mainActivity == null) {
-            mainActivity = this;
-        }
 
         initEditAmount();
 
@@ -77,13 +63,14 @@ public class MainActivity extends Activity {
 
         tvResult = (TextView) findViewById(R.id.tvResult);
 
-        //rateUpdater = new CBRateUpdater();
+        rateUpdater.setRateUpdaterListener(this);
         if (rateUpdater instanceof CBRateUpdater) {
             ((CBRateUpdater) rateUpdater).execute();
         }
 
         tvDateTime = (TextView) findViewById(R.id.tvDateTime);
-        tvDateTime.setText(DateUtil.getCurrentDateTime());
+        tvDateTime.setText(String.format("%s%s",
+                rateUpdater.getDescription(), DateUtil.getCurrentDateTime()));
 
     }
 
@@ -207,6 +194,7 @@ public class MainActivity extends Activity {
         tvResult.setText(text);
     }
 
+    @Override
     public void initSpinners() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item,
@@ -316,6 +304,7 @@ public class MainActivity extends Activity {
         }
     }
 
+    @Override
     public void loadSpinnerProperties() {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

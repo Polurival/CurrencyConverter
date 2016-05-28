@@ -10,9 +10,12 @@ import java.util.EnumMap;
  */
 public interface RateUpdater {
 
+    void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener);
+
     void fillCurrencyMap(Document doc);
 
     EnumMap<CurrencyCharCode, Currency> getCurrencyMap();
 
     String getDescription();
+
 }

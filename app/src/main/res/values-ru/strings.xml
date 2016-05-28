@@ -10,7 +10,6 @@
     <string name="update_error">Ошибка обновления. Проверьте соединение с Интернет</string>
 
     <string name="cbr">курс ЦБ РФ на:\n</string>
-    <string name="cbr_url">http://www.cbr.ru/scripts/XML_daily.asp</string>
 
     <!-- currencies -->
     <string name="AED">ОАЭ дирхам</string>

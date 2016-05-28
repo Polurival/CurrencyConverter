@@ -28,6 +28,8 @@ public class CBRateUpdater
 
     public static final String CBR_URL = AppContext.getContext().getString(R.string.cbr_url);
 
+    private RateUpdaterListener rateUpdaterListener;
+
     private EnumMap<CurrencyCharCode, Currency> currencyMap
             = new EnumMap<>(CurrencyCharCode.class);
 
@@ -49,16 +51,20 @@ public class CBRateUpdater
     protected void onPostExecute(EnumMap<CurrencyCharCode, Currency> result) {
         super.onPostExecute(result);
 
-        MainActivity instance = MainActivity.getInstance();
-        instance.setCurrencyMap(result);
-        instance.initSpinners();
-        instance.loadSpinnerProperties();
+        rateUpdaterListener.setCurrencyMap(result);
+        rateUpdaterListener.initSpinners();
+        rateUpdaterListener.loadSpinnerProperties();
 
         if (currencyMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.update_error),
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
+        this.rateUpdaterListener = rateUpdaterListener;
     }
 
     @Override
