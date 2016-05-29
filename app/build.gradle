@@ -16,4 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+
+    dependencies {
+        compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+        compile 'net.danlew:android.joda:2.9.3.1'
+    }
 }

@@ -40,6 +40,7 @@
         android:layout_below="@+id/fromSpinner"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/view_vertical_margin"
+        android:layout_marginTop="@dimen/view_vertical_margin"
         android:alpha="0.7"
         android:background="@drawable/swap"
         android:onClick="swapFromTo" />
@@ -63,7 +64,7 @@
         android:layout_marginStart="@dimen/edit_text_horizontal_margin"
         android:alpha="0.6"
         android:background="@color/white"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:minHeight="@dimen/text_view_result_min_height"
         android:textColor="@color/lazure"
         android:textSize="20sp" />

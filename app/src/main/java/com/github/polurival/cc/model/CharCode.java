@@ -23,7 +23,7 @@ public enum CharCode {
     AMD {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.AMD);
+            return AppContext.getContext().getString(R.string.amd);
         }
     },
     ANG {
@@ -41,7 +41,7 @@ public enum CharCode {
     AUD {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.AUD);
+            return AppContext.getContext().getString(R.string.aud);
         }
     },
     AWG {
@@ -53,7 +53,7 @@ public enum CharCode {
     AZN {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.AZN);
+            return AppContext.getContext().getString(R.string.azn);
         }
     },
 
@@ -72,7 +72,7 @@ public enum CharCode {
     BGN {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.BGN);
+            return AppContext.getContext().getString(R.string.bgn);
         }
     },
     BHD {
@@ -108,7 +108,7 @@ public enum CharCode {
     BRL {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.BRL);
+            return AppContext.getContext().getString(R.string.brl);
         }
     },
     BSD {
@@ -132,7 +132,7 @@ public enum CharCode {
     BYR {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.BYR);
+            return AppContext.getContext().getString(R.string.byr);
         }
     },
     BZD {
@@ -145,13 +145,13 @@ public enum CharCode {
     CAD {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.CAD);
+            return AppContext.getContext().getString(R.string.cad);
         }
     },
     CHF {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.CHF);
+            return AppContext.getContext().getString(R.string.chf);
         }
     },
     CLP {
@@ -163,7 +163,7 @@ public enum CharCode {
     CNY {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.CNY);
+            return AppContext.getContext().getString(R.string.cny);
         }
     },
     COP {
@@ -193,7 +193,7 @@ public enum CharCode {
     CZK {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.CZK);
+            return AppContext.getContext().getString(R.string.czk);
         }
     },
 
@@ -206,7 +206,7 @@ public enum CharCode {
     DKK {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.DKK);
+            return AppContext.getContext().getString(R.string.dkk);
         }
     },
     DOP {
@@ -243,7 +243,7 @@ public enum CharCode {
     EUR {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.EUR);
+            return AppContext.getContext().getString(R.string.eur);
         }
     },
 
@@ -263,7 +263,7 @@ public enum CharCode {
     GBP {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.GBP);
+            return AppContext.getContext().getString(R.string.gbp);
         }
     },
     GHS {
@@ -324,7 +324,7 @@ public enum CharCode {
     HUF {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.HUF);
+            return AppContext.getContext().getString(R.string.huf);
         }
     },
 
@@ -343,7 +343,7 @@ public enum CharCode {
     INR {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.INR);
+            return AppContext.getContext().getString(R.string.inr);
         }
     },
     IQD {
@@ -374,7 +374,7 @@ public enum CharCode {
     JPY {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.JPY);
+            return AppContext.getContext().getString(R.string.jpy);
         }
     },
 
@@ -387,7 +387,7 @@ public enum CharCode {
     KGS {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.KGS);
+            return AppContext.getContext().getString(R.string.kgs);
         }
     },
     KHR {
@@ -411,7 +411,7 @@ public enum CharCode {
     KRW {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.KRW);
+            return AppContext.getContext().getString(R.string.krw);
         }
     },
     KWD {
@@ -429,7 +429,7 @@ public enum CharCode {
     KZT {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.KZT);
+            return AppContext.getContext().getString(R.string.kzt);
         }
     },
 
@@ -491,7 +491,7 @@ public enum CharCode {
     MDL {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.MDL);
+            return AppContext.getContext().getString(R.string.mdl);
         }
     },
     MKD {
@@ -576,7 +576,7 @@ public enum CharCode {
     NOK {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.NOK);
+            return AppContext.getContext().getString(R.string.nok);
         }
     },
     NPR {
@@ -632,7 +632,7 @@ public enum CharCode {
     PLN {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.PLN);
+            return AppContext.getContext().getString(R.string.pln);
         }
     },
     PYG {
@@ -652,7 +652,7 @@ public enum CharCode {
     RON {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.RON);
+            return AppContext.getContext().getString(R.string.ron);
         }
     },
     RUB {
@@ -695,13 +695,13 @@ public enum CharCode {
     SEK {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.SEK);
+            return AppContext.getContext().getString(R.string.sek);
         }
     },
     SGD {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.SGD);
+            return AppContext.getContext().getString(R.string.sgd);
         }
     },
     SHP {
@@ -750,13 +750,13 @@ public enum CharCode {
     TJS {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.TJS);
+            return AppContext.getContext().getString(R.string.tjs);
         }
     },
     TMT {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.TMT);
+            return AppContext.getContext().getString(R.string.tmt);
         }
     },
     TND {
@@ -774,7 +774,7 @@ public enum CharCode {
     TRY {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.TRY);
+            return AppContext.getContext().getString(R.string.try_);
         }
     },
     TTD {
@@ -799,7 +799,7 @@ public enum CharCode {
     UAH {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.UAH);
+            return AppContext.getContext().getString(R.string.uah);
         }
     },
     UGX {
@@ -811,7 +811,7 @@ public enum CharCode {
     USD {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.USD);
+            return AppContext.getContext().getString(R.string.usd);
         }
     },
     UYU {
@@ -823,7 +823,7 @@ public enum CharCode {
     UZS {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.UZS);
+            return AppContext.getContext().getString(R.string.uzs);
         }
     },
 
@@ -868,7 +868,7 @@ public enum CharCode {
     XDR {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.XDR);
+            return AppContext.getContext().getString(R.string.xdr);
         }
     },
     XOF {
@@ -894,7 +894,7 @@ public enum CharCode {
     ZAR {
         @Override
         public String getName() {
-            return AppContext.getContext().getString(R.string.ZAR);
+            return AppContext.getContext().getString(R.string.zar);
         }
     },
     ZMW {

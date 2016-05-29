@@ -8,8 +8,10 @@
     <string name="transfer_to">Convert to:</string>
     <string name="last_update">Last update:</string>
     <string name="update_error">Update Error. Check Internet Connection</string>
+    <string name="database_error">Database unavailable</string>
+    <string name="database_update_success">Database has been successfully updated</string>
 
-    <string name="cbr">CB RF rate on:\n</string>
+    <string name="cbr">CB RF rate on:</string>
     <string name="cbr_url">http://www.cbr.ru/scripts/XML_daily.asp</string>
     
     <string name="saved_from_spinner_pos">saved_from_spinner_pos</string>
@@ -25,44 +27,44 @@
     <string name="AED">Emirati Dirham</string>
     <string name="AFN">Afghan Afghani</string>
     <string name="ALL">Albanian Lek</string>
-    <string name="AMD">Armenian Dram</string>
+    <string name="amd">Armenian Dram</string>
     <string name="ANG">Dutch Guilder</string>
     <string name="AOA">Angolan Kwanza</string>
     <string name="ARS">Argentine Peso</string>
-    <string name="AUD">Australian Dollar, $</string>
+    <string name="aud">Australian Dollar $</string>
     <string name="AWG">Aruban or Dutch Guilder</string>
-    <string name="AZN">Azerbaijani New Manat, ₼</string>
+    <string name="azn">Azerbaijani New Manat ₼</string>
 
     <string name="BAM">Bosnian Convertible Marka</string>
     <string name="BBD">Barbadian or Bajan Dollar</string>
     <string name="BDT">Bangladeshi Taka</string>
-    <string name="BGN">Bulgarian Lev</string>
+    <string name="bgn">Bulgarian Lev</string>
     <string name="BHD">Bahraini Dinar</string>
     <string name="BIF">Burundian Franc</string>
     <string name="BMD">Bermudian Dollar</string>
     <string name="BND">Bruneian Dollar</string>
     <string name="BOB">Bolivian Boliviano</string>
-    <string name="BRL">Brazilian Real</string>
+    <string name="brl">Brazilian Real</string>
     <string name="BSD">Bahamian Dollar</string>
     <string name="BTN">Bhutanese Ngultrum</string>
     <string name="BWP">Botswana Pula</string>
-    <string name="BYR">Belarusian Ruble</string>
+    <string name="byr">Belarusian Ruble</string>
     <string name="BZD">Belizean Dollar</string>
 
-    <string name="CAD">Canadian Dollar</string>
+    <string name="cad">Canadian Dollar $</string>
     <string name="CDF">Congolese Franc</string>
-    <string name="CHF">Swiss Franc</string>
+    <string name="chf">Swiss Franc Fr</string>
     <string name="CLP">Chilean Peso</string>
-    <string name="CNY">Chinese Yuan Renminbi</string>
+    <string name="cny">Chinese Yuan Renminbi ¥</string>
     <string name="COP">Colombian Peso</string>
     <string name="CRC">Costa Rican Colon</string>
     <string name="CUC">Cuban Convertible Peso</string>
     <string name="CUP">Cuban Peso</string>
     <string name="CVE">Cape Verdean Escudo</string>
-    <string name="CZK">Czech Koruna</string>
+    <string name="czk">Czech Koruna</string>
 
     <string name="DJF">Djiboutian Franc</string>
-    <string name="DKK">Danish Krone</string>
+    <string name="dkk">Danish Krone</string>
     <string name="DOP">Dominican Peso</string>
     <string name="DZD">Algerian Dinar</string>
 
@@ -70,12 +72,12 @@
     <string name="ERN">Eritrean Nakfa</string>
     <string name="EEK">Estonian Kroon</string>
     <string name="ETB">Ethiopian Birr</string>
-    <string name="EUR">Euro</string>
+    <string name="eur">Euro €</string>
 
     <string name="FJD">Fijian Dollar</string>
     <string name="FKP">Falkland Island Pound</string>
 
-    <string name="GBP">British Pound</string>
+    <string name="gbp">British Pound £</string>
     <string name="GEL">Georgian Lari</string>
     <string name="GGP">Guernsey Pound</string>
     <string name="GHS">Ghanaian Cedi</string>
@@ -85,16 +87,16 @@
     <string name="GTQ">Guatemalan Quetzal</string>
     <string name="GYD">Guyanese Dollar</string>
 
-    <string name="HKD">Hong Kong Dollar</string>
+    <string name="HKD">Hong Kong Dollar $</string>
     <string name="HNL">Honduran Lempira</string>
     <string name="HRK">Croatian Kuna</string>
     <string name="HTG">Haitian Gourde</string>
-    <string name="HUF">Hungarian Forint</string>
+    <string name="huf">Hungarian Forint</string>
 
     <string name="IDR">Indonesian Rupiah</string>
     <string name="ILS">Israeli Shekel</string>
     <string name="IMP">Isle of Man Pound</string>
-    <string name="INR">Indian Rupee</string>
+    <string name="inr">Indian Rupee</string>
     <string name="IQD">Iraqi Dinar</string>
     <string name="IRR">Iranian Rial</string>
     <string name="ISK">Icelandic Krona</string>
@@ -102,17 +104,17 @@
     <string name="JEP">Jersey Pound</string>
     <string name="JMD">Jamaican Dollar</string>
     <string name="JOD">Jordanian Dinar</string>
-    <string name="JPY">Japanese Yen</string>
+    <string name="jpy">Japanese Yen ¥</string>
 
     <string name="KES">Kenyan Shilling</string>
-    <string name="KGS">Kyrgyzstani Som</string>
+    <string name="kgs">Kyrgyzstani Som</string>
     <string name="KHR">Cambodian Riel</string>
     <string name="KMF">Comorian franc</string>
     <string name="KPW">North Korean Won</string>
-    <string name="KRW">South Korean Won</string>
+    <string name="krw">South Korean Won</string>
     <string name="KWD">Kuwaiti Dinar</string>
     <string name="KYD">Caymanian Dollar</string>
-    <string name="KZT">Kazakhstani Tenge</string>
+    <string name="kzt">Kazakhstani Tenge</string>
 
     <string name="LAK">Lao or Laotian Kip</string>
     <string name="LBP">Lebanese Pound</string>
@@ -124,7 +126,7 @@
     <string name="LYD">Libyan Dinar</string>
 
     <string name="MAD">Moroccan Dirham</string>
-    <string name="MDL">Moldovan Leu</string>
+    <string name="mdl">Moldovan Leu</string>
     <string name="MGA">Malagasy Ariary</string>
     <string name="MKD">Macedonian Denar</string>
     <string name="MMK">Burmese Kyat</string>
@@ -141,7 +143,7 @@
     <string name="NAD">Namibian Dollar</string>
     <string name="NGN">Nigerian Naira</string>
     <string name="NIO">Nicaraguan Cordoba</string>
-    <string name="NOK">Norwegian Krone</string>
+    <string name="nok">Norwegian Krone</string>
     <string name="NPR">Nepalese Rupee</string>
     <string name="NZD">New Zealand Dollar</string>
 
@@ -152,22 +154,22 @@
     <string name="PGK">Papua New Guinean Kina</string>
     <string name="PHP">Philippine Peso</string>
     <string name="PKR">Pakistani Rupee</string>
-    <string name="PLN">Polish Zloty</string>
+    <string name="pln">Polish Zloty</string>
     <string name="PYG">Paraguayan Guarani</string>
 
     <string name="QAR">Qatari Riyal</string>
 
-    <string name="RON">Romanian New Leu</string>
+    <string name="ron">Romanian New Leu</string>
     <string name="RSD">Serbian Dinar</string>
-    <string name="rub">Russian Ruble, ₽</string>
+    <string name="rub">Russian Ruble ₽</string>
     <string name="RWF">Rwandan Franc</string>
 
     <string name="SAR">Saudi Arabian Riyal</string>
     <string name="SBD">Solomon Islander Dollar</string>
     <string name="SCR">Seychellois Rupee</string>
     <string name="SDG">Sudanese Pound</string>
-    <string name="SEK">Swedish Krona</string>
-    <string name="SGD">Singapore Dollar</string>
+    <string name="sek">Swedish Krona</string>
+    <string name="sgd">Singapore Dollar</string>
     <string name="SHP">Saint Helenian Pound</string>
     <string name="SLL">Sierra Leonean Leone</string>
     <string name="SOS">Somali Shilling</string>
@@ -178,21 +180,21 @@
     <string name="SZL">Swazi Lilangeni</string>
 
     <string name="THB">Thai Baht</string>
-    <string name="TJS">Tajikistani Somoni</string>
-    <string name="TMT">Turkmenistani Manat</string>
+    <string name="tjs">Tajikistani Somoni</string>
+    <string name="tmt">Turkmenistani Manat</string>
     <string name="TND">Tunisian Dinar</string>
     <string name="TOP">Tongan Pa\'anga</string>
-    <string name="TRY">Turkish Lira</string>
+    <string name="try_">Turkish Lira</string>
     <string name="TTD">Trinidadian Dollar</string>
     <string name="TVD">Tuvaluan Dollar</string>
     <string name="TWD">Taiwan New Dollar</string>
     <string name="TZS">Tanzanian Shilling</string>
 
-    <string name="UAH">Ukrainian Hryvnia</string>
+    <string name="uah">Ukrainian Hryvnia</string>
     <string name="UGX">Ugandan Shilling</string>
-    <string name="USD">US Dollar</string>
+    <string name="usd">US Dollar $</string>
     <string name="UYU">Uruguayan Peso</string>
-    <string name="UZS">Uzbekistani Som</string>
+    <string name="uzs">Uzbekistani Som</string>
 
     <string name="VEF">Venezuelan Bolivar</string>
     <string name="VND">Vietnamese Dong</string>
@@ -204,7 +206,7 @@
     <string name="XAG">Silver Ounce</string>
     <string name="XAU">Gold Ounce</string>
     <string name="XCD">East Caribbean Dollar</string>
-    <string name="XDR">IMF Special Drawing Rights</string>
+    <string name="xdr">IMF Special Drawing Rights</string>
     <string name="XOF">CFA Franc</string>
     <string name="XPD">Palladium Ounce</string>
     <string name="XPF">CFP Franc</string>
@@ -212,7 +214,7 @@
 
     <string name="YER">Yemeni Rial</string>
 
-    <string name="ZAR">South African Rand</string>
+    <string name="zar">South African Rand</string>
     <string name="ZMW">Zambian Kwacha</string>
     <string name="ZWD">Zimbabwean Dollar</string>
 

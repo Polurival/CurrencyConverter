@@ -29,8 +29,7 @@ public class CBRateUpdater
 
     private RateUpdaterListener rateUpdaterListener;
 
-    private EnumMap<CharCode, Currency> currencyMap
-            = new EnumMap<>(CharCode.class);
+    private EnumMap<CharCode, Currency> currencyMap = new EnumMap<>(CharCode.class);
 
     @Override
     protected EnumMap<CharCode, Currency> doInBackground(Void... params) {
@@ -50,18 +49,21 @@ public class CBRateUpdater
     protected void onPostExecute(EnumMap<CharCode, Currency> result) {
         super.onPostExecute(result);
 
-        rateUpdaterListener.setCurrencyMap(result);
-        rateUpdaterListener.initSpinners();
-        rateUpdaterListener.loadSpinnerProperties();
-
+        //rateUpdaterListener.setCurrencyMap(result);
+        //rateUpdaterListener.initSpinners();
+        //rateUpdaterListener.loadSpinnerProperties();
         if (currencyMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.update_error),
                     Toast.LENGTH_LONG).show();
+        } else {
+            DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
+            dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
+            dbUpdaterTask.setCurrencyMap(result);
+            dbUpdaterTask.execute();
         }
     }
 
-    @Override
     public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
         this.rateUpdaterListener = rateUpdaterListener;
     }
@@ -89,14 +91,15 @@ public class CBRateUpdater
                 }
 
                 if (charCode != null && nominal != null && value != null) {
-                    currencyMap.put(charCode, new Currency(nominal, value));
+                    currencyMap.put(charCode,
+                            new Currency(Integer.valueOf(nominal), Double.valueOf(value)));
                     break;
                 }
             }
         }
-        if (!currencyMap.containsKey(CharCode.RUB)) {
-            currencyMap.put(CharCode.RUB, new Currency("1", "1.0"));
-        }
+        /*if (!currencyMap.containsKey(CharCode.RUB)) {
+            currencyMap.put(CharCode.RUB, new Currency(1, 1.0));
+        }*/
     }
 
     @Override

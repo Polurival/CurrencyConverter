@@ -5,19 +5,40 @@ package com.github.polurival.cc.model;
  * on 10.04.2016.
  */
 public class Currency {
-    private String nominal;
-    private String currencyToRubRate;
+    private int nominal;
+    private double value;
+    private int nameResourceId;
+    private int flagResourceId;
 
-    public Currency(String nominal, String value) {
+    public Currency(int nominal, double value) {
         this.nominal = nominal;
-        this.currencyToRubRate = value;
+        this.value = value;
     }
 
-    public String getNominal() {
+    public Currency(int nominal, double value, int nameResourceId, int flagResourceId) {
+        this.nominal = nominal;
+        this.value = value;
+        this.nameResourceId = nameResourceId;
+        this.flagResourceId = flagResourceId;
+    }
+
+    public int getNominal() {
         return nominal;
     }
 
-    public String getCurrencyToRubRate() {
-        return currencyToRubRate;
+    public double getDoubleNominal() {
+        return (double) nominal;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public int getNameResourceId() {
+        return nameResourceId;
+    }
+
+    public int getFlagResourceId() {
+        return flagResourceId;
     }
 }
