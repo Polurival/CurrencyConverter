@@ -1,4 +1,4 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +9,11 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.model.CBRateUpdaterTask;
+import com.github.polurival.cc.model.CharCode;
+import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.RateUpdater;
+import com.github.polurival.cc.model.RateUpdaterListener;
 import com.github.polurival.cc.util.DateUtil;
 
 import java.util.EnumMap;
@@ -46,7 +51,7 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, EnumMap<CharCode, Curre
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
                 contentValues.put(DBHelper.COLUMN_NAME_NOMINAL, entry.getValue().getNominal());
-                if (rateUpdater instanceof CBRateUpdater) {
+                if (rateUpdater instanceof CBRateUpdaterTask) {
                     contentValues.put(DBHelper.COLUMN_NAME_VALUE, entry.getValue().getValue());
                 }
                 db.update(DBHelper.TABLE_NAME,
@@ -72,13 +77,9 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, EnumMap<CharCode, Curre
                     Toast.LENGTH_LONG).show();
         }
 
-        //rateUpdaterListener.setCurrencyMap(result);
-        //rateUpdaterListener.initSpinners();
-        //rateUpdaterListener.loadSpinnerProperties();
-
         rateUpdaterListener.setUpDateTime(DateUtil.getCurrentDateTime());
         rateUpdaterListener.saveDateProperties();
-        //rateUpdaterListener.tvDateTimeSetText();
+        rateUpdaterListener.readDataFromDB();
 
     }
 }

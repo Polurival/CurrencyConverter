@@ -22,3 +22,6 @@ android {
         compile 'net.danlew:android.joda:2.9.3.1'
     }
 }
+dependencies {
+    compile 'com.android.support:support-v4:23.+'
+}

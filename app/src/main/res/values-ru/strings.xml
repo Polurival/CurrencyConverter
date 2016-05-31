@@ -2,11 +2,22 @@
 <resources>
 
     <string name="app_name">Конвертер валют</string>
-    <string name="action_settings">Настройки</string>
     <string name="enter_amount">введите сумму...</string>
     <string name="transfer_from">Конвертировать из:</string>
     <string name="transfer_to">Конвертировать в:</string>
     <string name="last_update">Последнее обновление:</string>
+    <string name="update_rates">Обновить курсы</string>
+
+    <string name="data_source">Источник данных</string>
+    <string name="custom_mode_help">Как этим пользоваться?</string>
+    <string name="view_custom_mode_help">Подсказка</string>
+    <string name="save_new_value">Сохранить</string>
+
+    <string-array name="data_source_array">
+        <item>ЦБ РФ</item>
+        <item>Ручной режим</item>
+    </string-array>
+
     <string name="update_error">Ошибка обновления. Проверьте соединение с Интернет</string>
     <string name="database_error">Базы данных недоступна</string>
     <string name="database_update_success">База данных успешно обновлена</string>

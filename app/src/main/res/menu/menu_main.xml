@@ -1,9 +1,19 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity">
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
+        android:id="@+id/data_source_action"
+        android:icon="@drawable/ic_action_storage"
+        android:orderInCategory="10"
+        android:title="@string/data_source"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/update_rates_action"
+        android:icon="@drawable/ic_action_download"
+        android:orderInCategory="20"
+        android:title="@string/update_rates"
+        app:showAsAction="ifRoom" />
 
 </menu>

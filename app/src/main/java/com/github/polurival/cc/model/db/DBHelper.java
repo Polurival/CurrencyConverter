@@ -1,4 +1,4 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.model.CharCode;
 
 /**
  * Created by Polurival

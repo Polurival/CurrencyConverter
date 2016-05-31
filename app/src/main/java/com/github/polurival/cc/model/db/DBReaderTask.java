@@ -1,4 +1,4 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc.model.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +9,10 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.model.CharCode;
+import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.RateUpdaterListener;
+import com.github.polurival.cc.model.db.DBHelper;
 
 import java.util.EnumMap;
 
@@ -70,5 +74,6 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
         rateUpdaterListener.setCurrencyMap(result);
         rateUpdaterListener.initSpinners();
         rateUpdaterListener.loadSpinnerProperties();
+        rateUpdaterListener.tvDateTimeSetText();
     }
 }

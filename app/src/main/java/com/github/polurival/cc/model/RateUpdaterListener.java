@@ -23,4 +23,6 @@ public interface RateUpdaterListener {
     void tvDateTimeSetText();
 
     RateUpdater getRateUpdater();
+
+    void readDataFromDB();
 }

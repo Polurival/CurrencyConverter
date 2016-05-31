@@ -5,21 +5,15 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/spinnerFlagIcon"
+        android:id="@+id/spinner_flag_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/spinnerValuteName"
+        android:id="@+id/spinner_currency_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/view_horizontal_margin"
         android:textSize="20sp" />
 
 </LinearLayout>
-
-<!--    <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:textSize="20sp" />-->

@@ -2,25 +2,36 @@
 <resources>
 
     <string name="app_name">Currency converter</string>
-    <string name="action_settings">Settings</string>
     <string name="enter_amount">Enter amount...</string>
     <string name="transfer_from">Convert from:</string>
     <string name="transfer_to">Convert to:</string>
     <string name="last_update">Last update:</string>
+    <string name="update_rates">Update rates</string>
+
+    <string name="data_source">Data source</string>
+    <string name="custom_mode_help">How to use it?</string>
+    <string name="view_custom_mode_help">Hint</string>
+    <string name="save_new_value">Save</string>
+
+    <string-array name="data_source_array">
+        <item>CB RF</item>
+        <item>Custom mode</item>
+    </string-array>
+
     <string name="update_error">Update Error. Check Internet Connection</string>
     <string name="database_error">Database unavailable</string>
     <string name="database_update_success">Database has been successfully updated</string>
 
     <string name="cbr">CB RF rate on:</string>
     <string name="cbr_url">http://www.cbr.ru/scripts/XML_daily.asp</string>
-    
+
     <string name="saved_from_spinner_pos">saved_from_spinner_pos</string>
     <string name="saved_to_spinner_pos">saved_to_spinner_pos</string>
     <string name="saved_edit_amount_text">saved_edit_amount_text</string>
     <string name="saved_edit_amount_text_default">1</string>
     <string name="saved_rate_updater_class">saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default">
-        com.github.polurival.cc.model.CBRateUpdater</string>
+        com.github.polurival.cc.model.CBRateUpdaterTask</string>
     <string name="saved_cb_rf_up_date_time">saved_up_date_time</string>
 
     <!-- currencies -->

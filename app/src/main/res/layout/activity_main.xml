@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/activity_vertical_margin"
     android:layout_marginEnd="@dimen/activity_horizontal_margin"
     android:layout_marginStart="@dimen/activity_horizontal_margin"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.github.polurival.cc.MainActivity">
 
     <EditText
-        android:id="@+id/editAmount"
+        android:id="@+id/edit_amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
@@ -24,20 +26,20 @@
         android:textSize="20sp" />
 
     <Spinner
-        android:id="@+id/fromSpinner"
+        android:id="@+id/from_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editAmount"
+        android:layout_below="@id/edit_amount"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/view_vertical_margin"
         android:alpha="0.6"
         android:prompt="@string/transfer_from" />
 
     <Button
-        android:id="@+id/btnSwapFromTo"
+        android:id="@+id/btn_swap_from_to"
         android:layout_width="@dimen/btn_swap_width"
         android:layout_height="@dimen/btn_swap_height"
-        android:layout_below="@+id/fromSpinner"
+        android:layout_below="@+id/from_spinner"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/view_vertical_margin"
         android:layout_marginTop="@dimen/view_vertical_margin"
@@ -46,19 +48,19 @@
         android:onClick="swapFromTo" />
 
     <Spinner
-        android:id="@+id/toSpinner"
+        android:id="@+id/to_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/btnSwapFromTo"
+        android:layout_below="@+id/btn_swap_from_to"
         android:layout_gravity="center_horizontal"
         android:alpha="0.6"
         android:prompt="@string/transfer_to" />
 
     <TextView
-        android:id="@+id/tvResult"
+        android:id="@+id/tv_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toSpinner"
+        android:layout_below="@id/to_spinner"
         android:layout_marginBottom="@dimen/view_vertical_margin"
         android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
         android:layout_marginStart="@dimen/edit_text_horizontal_margin"
@@ -70,10 +72,10 @@
         android:textSize="20sp" />
 
     <TextView
-        android:id="@+id/tvDateTime"
+        android:id="@+id/tv_date_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvResult"
+        android:layout_below="@id/tv_result"
         android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
         android:layout_marginStart="@dimen/edit_text_horizontal_margin"
         android:alpha="0.6"
@@ -81,5 +83,4 @@
         android:gravity="center_horizontal"
         android:minHeight="@dimen/text_view_date_time_min_height"
         android:textSize="16sp" />
-
 </RelativeLayout>

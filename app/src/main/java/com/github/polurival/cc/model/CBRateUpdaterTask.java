@@ -5,6 +5,7 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.model.db.DBUpdaterTask;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -21,7 +22,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Polurival
  * on 26.03.2016.
  */
-public class CBRateUpdater
+public class CBRateUpdaterTask
         extends AsyncTask<Void, Void, EnumMap<CharCode, Currency>>
         implements RateUpdater {
 

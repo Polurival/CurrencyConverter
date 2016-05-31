@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.github.polurival.cc.CustomRatesFragment">
+
+
+    <Spinner
+        android:id="@+id/custom_currency_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/edit_custom_currency"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0.6"
+            android:background="@color/white"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:maxLength="14"
+            android:textColor="@color/lazure"
+            android:textSize="20sp" />
+
+        <ImageButton
+            android:id="@+id/custom_hint_btn"
+            android:layout_width="@dimen/btn_swap_width"
+            android:layout_height="@dimen/btn_swap_height"
+            android:background="@drawable/ic_action_help"
+            android:contentDescription="@string/view_custom_mode_help" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/custom_save_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_new_value" />
+
+    <TextView
+        android:id="@+id/tv_custom_mode_explanation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/custom_mode_help"
+        android:visibility="invisible" />
+
+
+</LinearLayout>
