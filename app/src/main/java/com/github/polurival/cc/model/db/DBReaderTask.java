@@ -36,7 +36,7 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
 
     @Override
     protected void onPreExecute() {
-        dbHelper = new DBHelper(AppContext.getContext());
+        dbHelper = DBHelper.getInstance(AppContext.getContext());
         currencyMap = new EnumMap<>(CharCode.class);
     }
 

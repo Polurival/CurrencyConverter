@@ -6,7 +6,6 @@
     android:orientation="vertical"
     tools:context=".CustomRateFragment">
 
-
     <Spinner
         android:id="@+id/custom_currency_spinner"
         android:layout_width="match_parent"

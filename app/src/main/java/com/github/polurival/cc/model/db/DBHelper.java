@@ -14,6 +14,8 @@ import com.github.polurival.cc.model.CharCode;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
+    private static DBHelper instance;
+
     private static final String DB_NAME = "converter";
     private static final int DB_VERSION = 1;
 
@@ -29,7 +31,15 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_CB_RF_SOURCE = "cb_rf";
     public static final String CUSTOM_SOURCE_MOCK = "custom_source";
 
-    public DBHelper(Context context) {
+    //http://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
+    public static synchronized DBHelper getInstance(Context context) {
+        if (instance == null) {
+            instance = new DBHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

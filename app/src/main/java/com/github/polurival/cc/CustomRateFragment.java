@@ -143,7 +143,6 @@ public class CustomRateFragment extends Fragment
         this.db = db;
     }
 
-
     @Override
     public void onStop() {
         cursor.close();

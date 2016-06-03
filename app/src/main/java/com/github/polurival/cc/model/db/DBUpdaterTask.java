@@ -40,7 +40,7 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, EnumMap<CharCode, Curre
 
     @Override
     protected void onPreExecute() {
-        dbHelper = new DBHelper(AppContext.getContext());
+        dbHelper = DBHelper.getInstance(AppContext.getContext());
         contentValues = new ContentValues();
         rateUpdater = rateUpdaterListener.getRateUpdater();
     }
