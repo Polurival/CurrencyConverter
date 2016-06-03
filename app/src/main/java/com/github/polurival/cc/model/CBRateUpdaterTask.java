@@ -65,6 +65,7 @@ public class CBRateUpdaterTask
         }
     }
 
+    @Override
     public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
         this.rateUpdaterListener = rateUpdaterListener;
     }

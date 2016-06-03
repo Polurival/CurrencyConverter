@@ -20,8 +20,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.polurival.cc.model.CBRateUpdaterTask;
+import com.github.polurival.cc.model.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.RateUpdater;
@@ -29,6 +31,7 @@ import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.RateUpdaterListener;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.Logger;
 
 import org.joda.time.LocalDateTime;
 
@@ -90,25 +93,33 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         tvResult = (TextView) findViewById(R.id.tv_result);
         initTvDateTime();
 
+        readDataFromDB();
+
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
             updateRatesFromSource();
-        } else {
-            readDataFromDB();
         }
-
     }
 
     private void updateRatesFromSource() {
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).execute();
+        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
+            //do nothing
         }
     }
 
+    @Override
     public void readDataFromDB() {
         DBReaderTask dbReaderTask = new DBReaderTask();
         dbReaderTask.setRateUpdaterListener(this);
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE, DBHelper.COLUMN_NAME_VALUE);
+            dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
+                    DBHelper.COLUMN_NAME_NOMINAL,
+                    DBHelper.COLUMN_NAME_VALUE);
+        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
+            dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
+                    DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
+                    DBHelper.COLUMN_NAME_CUSTOM_VALUE);
         }
     }
 
@@ -252,10 +263,10 @@ public class MainActivity extends Activity implements RateUpdaterListener {
 
     @Override
     public void initSpinners() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+        /*ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 R.layout.spinner_item,
                 fillCurrencyArrays());
-        //adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);*/
 
         fromSpinner = (Spinner) findViewById(R.id.from_spinner);
         //fromSpinner.setAdapter(adapter);
@@ -347,8 +358,11 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            editor.putString(getString(R.string.saved_cb_rf_up_date_time),
-                    DateUtil.getUpDateTimeStr(upDateTime));
+            editor.putLong(getString(R.string.saved_cb_rf_up_date_time),
+                    DateUtil.getUpDateTimeInSeconds(upDateTime));
+            //было так:
+            /*editor.putString(getString(R.string.saved_cb_rf_up_date_time),
+                    DateUtil.getUpDateTimeStr(upDateTime));*/
         }
 
         editor.apply();
@@ -363,13 +377,19 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                         getString(R.string.saved_edit_amount_text_default));
         editAmount.setText(editAmountText);
 
-        String formattedUpDateTime = null;
+        String savedUpDateTime = null;
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            formattedUpDateTime =
-                    preferences.getString(getString(R.string.saved_cb_rf_up_date_time),
-                            DateUtil.getDefaultDateTimeStr());
+            savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);
+        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
+            savedUpDateTime = getString(R.string.saved_custom_up_date_time);
         }
-        upDateTime = DateUtil.getUpDateTime(formattedUpDateTime);
+        long upDateTimeInSeconds =
+                preferences.getLong(savedUpDateTime, DateUtil.getDefaultDateTimeInSeconds());
+        upDateTime = DateUtil.getUpDateTime(upDateTimeInSeconds);
+        //было так:
+        /*String formattedUpDateTime =
+                preferences.getString(savedUpDateTime, DateUtil.getDefaultDateTimeStr());
+        upDateTime = DateUtil.getUpDateTime(formattedUpDateTime);*/
     }
 
     private void loadRateUpdaterProperties() {
@@ -379,6 +399,7 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         String rateUpdaterName =
                 preferences.getString(getString(R.string.saved_rate_updater_class),
                         getString(R.string.saved_rate_updater_class_default));
+        Logger.logD("rateUpdater className = " + rateUpdaterName);
         try {
             rateUpdater
                     = (RateUpdater) Class.forName(rateUpdaterName).getConstructor().newInstance();
@@ -418,16 +439,19 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                 return true;
 
             case R.id.update_rates_action:
-                loadRateUpdaterProperties();
+                if (rateUpdater instanceof CustomRateUpdaterMock) {
+                    Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_LONG).show();
+                } else {
+                    loadRateUpdaterProperties();
 
-                updateRatesFromSource();
-                readDataFromDB();
+                    updateRatesFromSource();
+                    readDataFromDB();
 
-                saveProperties();
-                saveDateProperties();
+                    saveProperties();
+                    saveDateProperties();
 
-                loadSpinnerProperties();
-
+                    loadSpinnerProperties();
+                }
                 return true;
 
             default:

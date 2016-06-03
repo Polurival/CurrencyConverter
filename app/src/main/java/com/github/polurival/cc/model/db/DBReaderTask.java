@@ -8,11 +8,11 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
+import com.github.polurival.cc.CustomRateFragment;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.RateUpdaterListener;
-import com.github.polurival.cc.model.db.DBHelper;
 
 import java.util.EnumMap;
 
@@ -25,6 +25,10 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
     private RateUpdaterListener rateUpdaterListener;
     private SQLiteOpenHelper dbHelper;
     private EnumMap<CharCode, Currency> currencyMap;
+    private DBReaderTaskListener dbReaderTaskListener;
+
+    private SQLiteDatabase db;
+    private Cursor cursor;
 
     public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
         this.rateUpdaterListener = rateUpdaterListener;
@@ -38,27 +42,29 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
 
     @Override
     protected EnumMap<CharCode, Currency> doInBackground(String... params) {
+        String where = DBHelper.CUSTOM_SOURCE_MOCK.equals(params[0]) ?
+                null : (params[0] + " = 1");
+        String nominal = params[1];
+        String value = params[2];
         try {
-            SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Cursor cursor = db.query(DBHelper.TABLE_NAME,
-                    new String[]{DBHelper.COLUMN_NAME_CHAR_CODE,
-                            DBHelper.COLUMN_NAME_NOMINAL,
-                            params[1],
+            db = dbHelper.getReadableDatabase();
+            cursor = db.query(DBHelper.TABLE_NAME,
+                    new String[]{DBHelper.COLUMN_NAME_ID,
+                            DBHelper.COLUMN_NAME_CHAR_CODE,
+                            nominal,
+                            value,
                             DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
                             DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
-                    params[0] + " = 1",
+                    where,
                     null, null, null, null);
 
             while (cursor.moveToNext()) {
-                currencyMap.put(CharCode.valueOf(cursor.getString(0)),
-                        new Currency(cursor.getInt(1),
-                                cursor.getDouble(2),
-                                cursor.getInt(3),
-                                cursor.getInt(4)));
+                currencyMap.put(CharCode.valueOf(cursor.getString(1)),
+                        new Currency(cursor.getInt(2),
+                                cursor.getDouble(3),
+                                cursor.getInt(4),
+                                cursor.getInt(5)));
             }
-
-            cursor.close();
-            db.close();
         } catch (SQLiteException e) {
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.database_error),
@@ -71,9 +77,24 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
     protected void onPostExecute(EnumMap<CharCode, Currency> result) {
         super.onPostExecute(result);
 
-        rateUpdaterListener.setCurrencyMap(result);
-        rateUpdaterListener.initSpinners();
-        rateUpdaterListener.loadSpinnerProperties();
-        rateUpdaterListener.tvDateTimeSetText();
+        if (rateUpdaterListener != null) {
+            rateUpdaterListener.setCurrencyMap(result);
+            rateUpdaterListener.initSpinners();
+            rateUpdaterListener.loadSpinnerProperties();
+            rateUpdaterListener.tvDateTimeSetText();
+
+            cursor.close();
+            db.close();
+        }
+
+        //TODO remove currencyMap, work with Cursor and CursorAdapter
+        if (dbReaderTaskListener != null) {
+            dbReaderTaskListener.setCursorAndDB(cursor, db);
+            dbReaderTaskListener.initCustomSpinner();
+        }
+    }
+
+    public void setDBReaderTaskListener(DBReaderTaskListener dbReaderTaskListener) {
+        this.dbReaderTaskListener = dbReaderTaskListener;
     }
 }
