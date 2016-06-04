@@ -13,4 +13,6 @@ public interface DBReaderTaskListener {
 
     void initCustomSpinner();
 
+    void readEditCurrencyDataFromDB();
+
 }

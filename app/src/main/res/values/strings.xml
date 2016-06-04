@@ -26,6 +26,8 @@
     <string name="update_error">Update Error. Check Internet Connection</string>
     <string name="database_error">Database unavailable</string>
     <string name="database_update_success">Database has been successfully updated</string>
+    <string name="database_custom_update_success">
+        Selected currency rate successfully updated.\nNominal = </string>
     <string name="custom_updating_info">Update rates in \'Data source\' menu</string>
 
     <string name="cbr">CB RF rate on:</string>

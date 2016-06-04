@@ -91,6 +91,7 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
         if (dbReaderTaskListener != null) {
             dbReaderTaskListener.setCursorAndDB(cursor, db);
             dbReaderTaskListener.initCustomSpinner();
+            //dbReaderTaskListener.readEditCurrencyDataFromDB();
         }
     }
 

@@ -7,6 +7,7 @@
     <application
         android:name=".AppContext"
         android:allowBackup="true"
+        android:logo="@android:color/transparent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
