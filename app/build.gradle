@@ -18,10 +18,22 @@ android {
     }
 
     dependencies {
+
+        repositories {
+            mavenCentral()
+        }
+
+        //https://github.com/chrisjenx/Calligraphy#inject-into-context
         compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+
+        //https://github.com/dlew/joda-time-android
         compile 'net.danlew:android.joda:2.9.3.1'
+
+        //https://github.com/chrisbanes/ActionBar-PullToRefresh/wiki/QuickStart-Stock
+        compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
     }
 }
+
 dependencies {
-    compile 'com.android.support:support-v4:23.+'
+    compile 'com.android.support:support-v4:23.4.0'
 }

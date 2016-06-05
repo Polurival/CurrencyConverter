@@ -50,9 +50,6 @@ public class CBRateUpdaterTask
     protected void onPostExecute(EnumMap<CharCode, Currency> result) {
         super.onPostExecute(result);
 
-        //rateUpdaterListener.setCurrencyMap(result);
-        //rateUpdaterListener.initSpinners();
-        //rateUpdaterListener.loadSpinnerProperties();
         if (currencyMap.size() == 0) {
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.update_error),
@@ -99,9 +96,6 @@ public class CBRateUpdaterTask
                 }
             }
         }
-        /*if (!currencyMap.containsKey(CharCode.RUB)) {
-            currencyMap.put(CharCode.RUB, new Currency(1, 1.0));
-        }*/
     }
 
     @Override

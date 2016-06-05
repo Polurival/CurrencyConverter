@@ -20,14 +20,12 @@ public class AppContext extends Application {
         super.onCreate();
         appContext = this;
 
-        //https://github.com/chrisjenx/Calligraphy#inject-into-context
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("font/Roboto-Regular.ttf")
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );
 
-        //https://github.com/dlew/joda-time-android
         JodaTimeAndroid.init(this);
     }
 

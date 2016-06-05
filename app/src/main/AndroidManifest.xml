@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.github.polurival.cc">
+    package="com.github.polurival.cc"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".AppContext"
         android:allowBackup="true"
-        android:logo="@android:color/transparent"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:logo="@android:color/transparent"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"

@@ -25,4 +25,6 @@ public interface RateUpdaterListener {
     RateUpdater getRateUpdater();
 
     void readDataFromDB();
+
+    void stopRefresh();
 }

@@ -23,43 +23,36 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.polurival.cc.model.CBRateUpdaterTask;
-import com.github.polurival.cc.model.CustomRateUpdaterMock;
-import com.github.polurival.cc.model.RateUpdater;
+import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.db.DBHelper;
-import com.github.polurival.cc.model.db.DBReaderTask;
-import com.github.polurival.cc.model.db.DBReaderTaskListener;
 import com.github.polurival.cc.util.DateUtil;
-
-import java.text.DecimalFormat;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class CustomRateFragment extends Fragment
-        implements View.OnClickListener, DBReaderTaskListener {
+        implements View.OnClickListener {
 
-    private RateUpdater rateUpdater = new CustomRateUpdaterMock();
+    private Context appContext;
 
     private SQLiteDatabase db;
-    private Cursor SpinnerCursor;
+    private Cursor spinnerCursor;
     private SpinnerCursorAdapter cursorAdapter;
 
     private EditText editCustomCurrency;
     private Spinner customCurrencySpinner;
     private ImageButton btnHint;
     private Button btnSave;
-    TextView tvCustomModeHelp;
-    private View fragmentView;
+    private TextView tvCharCode;
+    private TextView tvCustomModeHelp;
 
     public CustomRateFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        fragmentView = inflater.inflate(R.layout.fragment_custom_rates, container, false);
+        View fragmentView = inflater.inflate(R.layout.fragment_custom_rates, container, false);
 
         btnHint = (ImageButton) fragmentView.findViewById(R.id.btn_custom_hint);
         btnHint.setOnClickListener(this);
@@ -69,6 +62,7 @@ public class CustomRateFragment extends Fragment
         editCustomCurrency = (EditText) fragmentView.findViewById(R.id.edit_custom_currency);
         customCurrencySpinner = (Spinner) fragmentView.findViewById(R.id.custom_currency_spinner);
 
+        tvCharCode = (TextView) fragmentView.findViewById(R.id.tv_char_code);
         tvCustomModeHelp = (TextView) fragmentView.findViewById(R.id.tv_custom_mode_help);
 
         return fragmentView;
@@ -76,8 +70,11 @@ public class CustomRateFragment extends Fragment
 
     @Override
     public void onStart() {
-        readSpinnerDataFromDB();
         super.onStart();
+
+        appContext = AppContext.getContext();
+        db = DBHelper.getInstance(AppContext.getContext()).getWritableDatabase();
+        readSpinnerDataFromDB();
     }
 
     @Override
@@ -89,71 +86,64 @@ public class CustomRateFragment extends Fragment
                 break;
 
             case R.id.btn_custom_save:
-
-                //final String currencyName = (String) customCurrencySpinner.getSelectedItem();
-                Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
-                final int currencyNameId = currencyNameCursor.getInt(4);
-                String customValue = editCustomCurrency.getText().toString();
-
-                Object[] customNominalAndValue = getCustomNominalAndValue(customValue);
-                final int preparedCustomNominal = (int) customNominalAndValue[0];
-                String preparedCustomValue = (String) customNominalAndValue[1];
-
-                final ContentValues contentValues = new ContentValues();
-                contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_NOMINAL, preparedCustomNominal);
-                contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_VALUE, preparedCustomValue);
-
-                Handler handler = new Handler();
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            db = DBHelper.getInstance(AppContext.getContext()).getWritableDatabase();
-                            db.update(DBHelper.TABLE_NAME,
-                                    contentValues,
-                                    DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
-                                    new String[]{String.valueOf(currencyNameId)});
-                        } catch (SQLiteException e) {
-                            Toast.makeText(AppContext.getContext(),
-                                    AppContext.getContext().getString(R.string.database_error),
-                                    Toast.LENGTH_LONG).show();
-                        }
-                        Toast.makeText(AppContext.getContext(),
-                                AppContext.getContext().getString(
-                                        R.string.database_custom_update_success)
-                                        + preparedCustomNominal,
-                                Toast.LENGTH_LONG).show();
-                        saveDateProperties();
-                    }
-                });
+                saveCurrencyCustomValueAndCustomNominal();
                 break;
         }
     }
 
-    private String prepareCustomValue(double customValue) {
+    private void saveCurrencyCustomValueAndCustomNominal() {
+        Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
+        final int currencyNameId = currencyNameCursor.getInt(4);
 
-        double roundedValue = Math.round(customValue * 10000.0) / 10000.0;
-
-        String customValueStr = String.format("%.8f", roundedValue).replace(",", ".");
-        // Double.toString(roundedValue);
-
-        if (!customValueStr.contains(".")) {
-            customValueStr += ".0";
-        } else if (customValueStr.substring(customValueStr.indexOf('.')).length() > 5) {
-            String[] customValueArr = customValueStr.split("\\.");
-            customValueStr = customValueArr[0] + "." + customValueArr[1].substring(0, 4);
-        } else if (customValue == 0) {
-            customValueStr = "1.0";
+        String customValue = editCustomCurrency.getText().toString();
+        customValue = customValue.replace(",", ".");
+        if ("".equals(customValue) || (Double.valueOf(customValue) == 0)) {
+            Toast.makeText(AppContext.getContext(),
+                    appContext.getString(
+                            R.string.db_custom_update_invalid_value),
+                    Toast.LENGTH_LONG).show();
+            return;
         }
-        return customValueStr;
+
+        Object[] customNominalAndValue = getCustomNominalAndValue(customValue);
+        final int preparedCustomNominal = (int) customNominalAndValue[0];
+        String preparedCustomValue = (String) customNominalAndValue[1];
+
+        final ContentValues contentValues = new ContentValues();
+        contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_NOMINAL, preparedCustomNominal);
+        contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_VALUE, preparedCustomValue);
+
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    db.update(DBHelper.TABLE_NAME,
+                            contentValues,
+                            DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
+                            new String[]{String.valueOf(currencyNameId)});
+
+                    Toast.makeText(AppContext.getContext(),
+                            appContext.getString(
+                                    R.string.db_custom_update_success)
+                                    + preparedCustomNominal,
+                            Toast.LENGTH_LONG).show();
+
+                    saveCustomDateProperties();
+                    saveCustomSpinnerSelectedPos();
+                    readSpinnerDataFromDB();
+
+                } catch (SQLiteException e) {
+                    Toast.makeText(AppContext.getContext(),
+                            appContext.getString(R.string.db_error),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private Object[] getCustomNominalAndValue(String customValue) {
         int nominal = 1;
-        //double value = (double) Float.parseFloat(customValue);
-        //if (customValue.contains(",")) {
-        customValue = customValue.replace(",", ".");
-        //}
         double value = Double.valueOf(customValue);
         if (value < 1) {
             int i = 0;
@@ -167,6 +157,21 @@ public class CustomRateFragment extends Fragment
         String customValueStr = prepareCustomValue(value);
 
         return new Object[]{nominal, customValueStr};
+    }
+
+    private String prepareCustomValue(double customValue) {
+
+        double roundedValue = Math.round(customValue * 10000.0) / 10000.0;
+
+        String customValueStr = String.format("%.8f", roundedValue).replace(",", ".");
+
+        if (!customValueStr.contains(".")) {
+            customValueStr += ".0";
+        } else if (customValueStr.substring(customValueStr.indexOf('.')).length() > 5) {
+            String[] customValueArr = customValueStr.split("\\.");
+            customValueStr = customValueArr[0] + "." + customValueArr[1].substring(0, 4);
+        }
+        return customValueStr;
     }
 
     private void showHideHint() {
@@ -202,66 +207,56 @@ public class CustomRateFragment extends Fragment
         }
     }
 
-    public void readSpinnerDataFromDB() {
-        DBReaderTask dbReaderTask = new DBReaderTask();
-        dbReaderTask.setRateUpdaterListener(null);
-        dbReaderTask.setDBReaderTaskListener(this);
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
-                    DBHelper.COLUMN_NAME_NOMINAL,
-                    DBHelper.COLUMN_NAME_VALUE);
-        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
-            dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
-                    DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
-                    DBHelper.COLUMN_NAME_CUSTOM_VALUE);
-        }
-    }
-
-    public void readEditCurrencyDataFromDB() {
+    private void readSpinnerDataFromDB() {
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
             public void run() {
-                Cursor certainCurrencyCursor = null;
                 try {
-                    Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
-                    int currencyNameId = currencyNameCursor.getInt(4);
-
-                    db = DBHelper.getInstance(AppContext.getContext()).getReadableDatabase();
-                    certainCurrencyCursor = db.query(DBHelper.TABLE_NAME,
-                            new String[]{DBHelper.COLUMN_NAME_CUSTOM_VALUE},
-                            DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
-                            new String[]{String.valueOf(currencyNameId)},
-                            null, null, null, null);
+                    spinnerCursor = db.query(DBHelper.TABLE_NAME,
+                            new String[]{DBHelper.COLUMN_NAME_ID,
+                                    DBHelper.COLUMN_NAME_CHAR_CODE,
+                                    DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
+                                    DBHelper.COLUMN_NAME_CUSTOM_VALUE,
+                                    DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
+                                    DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
+                            DBHelper.COLUMN_NAME_CHAR_CODE + " != ?",
+                            new String[]{CharCode.RUB.toString()}, null, null, null);
                 } catch (SQLiteException e) {
                     Toast.makeText(AppContext.getContext(),
-                            AppContext.getContext().getString(R.string.database_error),
+                            AppContext.getContext().getString(R.string.db_error),
                             Toast.LENGTH_LONG).show();
                 }
-                assert certainCurrencyCursor != null;
-                while (certainCurrencyCursor.moveToNext()) {
-                    double currencyValue = certainCurrencyCursor.getDouble(0);
-                    if (currencyValue < 0.001) {
-                        editCustomCurrency.setText(String.format("%.6f", currencyValue));
-                    } else {
-                        //editCustomCurrency.setText(String.valueOf(certainCurrencyCursor.getDouble(0)));
-                        editCustomCurrency.setText(String.format("%.4f", currencyValue));
-                    }
-                }
-                certainCurrencyCursor.close();
+                initCustomSpinner();
+                initCurrencyDataFromCustomSpinnerCursor();
             }
         });
     }
 
-    @Override
-    public void initCustomSpinner() {
+    private void initCurrencyDataFromCustomSpinnerCursor() {
+        Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
+
+        double currencyValue = currencyNameCursor.getDouble(3);
+        setEditCustomCurrencyText(currencyValue);
+
+        String charCode = currencyNameCursor.getString(1);
+        tvCharCode.setText(String.format("1 %s =", charCode));
+    }
+
+    private void setEditCustomCurrencyText(double currencyValue) {
+        editCustomCurrency.setText(String.format("%.4f", currencyValue));
+    }
+
+    private void initCustomSpinner() {
         cursorAdapter =
-                new SpinnerCursorAdapter(AppContext.getContext(), SpinnerCursor, 0);
+                new SpinnerCursorAdapter(AppContext.getContext(), spinnerCursor, 0);
         customCurrencySpinner.setAdapter(cursorAdapter);
+        loadCustomSpinnerSelectedPos();
+
         customCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                readEditCurrencyDataFromDB();
+                initCurrencyDataFromCustomSpinnerCursor();
             }
 
             @Override
@@ -272,19 +267,13 @@ public class CustomRateFragment extends Fragment
     }
 
     @Override
-    public void setCursorAndDB(Cursor cursor, SQLiteDatabase db) {
-        this.SpinnerCursor = cursor;
-        this.db = db;
-    }
-
-    @Override
     public void onStop() {
-        SpinnerCursor.close();
+        spinnerCursor.close();
         db.close();
         super.onStop();
     }
 
-    public void saveDateProperties() {
+    private void saveCustomDateProperties() {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(AppContext.getContext());
         SharedPreferences.Editor editor = preferences.edit();
@@ -293,5 +282,25 @@ public class CustomRateFragment extends Fragment
                 DateUtil.getUpDateTimeInSeconds(DateUtil.getCurrentDateTime()));
 
         editor.apply();
+    }
+
+    private void saveCustomSpinnerSelectedPos() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(appContext);
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putInt(getString(R.string.saved_custom_spinner_pos),
+                customCurrencySpinner.getSelectedItemPosition());
+
+        editor.apply();
+    }
+
+    private void loadCustomSpinnerSelectedPos() {
+        SharedPreferences preferences =
+                PreferenceManager.getDefaultSharedPreferences(appContext);
+
+        int customSpinnerSelectedPos =
+                preferences.getInt(getString(R.string.saved_custom_spinner_pos), 0);
+        customCurrencySpinner.setSelection(customSpinnerSelectedPos);
     }
 }

@@ -4,6 +4,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="edit_text_horizontal_margin">4dp</dimen>
+    <dimen name="edit_text_custom_currency_horizontal_margin">7dp</dimen>
     <dimen name="view_vertical_margin">5dp</dimen>
     <dimen name="view_horizontal_margin">5dp</dimen>
     <dimen name="text_view_result_min_height">120dp</dimen>

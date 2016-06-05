@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
-import com.github.polurival.cc.CustomRateFragment;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
@@ -25,7 +24,6 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
     private RateUpdaterListener rateUpdaterListener;
     private SQLiteOpenHelper dbHelper;
     private EnumMap<CharCode, Currency> currencyMap;
-    private DBReaderTaskListener dbReaderTaskListener;
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -42,10 +40,10 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
 
     @Override
     protected EnumMap<CharCode, Currency> doInBackground(String... params) {
-        String where = DBHelper.CUSTOM_SOURCE_MOCK.equals(params[0]) ?
-                null : (params[0] + " = 1");
         String nominal = params[1];
         String value = params[2];
+        String where = DBHelper.CUSTOM_SOURCE_MOCK.equals(params[0]) ?
+                null :(params[0] + " = 1");
         try {
             db = dbHelper.getReadableDatabase();
             cursor = db.query(DBHelper.TABLE_NAME,
@@ -67,7 +65,7 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
             }
         } catch (SQLiteException e) {
             Toast.makeText(AppContext.getContext(),
-                    AppContext.getContext().getString(R.string.database_error),
+                    AppContext.getContext().getString(R.string.db_error),
                     Toast.LENGTH_LONG).show();
         }
         return currencyMap;
@@ -86,16 +84,6 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
             cursor.close();
             db.close();
         }
-
         //TODO remove currencyMap, work with Cursor and CursorAdapter
-        if (dbReaderTaskListener != null) {
-            dbReaderTaskListener.setCursorAndDB(cursor, db);
-            dbReaderTaskListener.initCustomSpinner();
-            //dbReaderTaskListener.readEditCurrencyDataFromDB();
-        }
-    }
-
-    public void setDBReaderTaskListener(DBReaderTaskListener dbReaderTaskListener) {
-        this.dbReaderTaskListener = dbReaderTaskListener;
     }
 }

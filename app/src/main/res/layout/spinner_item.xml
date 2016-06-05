@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/view_horizontal_margin"
         android:textSize="20sp"
-        android:alpha="1"
         android:textColor="#ff000000" />
 
 </LinearLayout>

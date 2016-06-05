@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -38,12 +39,15 @@ import org.joda.time.LocalDateTime;
 import java.util.EnumMap;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
+import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
+import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 /**
  * Created by Polurival
  * on 24.03.2016.
  */
-public class MainActivity extends Activity implements RateUpdaterListener {
+public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener {
 
     private RateUpdater rateUpdater;
     private LocalDateTime upDateTime;
@@ -51,11 +55,15 @@ public class MainActivity extends Activity implements RateUpdaterListener {
     private EnumMap<CharCode, Currency> currencyMap;
     private Integer[] countryFlagIds;
 
-    private EditText editAmount;
+    private PullToRefreshLayout mPullToRefreshLayout;
+
+    private EditText editFromAmount;
+    private EditText editToAmount;
+    private boolean isEditFromChanged;
+    private boolean isEditToChanged;
 
     private Spinner fromSpinner;
     private Spinner toSpinner;
-
 
     private TextView tvResult;
     private TextView tvDateTime;
@@ -85,6 +93,13 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+        ActionBarPullToRefresh.from(this)
+                .allChildrenArePullable()
+                .listener(this)
+                .setup(mPullToRefreshLayout);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initEditAmount();
 
         loadRateUpdaterProperties();
@@ -124,27 +139,69 @@ public class MainActivity extends Activity implements RateUpdaterListener {
     }
 
     @Override
+    public void stopRefresh() {
+        mPullToRefreshLayout.setRefreshComplete();
+    }
+
+    @Override
     public void tvDateTimeSetText() {
         tvDateTime.setText(String.format("%s \n %s",
                 rateUpdater.getDescription(), DateUtil.getUpDateTimeStr(upDateTime)));
     }
 
     private void initEditAmount() {
-        editAmount = (EditText) findViewById(R.id.edit_amount);
-        editAmount.addTextChangedListener(new TextWatcher() {
+        isEditFromChanged = false;
+        isEditToChanged = false;
+
+        editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
+        editFromAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                isEditFromChanged = true;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    convert(editAmount);
+                if (isEditFromChanged && !isEditToChanged) {
+                    if (s.length() != 0) {
+                        convert(editFromAmount);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+                isEditFromChanged = false;
+
+                if ("".equals(s.toString())) {
+                    editToAmount.getText().clear();
+                }
+            }
+        });
+
+        editToAmount = (EditText) findViewById(R.id.edit_to_amount);
+        editToAmount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                isEditToChanged = true;
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isEditToChanged && !isEditFromChanged) {
+                    if (s.length() != 0) {
+                        convert(editToAmount);
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isEditToChanged = false;
+
+                if ("".equals(s.toString())) {
+                    editFromAmount.getText().clear();
+                }
             }
         });
     }
@@ -154,19 +211,21 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         tvDateTime.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                isEditFromChanged = true;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    convert(editAmount);
+                if (isEditFromChanged && !isEditToChanged) {
+                    if (s.length() != 0) {
+                        convert(editFromAmount);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                isEditFromChanged = false;
             }
         });
     }
@@ -180,13 +239,23 @@ public class MainActivity extends Activity implements RateUpdaterListener {
     }
 
     public void convert(View v) {
-        if (currencyMap == null
-                || fromSpinner.getSelectedItem() == null
-                || toSpinner.getSelectedItem() == null) {
+        if (null == currencyMap
+                || null == fromSpinner.getSelectedItem()
+                || null == toSpinner.getSelectedItem()) {
             return;
         }
-        String fromCharCode = (String) fromSpinner.getSelectedItem();
-        String toCharCode = (String) toSpinner.getSelectedItem();
+
+        String fromCharCode = null;
+        String toCharCode = null;
+        if (v.getId() == R.id.edit_from_amount) {
+
+            fromCharCode = (String) fromSpinner.getSelectedItem();
+            toCharCode = (String) toSpinner.getSelectedItem();
+        } else if (v.getId() == R.id.edit_to_amount) {
+            fromCharCode = (String) toSpinner.getSelectedItem();
+            toCharCode = (String) fromSpinner.getSelectedItem();
+        }
+
         Currency currencyFrom = null;
         Currency currencyTo = null;
         CharCode codeFrom = null;
@@ -213,7 +282,7 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         int currencyToNominal = currencyTo.getNominal();
         double currencyToToRubRate = currencyTo.getValue();
 
-        double enteredAmountOfMoney = getEnteredAmountOfMoney();
+        double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
         double result = enteredAmountOfMoney *
                 (currencyFromToRubRate / currencyToToRubRate) *
                 (currencyToNominal / currencyFromNominal);
@@ -224,13 +293,34 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                 result,
                 codeTo.getName());
         setTvResultText(text);
+
+        if (v.getId() == R.id.edit_from_amount) {
+            if ("".equals(editFromAmount.getText().toString())) {
+                editToAmount.setText("");
+            } else {
+                editToAmount.setText(String.format("%.2f", result));
+            }
+        } else if (v.getId() == R.id.edit_to_amount) {
+            if ("".equals(editToAmount.getText().toString())) {
+                editFromAmount.setText("");
+            } else {
+                editFromAmount.setText(String.format("%.2f", result));
+            }
+        }
     }
 
-    private double getEnteredAmountOfMoney() {
-        if (TextUtils.isEmpty(editAmount.getText().toString())) {
-            return 1d;
+    private double getEnteredAmountOfMoney(View v) {
+        if (v.getId() == R.id.edit_from_amount) {
+            if (TextUtils.isEmpty(editFromAmount.getText().toString())) {
+                return 0d;
+            }
+            return (double) Float.parseFloat(editFromAmount.getText().toString().replace(",", "."));
+        } else {
+            if (TextUtils.isEmpty(editToAmount.getText().toString())) {
+                return 0d;
+            }
+            return (double) Float.parseFloat(editToAmount.getText().toString().replace(",", "."));
         }
-        return (double) Float.parseFloat(editAmount.getText().toString());
     }
 
     private String[] fillCurrencyArrays() {
@@ -263,18 +353,14 @@ public class MainActivity extends Activity implements RateUpdaterListener {
 
     @Override
     public void initSpinners() {
-        /*ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                R.layout.spinner_item,
-                fillCurrencyArrays());
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);*/
-
         fromSpinner = (Spinner) findViewById(R.id.from_spinner);
-        //fromSpinner.setAdapter(adapter);
         fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                convert(fromSpinner);
+                if (!isEditToChanged) {
+                    convert(editFromAmount);
+                }
             }
 
             @Override
@@ -284,17 +370,23 @@ public class MainActivity extends Activity implements RateUpdaterListener {
 
         toSpinner = (Spinner) findViewById(R.id.to_spinner);
         toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
-        //toSpinner.setAdapter(adapter);
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                convert(toSpinner);
+                if (!isEditToChanged) {
+                    convert(editFromAmount);
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        updateRates();
     }
 
     //http://www.coderzheaven.com/2011/07/18/customizing-a-spinner-in-android/
@@ -343,8 +435,10 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                 fromSpinner.getSelectedItemPosition());
         editor.putInt(getString(R.string.saved_to_spinner_pos),
                 toSpinner.getSelectedItemPosition());
-        editor.putString(getString(R.string.saved_edit_amount_text),
-                editAmount.getText().toString());
+        editor.putString(getString(R.string.saved_from_edit_amount_text),
+                editFromAmount.getText().toString());
+        editor.putString(getString(R.string.saved_to_edit_amount_text),
+                editToAmount.getText().toString());
         editor.putString(getString(R.string.saved_rate_updater_class),
                 rateUpdater.getClass().getName());
 
@@ -360,9 +454,6 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         if (rateUpdater instanceof CBRateUpdaterTask) {
             editor.putLong(getString(R.string.saved_cb_rf_up_date_time),
                     DateUtil.getUpDateTimeInSeconds(upDateTime));
-            //было так:
-            /*editor.putString(getString(R.string.saved_cb_rf_up_date_time),
-                    DateUtil.getUpDateTimeStr(upDateTime));*/
         }
 
         editor.apply();
@@ -372,10 +463,14 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        String editAmountText =
-                preferences.getString(getString(R.string.saved_edit_amount_text),
+        String editFromAmountText =
+                preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
-        editAmount.setText(editAmountText);
+        editFromAmount.setText(editFromAmountText);
+        String editToAmountText =
+                preferences.getString(getString(R.string.saved_to_edit_amount_text),
+                        getString(R.string.saved_edit_amount_text_default));
+        editToAmount.setText(editToAmountText);
 
         String savedUpDateTime = null;
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -386,10 +481,6 @@ public class MainActivity extends Activity implements RateUpdaterListener {
         long upDateTimeInSeconds =
                 preferences.getLong(savedUpDateTime, DateUtil.getDefaultDateTimeInSeconds());
         upDateTime = DateUtil.getUpDateTime(upDateTimeInSeconds);
-        //было так:
-        /*String formattedUpDateTime =
-                preferences.getString(savedUpDateTime, DateUtil.getDefaultDateTimeStr());
-        upDateTime = DateUtil.getUpDateTime(formattedUpDateTime);*/
     }
 
     private void loadRateUpdaterProperties() {
@@ -439,23 +530,26 @@ public class MainActivity extends Activity implements RateUpdaterListener {
                 return true;
 
             case R.id.update_rates_action:
-                if (rateUpdater instanceof CustomRateUpdaterMock) {
-                    Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_LONG).show();
-                } else {
-                    loadRateUpdaterProperties();
-
-                    updateRatesFromSource();
-                    readDataFromDB();
-
-                    saveProperties();
-                    saveDateProperties();
-
-                    loadSpinnerProperties();
-                }
+                updateRates();
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateRates() {
+        if (rateUpdater instanceof CustomRateUpdaterMock) {
+            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_LONG).show();
+            stopRefresh();
+        } else {
+            loadRateUpdaterProperties();
+
+            updateRatesFromSource();
+
+            saveProperties();
+
+            loadSpinnerProperties();
         }
     }
 }

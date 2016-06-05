@@ -62,7 +62,7 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, EnumMap<CharCode, Curre
             db.close();
         } catch (SQLiteException e) {
             Toast.makeText(AppContext.getContext(),
-                    AppContext.getContext().getString(R.string.database_error),
+                    AppContext.getContext().getString(R.string.db_error),
                     Toast.LENGTH_LONG).show();
         }
         return currencyMap;
@@ -73,10 +73,11 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, EnumMap<CharCode, Curre
         super.onPostExecute(result);
         if (currencyMap.size() != 0) {
             Toast.makeText(AppContext.getContext(),
-                    AppContext.getContext().getString(R.string.database_update_success),
+                    AppContext.getContext().getString(R.string.db_update_success),
                     Toast.LENGTH_LONG).show();
         }
 
+        rateUpdaterListener.stopRefresh();
         rateUpdaterListener.setUpDateTime(DateUtil.getCurrentDateTime());
         rateUpdaterListener.saveDateProperties();
         rateUpdaterListener.readDataFromDB();

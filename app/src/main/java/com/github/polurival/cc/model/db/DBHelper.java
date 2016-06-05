@@ -120,8 +120,4 @@ public class DBHelper extends SQLiteOpenHelper {
 
         db.insert(TABLE_NAME, null, currencyValues);
     }
-
-    /*public static void saveCurrencyRate(CharCode code, String value) {
-
-    }*/
 }

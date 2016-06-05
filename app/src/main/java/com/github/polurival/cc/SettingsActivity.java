@@ -34,7 +34,7 @@ public class SettingsActivity extends Activity {
     private void initSourceSpinner() {
         Spinner sourceSpinner = (Spinner) findViewById(R.id.source_spinner);
         ArrayAdapter<String> sourceAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item,
+                R.layout.mode_spinner_item,
                 getResources().getStringArray(R.array.data_source_array));
         sourceSpinner.setAdapter(sourceAdapter);
 
@@ -54,7 +54,6 @@ public class SettingsActivity extends Activity {
                         Logger.logD("fragment was shown");
                     }
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
-
 
                 } else {
                     if (customRateFragment.isVisible()) {

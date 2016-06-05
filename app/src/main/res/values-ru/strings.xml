@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Конвертер валют</string>
-    <string name="enter_amount">введите сумму...</string>
+    <string name="enter_from_amount">введите сумму...</string>
     <string name="transfer_from">Конвертировать из:</string>
     <string name="transfer_to">Конвертировать в:</string>
     <string name="last_update">Последнее обновление:</string>
@@ -23,8 +23,11 @@
     </string-array>
 
     <string name="update_error">Ошибка обновления. Проверьте соединение с Интернет</string>
-    <string name="database_error">Базы данных недоступна</string>
-    <string name="database_update_success">База данных успешно обновлена</string>
+    <string name="db_error">Базы данных недоступна</string>
+    <string name="db_update_success">База данных успешно обновлена</string>
+    <string name="db_custom_update_success">
+        Курс выбранной валюты успешно обновлен.\nНоминал = </string>
+    <string name="db_custom_update_invalid_value">Недопустимое значение</string>
     <string name="custom_updating_info">Обновите курсы в меню \'Источник данных\'</string>
 
     <string name="cbr">курс ЦБ РФ на:</string>
