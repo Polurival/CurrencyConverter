@@ -10,16 +10,15 @@
 
     <string name="data_source">Источник данных</string>
     <string name="custom_mode_help">Как этим пользоваться?</string>
-    <string name="view_custom_mode_help">
-        Чтобы конвертировать валюты между собой,\n
+    <string name="view_custom_mode_help">\tЧтобы конвертировать валюты между собой,\n
         необходимо задать их курсы по отношению к ₽\n
-        Пример: Если хочешь конвертировать $ и €,\n
+        \tПример: Если хочешь конвертировать $ и €,\n
         задай по очереди чему равен в ₽ - 1$ и 1€\n</string>
     <string name="save_new_value">Сохранить</string>
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>
-        <item>Ручной режим</item>
+        <item>Настраиваемый источник</item>
     </string-array>
 
     <string name="update_error">Ошибка обновления. Проверьте соединение с Интернет</string>
@@ -30,8 +29,8 @@
     <string name="db_custom_update_invalid_value">Недопустимое значение</string>
     <string name="custom_updating_info">Обновите курсы в меню \'Источник данных\'</string>
 
-    <string name="cbr">курс ЦБ РФ на:</string>
-    <string name="custom">настраиваемый курс, дата последнего изменения:</string>
+    <string name="cbr">Курс ЦБ РФ на:\n</string>
+    <string name="custom">Настраиваемый источник\nдата последнего изменения:\n</string>
 
     <!-- currencies -->
     <string name="AED">ОАЭ дирхам</string>

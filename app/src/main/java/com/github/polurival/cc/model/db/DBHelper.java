@@ -66,8 +66,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_FLAG_RESOURCE_ID + " INTEGER, " +
                     COLUMN_NAME_CB_RF_SOURCE + " INTEGER);");
 
-            insertCurrency(db, CharCode.AUD, 1, 1, 47.6818, 47.6818, R.string.aud, R.drawable.aud, 1);
             insertCurrency(db, CharCode.AMD, 100, 100, 13.8162, 13.8162, R.string.amd, R.drawable.amd, 1);
+            insertCurrency(db, CharCode.AUD, 1, 1, 47.6818, 47.6818, R.string.aud, R.drawable.aud, 1);
             insertCurrency(db, CharCode.AZN, 1, 1, 44.3498, 44.3498, R.string.azn, R.drawable.azn, 1);
             insertCurrency(db, CharCode.BGN, 1, 1, 37.7487, 37.7487, R.string.bgn, R.drawable.bgn, 1);
             insertCurrency(db, CharCode.BRL, 1, 1, 18.4344, 18.4344, R.string.brl, R.drawable.brl, 1);

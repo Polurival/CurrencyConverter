@@ -37,7 +37,6 @@ public class CustomRateFragment extends Fragment
 
     private SQLiteDatabase db;
     private Cursor spinnerCursor;
-    private SpinnerCursorAdapter cursorAdapter;
 
     private EditText editCustomCurrency;
     private Spinner customCurrencySpinner;
@@ -73,7 +72,7 @@ public class CustomRateFragment extends Fragment
         super.onStart();
 
         appContext = AppContext.getContext();
-        db = DBHelper.getInstance(AppContext.getContext()).getWritableDatabase();
+        db = DBHelper.getInstance(appContext).getWritableDatabase();
         readSpinnerDataFromDB();
     }
 
@@ -196,14 +195,18 @@ public class CustomRateFragment extends Fragment
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            TextView currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
+
             ImageView flagIcon = (ImageView) view.findViewById(R.id.spinner_flag_icon);
-
-            int currencyNameId = cursor.getInt(4);
             int flagIconId = cursor.getInt(5);
-
-            currencyName.setText(getString(currencyNameId));
             flagIcon.setImageResource(flagIconId);
+
+            TextView currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
+            int currencyNameId = cursor.getInt(4);
+            currencyName.setText(getString(currencyNameId));
+
+            TextView currencyCharCode =
+                    (TextView) view.findViewById(R.id.spinner_currency_char_code);
+            currencyCharCode.setText(cursor.getString(1));
         }
     }
 
@@ -241,6 +244,8 @@ public class CustomRateFragment extends Fragment
 
         String charCode = currencyNameCursor.getString(1);
         tvCharCode.setText(String.format("1 %s =", charCode));
+
+        //currencyNameCursor.close();
     }
 
     private void setEditCustomCurrencyText(double currencyValue) {
@@ -248,8 +253,8 @@ public class CustomRateFragment extends Fragment
     }
 
     private void initCustomSpinner() {
-        cursorAdapter =
-                new SpinnerCursorAdapter(AppContext.getContext(), spinnerCursor, 0);
+        SpinnerCursorAdapter cursorAdapter =
+                new SpinnerCursorAdapter(appContext, spinnerCursor, 0);
         customCurrencySpinner.setAdapter(cursorAdapter);
         loadCustomSpinnerSelectedPos();
 

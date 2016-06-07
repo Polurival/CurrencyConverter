@@ -54,6 +54,7 @@ public class CBRateUpdaterTask
             Toast.makeText(AppContext.getContext(),
                     AppContext.getContext().getString(R.string.update_error),
                     Toast.LENGTH_LONG).show();
+            rateUpdaterListener.stopRefresh();
         } else {
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);

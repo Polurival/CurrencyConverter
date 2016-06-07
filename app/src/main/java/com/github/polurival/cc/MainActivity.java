@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -17,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -49,21 +52,38 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  */
 public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener {
 
+    private SQLiteDatabase db;
+    private Cursor cursor;
+    private Cursor fromCursor;
+    private Cursor toCursor;
+
     private RateUpdater rateUpdater;
     private LocalDateTime upDateTime;
 
     private EnumMap<CharCode, Currency> currencyMap;
-    private Integer[] countryFlagIds;
+    //private Integer[] countryFlagIds;
+    //private String[] currencyCharCodes;
 
     private PullToRefreshLayout mPullToRefreshLayout;
 
     private EditText editFromAmount;
     private EditText editToAmount;
+
     private boolean isEditFromChanged;
     private boolean isEditToChanged;
+    private boolean isNeedToReSwapValues;
+    //private boolean isFromSpinnerChanged;
+    //private boolean isToSpinnerChanged;
 
     private Spinner fromSpinner;
+    private int fromSpinnerSelectedPos;
+    double currencyFromNominal;
+    double currencyFromToRubRate;
+
     private Spinner toSpinner;
+    private int toSpinnerSelectedPos;
+    double currencyToNominal;
+    double currencyToToRubRate;
 
     private TextView tvResult;
     private TextView tvDateTime;
@@ -106,8 +126,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         loadProperties();
 
         tvResult = (TextView) findViewById(R.id.tv_result);
-        initTvDateTime();
 
+        initTvDateTime();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
         readDataFromDB();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
@@ -144,14 +171,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     @Override
+    public void setCursor(Cursor cursor) {
+        this.cursor = cursor;
+    }
+
+    @Override
     public void tvDateTimeSetText() {
-        tvDateTime.setText(String.format("%s \n %s",
+        tvDateTime.setText(String.format("%s%s",
                 rateUpdater.getDescription(), DateUtil.getUpDateTimeStr(upDateTime)));
     }
 
     private void initEditAmount() {
         isEditFromChanged = false;
         isEditToChanged = false;
+        isNeedToReSwapValues = false;
 
         editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
         editFromAmount.addTextChangedListener(new TextWatcher() {
@@ -190,7 +223,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isEditToChanged && !isEditFromChanged) {
                     if (s.length() != 0) {
-                        convert(editToAmount);
+                        /*convert(editToAmount);*/
                     }
                 }
             }
@@ -218,7 +251,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (isEditFromChanged && !isEditToChanged) {
                     if (s.length() != 0) {
-                        convert(editFromAmount);
+                        /*convert(editFromAmount);*/
                     }
                 }
             }
@@ -245,18 +278,34 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             return;
         }
 
-        String fromCharCode = null;
-        String toCharCode = null;
-        if (v.getId() == R.id.edit_from_amount) {
-
-            fromCharCode = (String) fromSpinner.getSelectedItem();
-            toCharCode = (String) toSpinner.getSelectedItem();
+        /*if (v.getId() == R.id.edit_from_amount) {
+            //fromCursor = (Cursor) fromSpinner.getSelectedItem();
+            //toCursor = (Cursor) toSpinner.getSelectedItem();
+            //fromCursor = (Cursor) fromSpinner.getItemAtPosition(fromSpinnerSelectedPos);
+            //toCursor = (Cursor) toSpinner.getItemAtPosition(toSpinnerSelectedPos);
         } else if (v.getId() == R.id.edit_to_amount) {
-            fromCharCode = (String) toSpinner.getSelectedItem();
-            toCharCode = (String) fromSpinner.getSelectedItem();
-        }
+            //fromCursor = (Cursor) toSpinner.getSelectedItem();
+            //toCursor = (Cursor) fromSpinner.getSelectedItem();
+            //fromCursor = (Cursor) toSpinner.getItemAtPosition(toSpinnerSelectedPos);
+            //toCursor = (Cursor) fromSpinner.getItemAtPosition(fromSpinnerSelectedPos);
+        }*/
 
-        Currency currencyFrom = null;
+        /*String fromCharCode = null;
+        String toCharCode = null;
+
+        if (v.getId() == R.id.edit_from_amount) {
+            //fromCharCode = (String) fromSpinner.getSelectedItem();
+            //toCharCode = (String) toSpinner.getSelectedItem();
+            fromCharCode = fromCursor.getString(1);
+            toCharCode = toCursor.getString(1);
+        } else if (v.getId() == R.id.edit_to_amount) {
+            //fromCharCode = (String) toSpinner.getSelectedItem();
+            //toCharCode = (String) fromSpinner.getSelectedItem();
+            fromCharCode = toCursor.getString(1);
+            toCharCode = fromCursor.getString(1);
+        }*/
+
+        /*Currency currencyFrom = null;
         Currency currencyTo = null;
         CharCode codeFrom = null;
         CharCode codeTo = null;
@@ -272,41 +321,74 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             if (currencyFrom != null && currencyTo != null) {
                 break;
             }
+        }*/
+
+        //assert currencyFrom != null;
+        //double currencyFromNominal = currencyFrom.getDoubleNominal();
+        //double currencyFromToRubRate = currencyFrom.getValue();
+        //double currencyFromNominal = (double) fromCursor.getInt(2);
+        //double currencyFromToRubRate = fromCursor.getDouble(3);
+
+
+        //assert currencyTo != null;
+        //double currencyToNominal = currencyTo.getNominal();
+        //double currencyToToRubRate = currencyTo.getValue();
+        //double currencyToNominal = (double) toCursor.getInt(2);
+        //double currencyToToRubRate = toCursor.getDouble(3);
+
+        /*if (isNeedToReSwapValues) {
+            double tempValFrom = currencyFromToRubRate;
+            currencyFromToRubRate = currencyToToRubRate;
+            currencyToToRubRate = tempValFrom;
+
+            double tempNomFrom = currencyFromNominal;
+            currencyFromNominal = currencyToNominal;
+            currencyToNominal = tempNomFrom;
+
+            isNeedToReSwapValues = false;
         }
 
-        assert currencyFrom != null;
-        double currencyFromNominal = currencyFrom.getDoubleNominal();
-        double currencyFromToRubRate = currencyFrom.getValue();
+        if (v.getId() == R.id.edit_to_amount) {
+            double tempValFrom = currencyFromToRubRate;
+            currencyFromToRubRate = currencyToToRubRate;
+            currencyToToRubRate = tempValFrom;
 
-        assert currencyTo != null;
-        int currencyToNominal = currencyTo.getNominal();
-        double currencyToToRubRate = currencyTo.getValue();
+            double tempNomFrom = currencyFromNominal;
+            currencyFromNominal = currencyToNominal;
+            currencyToNominal = tempNomFrom;
+
+            isNeedToReSwapValues = true;
+        }*/
 
         double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
+
         double result = enteredAmountOfMoney *
                 (currencyFromToRubRate / currencyToToRubRate) *
                 (currencyToNominal / currencyFromNominal);
 
-        String text = String.format("%.2f %s\n=\n%.2f %s",
+        /*String text = String.format("%.2f %s\n=\n%.2f %s",
                 enteredAmountOfMoney,
                 codeFrom.getName(),
                 result,
                 codeTo.getName());
-        setTvResultText(text);
+        setTvResultText(text);*/
 
         if (v.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmount.getText().toString())) {
                 editToAmount.setText("");
             } else {
-                editToAmount.setText(String.format("%.2f", result));
+                editToAmount.setText(String.format("%.2f", result).replace(",", "."));
             }
         } else if (v.getId() == R.id.edit_to_amount) {
             if ("".equals(editToAmount.getText().toString())) {
                 editFromAmount.setText("");
             } else {
-                editFromAmount.setText(String.format("%.2f", result));
+                editFromAmount.setText(String.format("%.2f", result).replace(",", "."));
             }
         }
+
+        //fromCursor.close();
+        //toCursor.close();
     }
 
     private double getEnteredAmountOfMoney(View v) {
@@ -323,7 +405,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    private String[] fillCurrencyArrays() {
+    /*private String[] fillCurrencyArrays() {
         if (currencyMap == null) {
             return new String[]{};
         }
@@ -331,10 +413,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         int len = currencyMap.size();
         String[] currencyNameArray = new String[len];
         countryFlagIds = new Integer[len];
+        currencyCharCodes = new String[len];
 
         int i = 0;
         for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
             currencyNameArray[i] = getString(entry.getValue().getNameResourceId());
+
+            currencyCharCodes[i] = entry.getKey().toString();
 
             int id = entry.getValue().getFlagResourceId();
             if (id != 0) {
@@ -345,7 +430,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             i++;
         }
         return currencyNameArray;
-    }
+    }*/
 
     private void setTvResultText(String text) {
         tvResult.setText(text);
@@ -353,14 +438,24 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void initSpinners() {
+        SpinnerCursorAdapter cursorAdapter =
+                new SpinnerCursorAdapter(getApplicationContext(), cursor, 0);
+
         fromSpinner = (Spinner) findViewById(R.id.from_spinner);
-        fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
+        //fromSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
+        fromSpinner.setAdapter(cursorAdapter);
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isEditToChanged) {
+                fromCursor = (Cursor) parent.getItemAtPosition(position);
+                currencyFromNominal = (double) fromCursor.getInt(2);
+                currencyFromToRubRate = fromCursor.getDouble(3);
+
+                fromSpinnerSelectedPos = position;
+
+                /*if (!isEditToChanged) {
                     convert(editFromAmount);
-                }
+                }*/
             }
 
             @Override
@@ -369,13 +464,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         });
 
         toSpinner = (Spinner) findViewById(R.id.to_spinner);
-        toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
+        //toSpinner.setAdapter(new SpinnerApapter(this, R.layout.spinner_item, fillCurrencyArrays()));
+        toSpinner.setAdapter(cursorAdapter);
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (!isEditToChanged) {
+                toCursor = (Cursor) parent.getItemAtPosition(position);
+                currencyToNominal = (double) toCursor.getInt(2);
+                currencyToToRubRate = toCursor.getDouble(3);
+
+                toSpinnerSelectedPos = position;
+
+                /*if (!isEditFromChanged) {
                     convert(editFromAmount);
-                }
+                }*/
             }
 
             @Override
@@ -390,7 +492,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     //http://www.coderzheaven.com/2011/07/18/customizing-a-spinner-in-android/
-    public class SpinnerApapter extends ArrayAdapter<String> {
+    /*public class SpinnerApapter extends ArrayAdapter<String> {
 
         public SpinnerApapter(Context context, int resource, String[] objects) {
             super(context, resource, objects);
@@ -410,19 +512,58 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             LayoutInflater inflater = getLayoutInflater();
             View row = inflater.inflate(R.layout.spinner_item, parent, false);
 
-            TextView label = (TextView) row.findViewById(R.id.spinner_currency_name);
-            label.setText(fillCurrencyArrays()[position]);
+
+            TextView currencyName = (TextView) row.findViewById(R.id.spinner_currency_name);
+            currencyName.setText(fillCurrencyArrays()[position]);
+
+            TextView currencyCharCode =
+                    (TextView) row.findViewById(R.id.spinner_currency_char_code);
+            currencyCharCode.setText(currencyCharCodes[position]);
 
             ImageView icon = (ImageView) row.findViewById(R.id.spinner_flag_icon);
             icon.setImageResource(countryFlagIds[position]);
 
             return row;
         }
+    }*/
+
+    private class SpinnerCursorAdapter extends CursorAdapter {
+
+        public SpinnerCursorAdapter(Context context, Cursor cursor, int flags) {
+            super(context, cursor, 0);
+        }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            return LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+
+            ImageView flagIcon = (ImageView) view.findViewById(R.id.spinner_flag_icon);
+            int flagIconId = cursor.getInt(5);
+            flagIcon.setImageResource(flagIconId);
+
+            TextView currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
+            int currencyNameId = cursor.getInt(4);
+            currencyName.setText(getString(currencyNameId));
+
+            TextView currencyCharCode =
+                    (TextView) view.findViewById(R.id.spinner_currency_char_code);
+            currencyCharCode.setText(cursor.getString(1));
+        }
     }
 
     @Override
     protected void onStop() {
         saveProperties();
+
+        fromCursor.close();
+        toCursor.close();
+        cursor.close();
+        db.close();
+
         super.onStop();
     }
 
@@ -432,13 +573,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putInt(getString(R.string.saved_from_spinner_pos),
-                fromSpinner.getSelectedItemPosition());
+                fromSpinnerSelectedPos);
         editor.putInt(getString(R.string.saved_to_spinner_pos),
-                toSpinner.getSelectedItemPosition());
+                toSpinnerSelectedPos);
+
+        String editFromStr = editFromAmount.getText().toString();
         editor.putString(getString(R.string.saved_from_edit_amount_text),
                 editFromAmount.getText().toString());
+        String editToStr = editToAmount.getText().toString();
         editor.putString(getString(R.string.saved_to_edit_amount_text),
                 editToAmount.getText().toString());
+
         editor.putString(getString(R.string.saved_rate_updater_class),
                 rateUpdater.getClass().getName());
 
@@ -466,6 +611,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
+        editFromAmount.setText("");
         editFromAmount.setText(editFromAmountText);
         String editToAmountText =
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
@@ -505,11 +651,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        int fromSpinnerSelectedPos =
+        fromSpinnerSelectedPos =
                 preferences.getInt(getString(R.string.saved_from_spinner_pos), 0);
         fromSpinner.setSelection(fromSpinnerSelectedPos);
 
-        int toSpinnerSelectedPos =
+        toSpinnerSelectedPos =
                 preferences.getInt(getString(R.string.saved_to_spinner_pos), 0);
         toSpinner.setSelection(toSpinnerSelectedPos);
     }

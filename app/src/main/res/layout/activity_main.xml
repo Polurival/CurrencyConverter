@@ -104,7 +104,6 @@
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:alpha="0.6"
-                android:background="@color/white"
                 android:gravity="center_horizontal"
                 android:minHeight="@dimen/text_view_date_time_min_height"
                 android:textSize="16sp" />

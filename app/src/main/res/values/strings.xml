@@ -10,17 +10,16 @@
 
     <string name="data_source">Data source</string>
     <string name="custom_mode_help">How to use it?</string>
-    <string name="view_custom_mode_help">
-        For converting currencies to each other,\n
+    <string name="view_custom_mode_help">\tFor converting currencies to each other,\n
         you need to set their rates relative to ₽\n
-        Example: If you want to convert $ and €,\n
+        \tExample: If you want to convert $ and €,\n
         set equality of ₽ to 1$ and 1€</string>
     <string name="save_new_value">Save</string>
     <string name="rub_char_code">RUB</string>
 
     <string-array name="data_source_array">
         <item>CB RF</item>
-        <item>Custom mode</item>
+        <item>Custom source</item>
     </string-array>
 
     <!-- for Toasts -->
@@ -32,9 +31,9 @@
     <string name="db_custom_update_invalid_value">Invalid value</string>
     <string name="custom_updating_info">Update rates in \'Data source\' menu</string>
 
-    <string name="cbr">CB RF rate on:</string>
+    <string name="cbr">CB RF rate on:\n</string>
     <string name="cbr_url">http://www.cbr.ru/scripts/XML_daily.asp</string>
-    <string name="custom">custom rate, last modified:</string>
+    <string name="custom">Custom source\nlast modified:\n</string>
 
     <string name="saved_from_spinner_pos">saved_from_spinner_pos</string>
     <string name="saved_to_spinner_pos">saved_to_spinner_pos</string>

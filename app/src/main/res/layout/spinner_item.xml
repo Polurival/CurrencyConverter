@@ -9,12 +9,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/spinner_currency_name"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/view_horizontal_margin"
-        android:textSize="20sp"
-        android:textColor="#ff000000" />
+        android:layout_weight="6"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/spinner_currency_char_code"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:textColor="@color/blue"
+        android:textSize="20sp" />
 
 </LinearLayout>

@@ -1,5 +1,7 @@
 package com.github.polurival.cc.model;
 
+import android.database.Cursor;
+
 import org.joda.time.LocalDateTime;
 
 import java.util.EnumMap;
@@ -27,4 +29,6 @@ public interface RateUpdaterListener {
     void readDataFromDB();
 
     void stopRefresh();
+
+    void setCursor(Cursor cursor);
 }

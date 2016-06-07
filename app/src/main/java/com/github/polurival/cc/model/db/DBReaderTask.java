@@ -77,12 +77,14 @@ public class DBReaderTask extends AsyncTask<String, Void, EnumMap<CharCode, Curr
 
         if (rateUpdaterListener != null) {
             rateUpdaterListener.setCurrencyMap(result);
+            rateUpdaterListener.setCursor(cursor);
+
             rateUpdaterListener.initSpinners();
             rateUpdaterListener.loadSpinnerProperties();
             rateUpdaterListener.tvDateTimeSetText();
 
-            cursor.close();
-            db.close();
+            /*cursor.close();
+            db.close();*/
         }
         //TODO remove currencyMap, work with Cursor and CursorAdapter
     }
