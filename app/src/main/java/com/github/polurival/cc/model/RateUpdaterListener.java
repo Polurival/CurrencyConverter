@@ -22,7 +22,7 @@ public interface RateUpdaterListener {
 
     void saveDateProperties();
 
-    void tvDateTimeSetText();
+    //void tvDateTimeSetText();
 
     RateUpdater getRateUpdater();
 
@@ -31,4 +31,8 @@ public interface RateUpdaterListener {
     void stopRefresh();
 
     void setCursor(Cursor cursor);
+
+    void initTvDateTime();
+
+    void setPropertiesLoaded(boolean isLoaded);
 }
