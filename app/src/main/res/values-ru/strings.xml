@@ -2,13 +2,19 @@
 <resources>
 
     <string name="app_name">Конвертер валют</string>
-    <string name="enter_from_amount">введите сумму...</string>
+
+    <!-- MainActivity -->
+    <string name="enter_from_amount">введите сумму…</string>
     <string name="transfer_from">Конвертировать из:</string>
     <string name="transfer_to">Конвертировать в:</string>
     <string name="last_update">Последнее обновление:</string>
-    <string name="update_rates">Обновить курсы</string>
+    <string name="swap">Поменять местами выбранные валюты</string>
 
+    <!-- Menu -->
+    <string name="update_rates">Обновить курсы</string>
     <string name="data_source">Источник данных</string>
+
+    <!-- CustomRateFragment -->
     <string name="custom_mode_help">Как этим пользоваться?</string>
     <string name="view_custom_mode_help">\tЧтобы конвертировать валюты между собой,\n
         необходимо задать их курсы по отношению к ₽\n
@@ -21,8 +27,10 @@
         <item>Настраиваемый источник</item>
     </string-array>
 
-    <string name="update_error">Ошибка обновления. Проверьте соединение с Интернет</string>
-    <string name="db_error">Базы данных недоступна</string>
+    <string name="db_writing_error">Ошибка записи в базу данных</string>
+    <string name="db_reading_error">Ошибка чтения из базы данных</string>
+    <string name="update_error">Ошибка обновления\n
+        Проблема с Источником или интернет соединением</string>
     <string name="db_update_success">База данных успешно обновлена</string>
     <string name="db_custom_update_success">
         Курс выбранной валюты успешно обновлен.\nНоминал = </string>

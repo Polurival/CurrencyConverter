@@ -1,11 +1,13 @@
 package com.github.polurival.cc.model;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.db.DBUpdaterTask;
+import com.github.polurival.cc.util.Constants;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -23,43 +25,48 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * on 26.03.2016.
  */
 public class CBRateUpdaterTask
-        extends AsyncTask<Void, Void, EnumMap<CharCode, Currency>>
+        extends AsyncTask<Void, Void, Boolean>
         implements RateUpdater {
 
-    public static final String CBR_URL = AppContext.getContext().getString(R.string.cbr_url);
+    private static final String CBR_URL = Constants.CBR_URL;
 
+    private Context appContext;
     private RateUpdaterListener rateUpdaterListener;
-
-    private EnumMap<CharCode, Currency> currencyMap = new EnumMap<>(CharCode.class);
+    private EnumMap<CharCode, Currency> currencyMap;
 
     @Override
-    protected EnumMap<CharCode, Currency> doInBackground(Void... params) {
+    protected void onPreExecute() {
+        appContext = AppContext.getContext();
+        currencyMap = new EnumMap<>(CharCode.class);
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... params) {
         try {
             URL url = new URL(CBR_URL);
             URLConnection connection = url.openConnection();
 
             Document doc = parseXML(connection.getInputStream());
 
-            fillCurrencyMap(doc);
+            fillCurrencyMapFromSource(doc);
         } catch (Exception e) {
+            return false;
         }
-        return currencyMap;
+        return true;
     }
 
     @Override
-    protected void onPostExecute(EnumMap<CharCode, Currency> result) {
-        super.onPostExecute(result);
-
-        if (currencyMap.size() == 0) {
-            Toast.makeText(AppContext.getContext(),
-                    AppContext.getContext().getString(R.string.update_error),
-                    Toast.LENGTH_LONG).show();
-            rateUpdaterListener.stopRefresh();
-        } else {
+    protected void onPostExecute(Boolean result) {
+        if (result) {
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
-            dbUpdaterTask.setCurrencyMap(result);
+            dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();
+        } else {
+            Toast.makeText(appContext, appContext.getString(R.string.update_error),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            rateUpdaterListener.stopRefresh();
         }
     }
 
@@ -69,7 +76,7 @@ public class CBRateUpdaterTask
     }
 
     @Override
-    public void fillCurrencyMap(Document doc) {
+    public void fillCurrencyMapFromSource(Document doc) {
         NodeList descNodes = doc.getElementsByTagName("Valute");
 
         for (int i = 0; i < descNodes.getLength(); i++) {
@@ -99,24 +106,14 @@ public class CBRateUpdaterTask
         }
     }
 
-    @Override
-    public EnumMap<CharCode, Currency> getCurrencyMap() {
-        return currencyMap;
-    }
-
     private Document parseXML(InputStream stream) throws Exception {
         DocumentBuilderFactory objDocumentBuilderFactory;
         DocumentBuilder objDocumentBuilder;
-        Document doc = null;
+        Document doc;
 
-        try {
-            objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-            objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
-
-            doc = objDocumentBuilder.parse(stream);
-        } catch (Exception e) {
-            throw e;
-        }
+        objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
+        doc = objDocumentBuilder.parse(stream);
 
         return doc;
     }

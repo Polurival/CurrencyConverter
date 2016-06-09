@@ -30,8 +30,7 @@ import com.github.polurival.cc.util.DateUtil;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CustomRateFragment extends Fragment
-        implements View.OnClickListener {
+public class CustomRateFragment extends Fragment implements View.OnClickListener {
 
     private Context appContext;
 
@@ -40,8 +39,6 @@ public class CustomRateFragment extends Fragment
 
     private EditText editCustomCurrency;
     private Spinner customCurrencySpinner;
-    private ImageButton btnHint;
-    private Button btnSave;
     private TextView tvCharCode;
     private TextView tvCustomModeHelp;
 
@@ -53,9 +50,9 @@ public class CustomRateFragment extends Fragment
                              Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_custom_rates, container, false);
 
-        btnHint = (ImageButton) fragmentView.findViewById(R.id.btn_custom_hint);
+        ImageButton btnHint = (ImageButton) fragmentView.findViewById(R.id.btn_custom_hint);
         btnHint.setOnClickListener(this);
-        btnSave = (Button) fragmentView.findViewById(R.id.btn_custom_save);
+        Button btnSave = (Button) fragmentView.findViewById(R.id.btn_custom_save);
         btnSave.setOnClickListener(this);
 
         editCustomCurrency = (EditText) fragmentView.findViewById(R.id.edit_custom_currency);
@@ -97,10 +94,10 @@ public class CustomRateFragment extends Fragment
         String customValue = editCustomCurrency.getText().toString();
         customValue = customValue.replace(",", ".");
         if ("".equals(customValue) || (Double.valueOf(customValue) == 0)) {
-            Toast.makeText(AppContext.getContext(),
-                    appContext.getString(
-                            R.string.db_custom_update_invalid_value),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(appContext,
+                    appContext.getString(R.string.db_custom_update_invalid_value),
+                    Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
@@ -122,20 +119,19 @@ public class CustomRateFragment extends Fragment
                             DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
                             new String[]{String.valueOf(currencyNameId)});
 
-                    Toast.makeText(AppContext.getContext(),
-                            appContext.getString(
-                                    R.string.db_custom_update_success)
-                                    + preparedCustomNominal,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(appContext, appContext.getString(
+                                    R.string.db_custom_update_success) + preparedCustomNominal,
+                            Toast.LENGTH_SHORT)
+                            .show();
 
                     saveCustomDateProperties();
                     saveCustomSpinnerSelectedPos();
                     readSpinnerDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toast.makeText(AppContext.getContext(),
-                            appContext.getString(R.string.db_error),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(appContext, appContext.getString(R.string.db_writing_error),
+                            Toast.LENGTH_SHORT)
+                            .show();
                 }
             }
         });
@@ -153,24 +149,9 @@ public class CustomRateFragment extends Fragment
             nominal = (int) Math.pow(10, i);
         }
 
-        String customValueStr = prepareCustomValue(value);
+        String customValueStr = String.format("%.4f", value).replace(",", ".");
 
         return new Object[]{nominal, customValueStr};
-    }
-
-    private String prepareCustomValue(double customValue) {
-
-        double roundedValue = Math.round(customValue * 10000.0) / 10000.0;
-
-        String customValueStr = String.format("%.8f", roundedValue).replace(",", ".");
-
-        if (!customValueStr.contains(".")) {
-            customValueStr += ".0";
-        } else if (customValueStr.substring(customValueStr.indexOf('.')).length() > 5) {
-            String[] customValueArr = customValueStr.split("\\.");
-            customValueStr = customValueArr[0] + "." + customValueArr[1].substring(0, 4);
-        }
-        return customValueStr;
     }
 
     private void showHideHint() {
@@ -184,7 +165,7 @@ public class CustomRateFragment extends Fragment
     //https://github.com/codepath/android_guides/wiki/Populating-a-ListView-with-a-CursorAdapter
     private class SpinnerCursorAdapter extends CursorAdapter {
 
-        public SpinnerCursorAdapter(Context context, Cursor cursor, int flags) {
+        public SpinnerCursorAdapter(Context context, Cursor cursor) {
             super(context, cursor, 0);
         }
 
@@ -226,9 +207,9 @@ public class CustomRateFragment extends Fragment
                             DBHelper.COLUMN_NAME_CHAR_CODE + " != ?",
                             new String[]{CharCode.RUB.toString()}, null, null, null);
                 } catch (SQLiteException e) {
-                    Toast.makeText(AppContext.getContext(),
-                            AppContext.getContext().getString(R.string.db_error),
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(appContext, appContext.getString(R.string.db_reading_error),
+                            Toast.LENGTH_SHORT)
+                            .show();
                 }
                 initCustomSpinner();
                 initCurrencyDataFromCustomSpinnerCursor();
@@ -237,24 +218,20 @@ public class CustomRateFragment extends Fragment
     }
 
     private void initCurrencyDataFromCustomSpinnerCursor() {
-        Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
-
-        double currencyValue = currencyNameCursor.getDouble(3);
+        double currencyValue = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
         setEditCustomCurrencyText(currencyValue);
 
-        String charCode = currencyNameCursor.getString(1);
+        String charCode = ((Cursor) customCurrencySpinner.getSelectedItem()).getString(1);
         tvCharCode.setText(String.format("1 %s =", charCode));
-
-        //currencyNameCursor.close();
     }
 
     private void setEditCustomCurrencyText(double currencyValue) {
-        editCustomCurrency.setText(String.format("%.4f", currencyValue));
+        editCustomCurrency.setText(String.format("%.4f", currencyValue).replace(",", "."));
     }
 
     private void initCustomSpinner() {
         SpinnerCursorAdapter cursorAdapter =
-                new SpinnerCursorAdapter(appContext, spinnerCursor, 0);
+                new SpinnerCursorAdapter(appContext, spinnerCursor);
         customCurrencySpinner.setAdapter(cursorAdapter);
         loadCustomSpinnerSelectedPos();
 
@@ -266,7 +243,6 @@ public class CustomRateFragment extends Fragment
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
     }

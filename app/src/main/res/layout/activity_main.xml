@@ -31,7 +31,7 @@
                 android:hint="@string/enter_from_amount"
                 android:inputType="numberDecimal"
                 android:maxLength="14"
-                android:textColor="@color/lazure"
+                android:textColor="@color/azure"
                 android:textSize="20sp" />
 
             <Spinner
@@ -43,7 +43,7 @@
                 android:layout_marginTop="@dimen/view_vertical_margin"
                 android:prompt="@string/transfer_from" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/btn_swap_from_to"
                 android:layout_width="@dimen/btn_swap_width"
                 android:layout_height="@dimen/btn_swap_height"
@@ -53,6 +53,7 @@
                 android:layout_marginTop="@dimen/view_vertical_margin"
                 android:alpha="0.7"
                 android:background="@drawable/swap"
+                android:contentDescription="@string/swap"
                 android:onClick="swapFromTo" />
 
             <Spinner
@@ -68,7 +69,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/to_spinner"
-                android:layout_marginBottom="@dimen/view_vertical_margin"
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:layout_marginTop="@dimen/view_vertical_margin"
@@ -77,30 +77,15 @@
                 android:hint="@string/enter_from_amount"
                 android:inputType="numberDecimal"
                 android:maxLength="14"
-                android:textColor="@color/lazure"
+                android:textColor="@color/azure"
                 android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/tv_result"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/edit_to_amount"
-                android:layout_marginBottom="@dimen/view_vertical_margin"
-                android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
-                android:layout_marginStart="@dimen/edit_text_horizontal_margin"
-                android:alpha="0.6"
-                android:background="@color/white"
-                android:gravity="center"
-                android:minHeight="@dimen/text_view_result_min_height"
-                android:textColor="@color/lazure"
-                android:textSize="20sp"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_date_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_result"
+                android:layout_below="@id/edit_to_amount"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:alpha="0.6"

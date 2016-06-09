@@ -17,21 +17,14 @@ public class CustomRateUpdaterMock
         extends AsyncTask<Void, Void, EnumMap<CharCode, Currency>>
         implements RateUpdater {
 
-    private RateUpdaterListener rateUpdaterListener;
-
     @Override
     public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        this.rateUpdaterListener = rateUpdaterListener;
-    }
-
-    @Override
-    public void fillCurrencyMap(Document doc) {
         //do nothing
     }
 
     @Override
-    public EnumMap<CharCode, Currency> getCurrencyMap() {
-        return null;
+    public void fillCurrencyMapFromSource(Document doc) {
+        //do nothing
     }
 
     @Override

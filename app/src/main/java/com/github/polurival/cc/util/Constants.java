@@ -6,4 +6,5 @@ package com.github.polurival.cc.util;
  */
 public interface Constants {
     String LOG = "com.github.polurival.cc";
+    String CBR_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
 }

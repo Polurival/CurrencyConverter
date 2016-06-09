@@ -66,14 +66,13 @@ public class SettingsActivity extends Activity {
                 }
                 saveRateUpdaterNameProperty();
 
-                ft.addToBackStack(null);
+                ft.addToBackStack(null); //todo - correct fragment BackStack
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
             }
         });
 

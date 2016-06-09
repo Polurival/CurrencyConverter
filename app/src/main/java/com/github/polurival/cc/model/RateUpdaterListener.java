@@ -4,35 +4,29 @@ import android.database.Cursor;
 
 import org.joda.time.LocalDateTime;
 
-import java.util.EnumMap;
-
 /**
  * Created by Polurival
  * on 28.05.2016.
  */
 public interface RateUpdaterListener {
 
-    void setCurrencyMap(EnumMap<CharCode, Currency> currencyMap);
+    void setCursor(Cursor cursor);
+
+    void setPropertiesLoaded(boolean isLoaded);
 
     void setUpDateTime(LocalDateTime upDateTime);
 
     void initSpinners();
 
+    void initTvDateTime();
+
     void loadSpinnerProperties();
 
     void saveDateProperties();
-
-    //void tvDateTimeSetText();
-
-    RateUpdater getRateUpdater();
 
     void readDataFromDB();
 
     void stopRefresh();
 
-    void setCursor(Cursor cursor);
-
-    void initTvDateTime();
-
-    void setPropertiesLoaded(boolean isLoaded);
+    RateUpdater getRateUpdater();
 }
