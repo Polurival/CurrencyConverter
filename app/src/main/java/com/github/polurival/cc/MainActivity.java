@@ -170,8 +170,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         dbReaderTask.setRateUpdaterListener(this);
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
-                    DBHelper.COLUMN_NAME_NOMINAL,
-                    DBHelper.COLUMN_NAME_VALUE);
+                    DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
+                    DBHelper.COLUMN_NAME_CB_RF_VALUE);
         } else if (rateUpdater instanceof CustomRateUpdaterMock) {
             dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
                     DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
@@ -300,6 +300,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
 
         double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
+
+        //TODO if (rateUpdater NOT instanceof CBRateUpdaterTask) {
+        /*double result = enteredAmountOfMoney *
+                (currencyToToRubRate / currencyFromToRubRate) *
+                (currencyFromNominal / currencyToNominal);
+          } else {*/
 
         double result = enteredAmountOfMoney *
                 (currencyFromToRubRate / currencyToToRubRate) *

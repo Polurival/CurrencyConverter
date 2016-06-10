@@ -50,8 +50,8 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean> {
 
             for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
                 if (rateUpdater instanceof CBRateUpdaterTask) {
-                    contentValues.put(DBHelper.COLUMN_NAME_NOMINAL, entry.getValue().getNominal());
-                    contentValues.put(DBHelper.COLUMN_NAME_VALUE, entry.getValue().getValue());
+                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, entry.getValue().getNominal());
+                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_VALUE, entry.getValue().getValue());
                 } // TODO: 09.06.2016  add if else {...} for Yahoo
                 db.update(DBHelper.TABLE_NAME,
                         contentValues,
