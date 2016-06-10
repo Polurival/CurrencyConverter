@@ -34,7 +34,6 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     private Context appContext;
 
-    private SQLiteDatabase db;
     private Cursor spinnerCursor;
 
     private EditText editCustomCurrency;
@@ -65,11 +64,10 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
 
         appContext = AppContext.getContext();
-        db = DBHelper.getInstance(appContext).getWritableDatabase();
         readSpinnerDataFromDB();
     }
 
@@ -109,6 +107,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_NOMINAL, preparedCustomNominal);
         contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_VALUE, preparedCustomValue);
 
+        final SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
         Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -192,7 +191,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void readSpinnerDataFromDB() {
-        final Handler handler = new Handler();
+        final SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
+        Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -206,13 +206,15 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                                     DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
                             DBHelper.COLUMN_NAME_CHAR_CODE + " != ?",
                             new String[]{CharCode.RUB.toString()}, null, null, null);
+
+                    initCustomSpinner();
+                    initCurrencyDataFromCustomSpinnerCursor();
+
                 } catch (SQLiteException e) {
                     Toast.makeText(appContext, appContext.getString(R.string.db_reading_error),
                             Toast.LENGTH_SHORT)
                             .show();
                 }
-                initCustomSpinner();
-                initCurrencyDataFromCustomSpinnerCursor();
             }
         });
     }
@@ -250,7 +252,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     @Override
     public void onStop() {
         spinnerCursor.close();
-        db.close();
+
         super.onStop();
     }
 
