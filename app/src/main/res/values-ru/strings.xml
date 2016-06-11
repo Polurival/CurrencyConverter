@@ -52,8 +52,8 @@
     <string name="awg">Арубанский флорин</string>
     <string name="azn">Азербайджанский манат ₼</string>
 
-    <string name="BAM">Боснии и Герцеговины конвертируемая марка</string>
-    <string name="BBD">Барбадосский доллар</string>
+    <string name="bam">Боснии и Герцеговины конвертируемая марка</string>
+    <string name="bbd">Барбадосский доллар</string>
     <string name="bdt">Бангладешская така</string>
     <string name="bgn">Болгарский лев</string>
     <string name="bhd">Бахрейнский динар</string>
@@ -77,7 +77,6 @@
     <string name="cnh">Китайский юань (Гонконг) ¥</string>
     <string name="cop">Колумбийское песо</string>
     <string name="crc">Костариканский колон</string>
-    <string name="CUC">Кубинское конвертируемое песо</string>
     <string name="cup">Кубинское песо $</string>
     <string name="cve">Кабо-Верде эскудо</string>
     <string name="czk">Чешская крона</string>
@@ -89,7 +88,6 @@
 
     <string name="egp">Египетский фунт</string>
     <string name="ern">Эритрейская накфа</string>
-    <string name="EEK">Эстонская крона</string>
     <string name="etb">Эфиопский быр</string>
     <string name="eur">Евро €</string>
 
@@ -98,9 +96,8 @@
 
     <string name="gbp">Британский фунт стерлингов £</string>
     <string name="gel">Грузинский лари</string>
-    <string name="GGP">Гернсийский фунт</string>
     <string name="ghs">Ганский седи</string>
-    <string name="GIP">Гибралтарский фунт</string>
+    <string name="gip">Гибралтарский фунт</string>
     <string name="gmd">Гамбийский даласи</string>
     <string name="gnf">Гвинейский франк</string>
     <string name="gtq">Гватемальский кетсаль</string>
@@ -114,13 +111,11 @@
 
     <string name="idr">Индонезийская рупия</string>
     <string name="ils">Израильский новый шекель </string>
-    <string name="IMP">Фунт Острова Мэн</string>
     <string name="inr">Индийская рупия</string>
     <string name="iqd">Иракский динар</string>
     <string name="irr">Иранский риал</string>
     <string name="isk">Исландская крона</string>
 
-    <string name="JEP">Джерсийский фунт</string>
     <string name="jmd">Ямайский доллар</string>
     <string name="jod">Иорданский динар</string>
     <string name="jpy">Японская йена ¥</string>
@@ -140,13 +135,11 @@
     <string name="lkr">Шри-Ланскийская рупия</string>
     <string name="lrd">Либерийский доллар</string>
     <string name="lsl">Лесотский лоти</string>
-    <string name="LTL">Литовский лит</string>
-    <string name="LVL">Латвийский лат</string>
     <string name="lyd">Ливийский динар</string>
 
     <string name="mad">Мароканский дирхам</string>
     <string name="mdl">Молдавский лей</string>
-    <string name="MGA">Мадагаскарский малагасийский ариари</string>
+    <string name="mga">Мадагаскарский малагасийский ариари</string>
     <string name="mkd">Македонский денар</string>
     <string name="mmk">Мьянмийский кьят</string>
     <string name="mnt">Монгольский тугрик</string>
@@ -167,7 +160,7 @@
     <string name="npr">Непальская рупия</string>
     <string name="nzd">Новозеландский доллар</string>
 
-    <string name="OMR">Оманский риал</string>
+    <string name="omr">Оманский риал</string>
 
     <string name="pab">Панамская бальбоа</string>
     <string name="pen">Перуанский новый соль</string>
@@ -193,7 +186,6 @@
     <string name="shp">Святой Елены фунт £</string>
     <string name="sll">Сьерра-Леонский леоне</string>
     <string name="sos">Сомалийский шиллинг</string>
-    <string name="SPL">Себорга луиджино</string>
     <string name="srd">Суринамский доллар</string>
     <string name="std">Добра Сан-Томе и Принсипи</string>
     <string name="svc">Сальвадорский колон</string>
@@ -207,7 +199,6 @@
     <string name="top">Тонганская паанга</string>
     <string name="try_">Турецкая лира</string>
     <string name="ttd">Тринидада и Тобаго доллар</string>
-    <string name="TVD">Доллар Тувалу</string>
     <string name="twd">Новый тайваньский доллар</string>
     <string name="tzs">Танзанийский шиллинг</string>
 

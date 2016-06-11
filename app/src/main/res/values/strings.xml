@@ -71,8 +71,8 @@
     <string name="awg">Aruban or Dutch Guilder</string>
     <string name="azn">Azerbaijani New Manat ₼</string>
 
-    <string name="BAM">Bosnian Convertible Marka</string>
-    <string name="BBD">Barbadian or Bajan Dollar</string>
+    <string name="bam">Bosnian Convertible Marka</string>
+    <string name="bbd">Barbadian or Bajan Dollar</string>
     <string name="bdt">Bangladeshi Taka</string>
     <string name="bgn">Bulgarian Lev</string>
     <string name="bhd">Bahraini Dinar</string>
@@ -96,7 +96,6 @@
     <string name="cnh">Chinese Yuan (Hong Kong) ¥</string>
     <string name="cop">Colombian Peso</string>
     <string name="crc">Costa Rican Colon</string>
-    <string name="CUC">Cuban Convertible Peso</string>
     <string name="cup">Cuban Peso $</string>
     <string name="cve">Cape Verdean Escudo</string>
     <string name="czk">Czech Koruna</string>
@@ -108,7 +107,6 @@
 
     <string name="egp">Egyptian Pound</string>
     <string name="ern">Eritrean Nakfa</string>
-    <string name="EEK">Estonian Kroon</string>
     <string name="etb">Ethiopian Birr</string>
     <string name="eur">Euro €</string>
 
@@ -117,9 +115,8 @@
 
     <string name="gbp">British Pound £</string>
     <string name="gel">Georgian Lari</string>
-    <string name="GGP">Guernsey Pound</string>
     <string name="ghs">Ghanaian Cedi</string>
-    <string name="GIP">Gibraltar Pound</string>
+    <string name="gip">Gibraltar Pound</string>
     <string name="gmd">Gambian Dalasi</string>
     <string name="gnf">Guinean Franc</string>
     <string name="gtq">Guatemalan Quetzal</string>
@@ -133,13 +130,11 @@
 
     <string name="idr">Indonesian Rupiah</string>
     <string name="ils">Israeli Shekel</string>
-    <string name="IMP">Isle of Man Pound</string>
     <string name="inr">Indian Rupee</string>
     <string name="iqd">Iraqi Dinar</string>
     <string name="irr">Iranian Rial</string>
     <string name="isk">Icelandic Krona</string>
 
-    <string name="JEP">Jersey Pound</string>
     <string name="jmd">Jamaican Dollar</string>
     <string name="jod">Jordanian Dinar</string>
     <string name="jpy">Japanese Yen ¥</string>
@@ -159,13 +154,11 @@
     <string name="lkr">Sri Lankan Rupee</string>
     <string name="lrd">Liberian Dollar</string>
     <string name="lsl">Lesotho loti</string>
-    <string name="LTL">Lithuanian Lita</string>
-    <string name="LVL">Latvian Lat</string>
     <string name="lyd">Libyan Dinar</string>
 
     <string name="mad">Moroccan Dirham</string>
     <string name="mdl">Moldovan Leu</string>
-    <string name="MGA">Malagasy Ariary</string>
+    <string name="mga">Malagasy Ariary</string>
     <string name="mkd">Macedonian Denar</string>
     <string name="mmk">Burmese Kyat</string>
     <string name="mnt">Mongolian Tughrik</string>
@@ -186,7 +179,7 @@
     <string name="npr">Nepalese Rupee</string>
     <string name="nzd">New Zealand Dollar</string>
 
-    <string name="OMR">Omani Rial</string>
+    <string name="omr">Omani Rial</string>
 
     <string name="pab">Panamanian Balboa</string>
     <string name="pen">Peruvian Sol</string>
@@ -212,7 +205,6 @@
     <string name="shp">Saint Helenian Pound £</string>
     <string name="sll">Sierra Leonean Leone</string>
     <string name="sos">Somali Shilling</string>
-    <string name="SPL">Seborga Luigino</string>
     <string name="srd">Surinamese Dollar</string>
     <string name="std">Sao Tomean Dobra</string>
     <string name="svc">Salvadoran Colon</string>
@@ -226,7 +218,6 @@
     <string name="top">Tongan Pa\'anga</string>
     <string name="try_">Turkish Lira</string>
     <string name="ttd">Trinidadian Dollar</string>
-    <string name="TVD">Tuvaluan Dollar</string>
     <string name="twd">Taiwan New Dollar</string>
     <string name="tzs">Tanzanian Shilling</string>
 
