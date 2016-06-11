@@ -30,11 +30,11 @@ public class DateUtil {
     }
 
     public static String getDefaultDateTimeStr() {
-        LocalDateTime localDate = new LocalDateTime(2016, 5, 29, 0, 0, 0);
+        LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
         return localDate.toString(formatter);
     }
     public static long getDefaultDateTimeInSeconds() {
-        LocalDateTime localDate = new LocalDateTime(2016, 5, 29, 0, 0, 0);
+        LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
         return localDate.toDate().getTime();
     }
 

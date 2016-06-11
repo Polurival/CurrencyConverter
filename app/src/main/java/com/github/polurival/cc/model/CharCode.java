@@ -6,14 +6,17 @@ package com.github.polurival.cc.model;
  */
 public enum CharCode {
     AED,
+    AFN,
     ALL,
     AMD,
     ANG,
+    AOA,
     ARS,
     AUD,
     AWG,
     AZN,
 
+    BAM,
     BBD,
     BDT,
     BGN,
@@ -26,12 +29,16 @@ public enum CharCode {
     BSD,
     BTN,
     BWP,
+    BYN,
     BYR,
     BZD,
 
     CAD,
+    CDF,
     CHF,
+    CLF,
     CLP,
+    CNH,
     CNY,
     COP,
     CRC,
@@ -44,16 +51,18 @@ public enum CharCode {
     DOP,
     DZD,
 
-    EEK,
     EGP,
     ETB,
+    ERN,
     EUR,
 
     FJD,
     FKP,
 
     GBP,
+    GEL,
     GHS,
+    GIP,
     GMD,
     GNF,
     GTQ,
@@ -72,6 +81,7 @@ public enum CharCode {
     IRR,
     ISK,
 
+    JMD,
     JOD,
     JPY,
 
@@ -90,12 +100,11 @@ public enum CharCode {
     LKR,
     LRD,
     LSL,
-    LTL,
-    LVL,
     LYD,
 
     MAD,
     MDL,
+    MGA,
     MKD,
     MMK,
     MNT,
@@ -105,7 +114,9 @@ public enum CharCode {
     MVR,
     MWK,
     MXN,
+    MXV,
     MYR,
+    MZN,
 
     NAD,
     NGN,
@@ -127,6 +138,7 @@ public enum CharCode {
     QAR,
 
     RON,
+    RSD,
     RUB,
     RWF,
 
@@ -139,7 +151,9 @@ public enum CharCode {
     SHP,
     SLL,
     SOS,
+    SRD,
     STD,
+    SVC,
     SYP,
     SZL,
 
@@ -169,6 +183,7 @@ public enum CharCode {
     XAG,
     XAU,
     XCD,
+    XCP,
     XDR,
     XOF,
     XPD,
@@ -178,5 +193,6 @@ public enum CharCode {
     YER,
 
     ZAR,
-    ZMW
+    ZMW,
+    ZWL
 }
