@@ -11,5 +11,7 @@
     <dimen name="text_view_date_time_min_height">40dp</dimen>
     <dimen name="btn_swap_width">30dp</dimen>
     <dimen name="btn_swap_height">30dp</dimen>
+    <dimen name="flag_icon_width">24dp</dimen>
+    <dimen name="flag_icon_height">24dp</dimen>
 
 </resources>

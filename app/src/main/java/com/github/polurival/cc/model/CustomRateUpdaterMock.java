@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 
-import org.w3c.dom.Document;
-
 import java.util.EnumMap;
 
 /**
@@ -23,7 +21,7 @@ public class CustomRateUpdaterMock
     }
 
     @Override
-    public void fillCurrencyMapFromSource(Document doc) {
+    public <T> void fillCurrencyMapFromSource(T doc) {
         //do nothing
     }
 

@@ -10,7 +10,7 @@ public interface RateUpdater {
 
     void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener);
 
-    void fillCurrencyMapFromSource(Document doc);
+    <T> void fillCurrencyMapFromSource(T doc);
 
     String getDescription();
 

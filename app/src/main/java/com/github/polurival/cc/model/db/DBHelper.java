@@ -95,7 +95,7 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.INR, 100, 1, 1, 98.5470, 0, 0, R.string.inr, R.drawable.inr, 1, 1);
             insertCurrency(db, CharCode.JPY, 100, 1, 1, 60.1770, 0, 0, R.string.jpy, R.drawable.jpy, 1, 1);
             insertCurrency(db, CharCode.KGS, 100, 1, 1, 96.6682, 0, 0, R.string.kgs, R.drawable.kgs, 1, 1);
-            insertCurrency(db, CharCode.KRW, 1000, 1, 1, 55.9857, 0, 0, R.string.krw, R.drawable.krw, 1, 1);
+            insertCurrency(db, CharCode.KRW, 1000, 1, 1, 55.9857, 1171.880005, 1171.880005, R.string.krw, R.drawable.krw, 1, 1);
             insertCurrency(db, CharCode.KZT, 100, 1, 1, 19.6853, 0, 0, R.string.kzt, R.drawable.kzt, 1, 1);
             insertCurrency(db, CharCode.MDL, 10, 1, 1, 32.9877, 0, 0, R.string.mdl, R.drawable.mdl, 1, 1);
             insertCurrency(db, CharCode.NOK, 10, 1, 1, 79.5582, 0, 0, R.string.nok, R.drawable.nok, 1, 1);
@@ -110,6 +110,7 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.UAH, 10, 1, 1, 26.2746, 0, 0, R.string.uah, R.drawable.uah, 1, 1);
             insertCurrency(db, CharCode.USD, 1, 1, 1, 66.0413, 0, 0, R.string.usd, R.drawable.usd, 1, 1);
             insertCurrency(db, CharCode.UZS, 1000, 1, 1, 22.2361, 0, 0, R.string.uzs, R.drawable.uzs, 1, 1);
+            insertCurrency(db, CharCode.XAG, 1, 100, 100, 0, 5.7753, 5.7753, R.string.xdr, 0, 0, 1);
             insertCurrency(db, CharCode.XDR, 1, 1, 1, 92.8541, 0, 0, R.string.xdr, 0, 1, 1);
             insertCurrency(db, CharCode.ZAR, 10, 1, 1, 42.4580, 0, 0, R.string.zar, R.drawable.zar, 1, 1);
         }

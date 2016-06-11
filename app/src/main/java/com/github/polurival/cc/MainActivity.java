@@ -133,7 +133,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
         readDataFromDB();
 
-        checkAsyncTaskStatus();
+        checkAsyncTaskStatusAndSetNewInstance();
 
         //update on Application Start
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
@@ -145,12 +145,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onResume() {
         super.onResume();
 
-        checkAsyncTaskStatus();
+        checkAsyncTaskStatusAndSetNewInstance();
     }
 
-    private void checkAsyncTaskStatus() {
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            if (((CBRateUpdaterTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
+    private void checkAsyncTaskStatusAndSetNewInstance() {
+        if (rateUpdater instanceof AsyncTask) {
+            if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
                 loadRateUpdaterProperties();
             }
         }
@@ -159,6 +159,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void updateRatesFromSource() {
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).execute();
+            //todo yahoo
         } /*else if (rateUpdater instanceof CustomRateUpdaterMock) {
             //do nothing
         }*/
@@ -172,6 +173,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
                     DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
                     DBHelper.COLUMN_NAME_CB_RF_VALUE);
+            //todo yahoo
         } else if (rateUpdater instanceof CustomRateUpdaterMock) {
             dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
                     DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,

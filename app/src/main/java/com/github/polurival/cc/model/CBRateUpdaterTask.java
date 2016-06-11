@@ -24,11 +24,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Polurival
  * on 26.03.2016.
  */
-public class CBRateUpdaterTask
-        extends AsyncTask<Void, Void, Boolean>
-        implements RateUpdater {
-
-    private static final String CBR_URL = Constants.CBR_URL;
+public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
 
     private Context appContext;
     private RateUpdaterListener rateUpdaterListener;
@@ -43,7 +39,7 @@ public class CBRateUpdaterTask
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
-            URL url = new URL(CBR_URL);
+            URL url = new URL(Constants.CBR_URL);
             URLConnection connection = url.openConnection();
 
             Document doc = parseXML(connection.getInputStream());
@@ -76,6 +72,37 @@ public class CBRateUpdaterTask
     }
 
     @Override
+    public <T> void fillCurrencyMapFromSource(T doc) {
+        NodeList descNodes = ((Document) doc).getElementsByTagName("Valute");
+
+        for (int i = 0; i < descNodes.getLength(); i++) {
+            NodeList currencyNodeList = descNodes.item(i).getChildNodes();
+            CharCode charCode = null;
+            String nominal = null;
+            String value = null;
+
+            for (int j = 0; j < currencyNodeList.getLength(); j++) {
+                String nodeName = currencyNodeList.item(j).getNodeName();
+                String textContent = currencyNodeList.item(j).getTextContent();
+
+                if ("CharCode".equals(nodeName)) {
+                    charCode = CharCode.valueOf(textContent);
+                } else if ("Nominal".equals(nodeName)) {
+                    nominal = textContent;
+                } else if ("Value".equals(nodeName)) {
+                    value = textContent.replace(',', '.');
+                }
+
+                if (charCode != null && nominal != null && value != null) {
+                    currencyMap.put(charCode,
+                            new Currency(Integer.valueOf(nominal), Double.valueOf(value)));
+                    break;
+                }
+            }
+        }
+    }
+
+    /*@Override
     public void fillCurrencyMapFromSource(Document doc) {
         NodeList descNodes = doc.getElementsByTagName("Valute");
 
@@ -104,7 +131,7 @@ public class CBRateUpdaterTask
                 }
             }
         }
-    }
+    }*/
 
     private Document parseXML(InputStream stream) throws Exception {
         DocumentBuilderFactory objDocumentBuilderFactory;

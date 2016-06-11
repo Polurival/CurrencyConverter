@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/spinner_flag_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/flag_icon_width"
+        android:layout_height="@dimen/flag_icon_height" />
 
     <TextView
         android:id="@+id/spinner_currency_name"
