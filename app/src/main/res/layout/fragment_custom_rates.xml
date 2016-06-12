@@ -20,18 +20,20 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_char_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edit_text_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_horizontal_margin"
+            android:text="@string/one_usd_equals_char_code"
             android:textSize="20sp" />
 
         <EditText
             android:id="@+id/edit_custom_currency"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:alpha="0.6"
+            android:alpha="0.8"
             android:background="@color/white"
             android:inputType="numberDecimal"
             android:maxLength="8"
@@ -39,27 +41,41 @@
             android:textSize="20sp" />
 
         <TextView
+            android:id="@+id/tv_char_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:text="@string/rub_char_code"
             android:textSize="20sp" />
 
         <ImageButton
-            android:id="@+id/btn_custom_hint"
-            android:layout_width="@dimen/btn_swap_width"
-            android:layout_height="@dimen/btn_swap_height"
+            android:id="@+id/btn_custom_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:background="@drawable/ic_action_help"
+            android:alpha="0.8"
+            android:background="@drawable/ic_save_24dp"
+            android:contentDescription="@string/save_new_value" />
+
+        <ImageButton
+            android:id="@+id/btn_custom_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:alpha="0.8"
+            android:background="@drawable/ic_help_24dp"
             android:contentDescription="@string/custom_mode_help" />
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_custom_save"
+    <TextView
+        android:id="@+id/tv_custom_currency_nominal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/save_new_value" />
+        android:layout_marginBottom="@dimen/view_vertical_margin"
+        android:layout_marginTop="@dimen/view_vertical_margin" />
 
     <TextView
         android:id="@+id/tv_custom_mode_help"

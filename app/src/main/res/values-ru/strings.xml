@@ -11,22 +11,26 @@
     <string name="swap">Поменять местами выбранные валюты</string>
 
     <!-- Menu -->
-    <string name="update_rates">Обновить курсы</string>
     <string name="data_source">Источник данных</string>
+    <string name="currencies_list">Список валют</string>
+    <string name="update_rates">Обновить курсы</string>
 
     <!-- CustomRateFragment -->
+    <string name="custom_currency_nominal">\t*Номинал = </string>
     <string name="custom_mode_help">Как этим пользоваться?</string>
-    <string name="view_custom_mode_help">\tЧтобы конвертировать валюты между собой,\n
-        необходимо задать их курсы по отношению к ₽\n
-        \tПример: Если хочешь конвертировать $ и €,\n
-        задай по очереди чему равен в ₽ - 1$ и 1€\n</string>
+    <string name="view_custom_mode_help">\t**Чтобы конвертировать валюты между собой,\n
+        необходимо задать их курсы по отношению к $\n
+        \tПример: Если хочешь конвертировать ₽ и €,\n
+        задай по очереди чему равен 1$ в ₽ и €\n</string>
     <string name="save_new_value">Сохранить</string>
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>
+        <item>Яху!</item>
         <item>Настраиваемый источник</item>
     </string-array>
 
+    <!-- for Toasts -->
     <string name="db_writing_error">Ошибка записи в базу данных</string>
     <string name="db_reading_error">Ошибка чтения из базы данных</string>
     <string name="update_error">Ошибка обновления\n
@@ -37,10 +41,12 @@
     <string name="db_custom_update_invalid_value">Недопустимое значение</string>
     <string name="custom_updating_info">Обновите курсы в меню \'Источник данных\'</string>
 
-    <string name="cbr">Курс ЦБ РФ на:\n</string>
+    <!-- Description -->
+    <string name="cb_rf">Курс ЦБ РФ на:\n</string>
+    <string name="yahoo">Курс Яху! на:\n</string>
     <string name="custom">Настраиваемый источник\nдата последнего изменения:\n</string>
 
-    <!-- currencies -->
+    <!-- Currencies -->
     <string name="aed">ОАЭ дирхам</string>
     <string name="afn">Афганский афгани</string>
     <string name="all">Албанский лек</string>
@@ -215,7 +221,7 @@
     <string name="wst">Самоанская тала</string>
 
     <string name="xaf">КФА BEAC франк</string>
-    <string name="xag">Серебро (1 унция) 999 проба</string>
+    <string name="xag">Серебро (1 унция)\n999 проба</string>
     <string name="xau">Золото (1 унция)</string>
     <string name="xcd">Восточно-карибский доллар</string>
     <string name="xcp">Медь высококачественная</string>
@@ -223,7 +229,7 @@
     <string name="xof">КФА BCEAO франк</string>
     <string name="xpd">Палладий (1 унция)</string>
     <string name="xpf">Французской Полинезии франк КПФ</string>
-    <string name="xpt">Платина (1 унция) 999 проба</string>
+    <string name="xpt">Платина (1 унция)\n999 проба</string>
 
     <string name="yer">Йеменский риал</string>
 

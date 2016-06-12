@@ -6,18 +6,18 @@ package com.github.polurival.cc.model;
  */
 public class Currency {
     private int nominal;
-    private double value;
+    private double rate;
 
-    public Currency(int nominal, double value) {
+    public Currency(int nominal, double rate) {
         this.nominal = nominal;
-        this.value = value;
+        this.rate = rate;
     }
 
     public int getNominal() {
         return nominal;
     }
 
-    public double getValue() {
-        return value;
+    public double getRate() {
+        return rate;
     }
 }

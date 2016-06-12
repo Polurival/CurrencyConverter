@@ -28,9 +28,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_YAHOO_NOMINAL = "yahoo_nominal";
     public static final String COLUMN_NAME_CUSTOM_NOMINAL = "custom_nominal";
 
-    public static final String COLUMN_NAME_CB_RF_VALUE = "cb_rf_value";
-    public static final String COLUMN_NAME_YAHOO_VALUE = "yahoo_value";
-    public static final String COLUMN_NAME_CUSTOM_VALUE = "custom_value";
+    public static final String COLUMN_NAME_CB_RF_RATE = "cb_rf_rate";
+    public static final String COLUMN_NAME_YAHOO_RATE = "yahoo_rate";
+    public static final String COLUMN_NAME_CUSTOM_RATE = "custom_rate";
 
     public static final String COLUMN_NAME_NAME_RESOURCE_ID = "name_resource_id";
     public static final String COLUMN_NAME_FLAG_RESOURCE_ID = "flag_resource_id";
@@ -72,9 +72,9 @@ public class DBHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_CB_RF_NOMINAL + " INTEGER, " +
                     COLUMN_NAME_YAHOO_NOMINAL + " INTEGER, " +
                     COLUMN_NAME_CUSTOM_NOMINAL + " INTEGER, " +
-                    COLUMN_NAME_CB_RF_VALUE + " REAL, " +
-                    COLUMN_NAME_YAHOO_VALUE + " REAL, " +
-                    COLUMN_NAME_CUSTOM_VALUE + " REAL, " +
+                    COLUMN_NAME_CB_RF_RATE + " REAL, " +
+                    COLUMN_NAME_YAHOO_RATE + " REAL, " +
+                    COLUMN_NAME_CUSTOM_RATE + " REAL, " +
                     COLUMN_NAME_NAME_RESOURCE_ID + " INTEGER, " +
                     COLUMN_NAME_FLAG_RESOURCE_ID + " INTEGER, " +
                     COLUMN_NAME_CB_RF_SOURCE + " INTEGER, " +
@@ -264,7 +264,7 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.XOF, 0, 1, 1, 0, 583.021057, 583.021057, R.string.xof, 0, 0, 1, 1);
             insertCurrency(db, CharCode.XPD, 0, 1000, 1000, 0, 1.828, 1.828, R.string.xpd, 0, 0, 1, 1);
             insertCurrency(db, CharCode.XPF, 0, 1, 1, 0, 106.063202, 106.063202, R.string.xpf, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XPT, 0, 1000, 1000, 0, 0.001006, 0.001006, R.string.xpt, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.XPT, 0, 1000, 1000, 0, 1.006, 1.006, R.string.xpt, 0, 0, 1, 1);
 
             insertCurrency(db, CharCode.YER, 0, 1, 1, 0, 250.100006, 250.100006, R.string.yer, R.drawable.yer, 0, 1, 1);
 
@@ -276,7 +276,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static void insertCurrency(SQLiteDatabase db, Enum charCode,
                                        int cbRfNominal,int yahooNominal, int customNominal,
-                                       double cbRfValue, double yahooValue, double customValue,
+                                       double cbRfRate, double yahooRate, double customRate,
                                        int nameResourceId, int flagResourceId,
                                        int cbRfProvides, int yahooProvides, int switching) {
 
@@ -287,9 +287,9 @@ public class DBHelper extends SQLiteOpenHelper {
         currencyValues.put(COLUMN_NAME_YAHOO_NOMINAL, yahooNominal);
         currencyValues.put(COLUMN_NAME_CUSTOM_NOMINAL, customNominal);
 
-        currencyValues.put(COLUMN_NAME_CB_RF_VALUE, cbRfValue);
-        currencyValues.put(COLUMN_NAME_YAHOO_VALUE, yahooValue);
-        currencyValues.put(COLUMN_NAME_CUSTOM_VALUE, customValue);
+        currencyValues.put(COLUMN_NAME_CB_RF_RATE, cbRfRate);
+        currencyValues.put(COLUMN_NAME_YAHOO_RATE, yahooRate);
+        currencyValues.put(COLUMN_NAME_CUSTOM_RATE, customRate);
 
         currencyValues.put(COLUMN_NAME_NAME_RESOURCE_ID, nameResourceId);
         currencyValues.put(COLUMN_NAME_FLAG_RESOURCE_ID, flagResourceId);

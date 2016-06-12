@@ -5,14 +5,20 @@
 
     <item
         android:id="@+id/data_source_action"
-        android:icon="@drawable/ic_action_storage"
+        android:icon="@drawable/ic_storage_24dp"
         android:orderInCategory="10"
         android:title="@string/data_source"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/update_rates_action"
-        android:icon="@drawable/ic_action_download"
+        android:id="@+id/currency_switching"
+        android:icon="@drawable/ic_assignment_turned_in_24dp"
         android:orderInCategory="20"
+        android:title="@string/currencies_list"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/update_rates_action"
+        android:icon="@drawable/ic_sync_24dp"
+        android:orderInCategory="30"
         android:title="@string/update_rates"
         app:showAsAction="ifRoom" />
 

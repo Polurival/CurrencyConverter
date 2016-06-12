@@ -33,9 +33,13 @@ public class DBReaderTask extends AsyncTask<String, Void, Boolean> {
     @Override
     protected Boolean doInBackground(String... params) {
         String nominal = params[1];
-        String value = params[2];
+        String rate = params[2];
+
+        String switchClause = DBHelper.COLUMN_NAME_SWITCHING + " = 1";
         String where = DBHelper.CUSTOM_SOURCE_MOCK.equals(params[0]) ?
-                null :(params[0] + " = 1");
+                switchClause :
+                switchClause + " AND " + params[0] + " = 1";
+
         try {
             SQLiteDatabase db =
                     DBHelper.getInstance(appContext).getReadableDatabase();
@@ -43,7 +47,7 @@ public class DBReaderTask extends AsyncTask<String, Void, Boolean> {
                     new String[]{DBHelper.COLUMN_NAME_ID,
                             DBHelper.COLUMN_NAME_CHAR_CODE,
                             nominal,
-                            value,
+                            rate,
                             DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
                             DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
                     where,

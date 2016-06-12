@@ -11,23 +11,25 @@
     <string name="swap">Swap selected currencies</string>
 
     <!-- Menu -->
-    <string name="update_rates">Update rates</string>
     <string name="data_source">Data source</string>
+    <string name="currencies_list">Currencies List</string>
+    <string name="update_rates">Update rates</string>
 
     CustomRateFragment
+    <string name="custom_currency_nominal">\t*Nominal = </string>
+    <string name="one_usd_equals_char_code">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
-    <string name="view_custom_mode_help">\tFor converting currencies to each other,\n
-        you need to set their rates relative to ₽\n
-        \tExample: If you want to convert $ and €,\n
-        set equality of ₽ to 1$ and 1€</string>
+    <string name="view_custom_mode_help">\t**For converting currencies to each other,\n
+        you need to set their rates relative to $\n
+        \tExample: If you want to convert ₽ and €,\n
+        set equality of 1$ to ₽ and €</string>
     <string name="save_new_value">Save</string>
 
     <string-array name="data_source_array">
         <item>CB RF</item>
+        <item>Yahoo!</item>
         <item>Custom source</item>
     </string-array>
-
-    <string name="rub_char_code">RUB</string>
 
     <!-- for Toasts -->
     <string name="update_error">Update Error. Bad Source or Internet Connection</string>
@@ -36,30 +38,41 @@
     <string name="db_update_success">Database has been successfully updated</string>
     <string name="db_custom_update_success">
         Selected currency rate successfully updated.\nNominal = </string>
-    <string name="db_custom_update_invalid_value">Invalid value</string>
+    <string name="db_custom_update_invalid_value">Invalid rate</string>
     <string name="custom_updating_info">Update rates in \'Data source\' menu</string>
 
-    <string name="cbr">CB RF rate on:\n</string>
+    <!-- Description -->
+    <string name="cb_rf">CB RF rate on:\n</string>
+    <string name="yahoo">Yahoo! rate on:\n</string>
     <string name="custom">Custom source\nlast modified:\n</string>
 
-    <string name="saved_from_spinner_pos">saved_from_spinner_pos</string>
-    <string name="saved_to_spinner_pos">saved_to_spinner_pos</string>
+    <!-- Shared preferences -->
+    <string name="saved_cb_rf_from_spinner_pos">saved_cb_rf_from_spinner_pos</string>
+    <string name="saved_cb_rf_to_spinner_pos">saved_cb_rf_to_spinner_pos</string>
+    <string name="saved_yahoo_from_spinner_pos">saved_yahoo_from_spinner_pos</string>
+    <string name="saved_yahoo_to_spinner_pos">saved_yahoo_to_spinner_pos</string>
+    <string name="saved_custom_from_spinner_pos">saved_custom_from_spinner_pos</string>
+    <string name="saved_custom_to_spinner_pos">saved_custom_to_spinner_pos</string>
     <string name="saved_custom_spinner_pos">saved_custom_spinner_pos</string>
     <string name="saved_from_edit_amount_text">saved_from_edit_amount_text</string>
     <string name="saved_to_edit_amount_text">saved_to_edit_amount_text</string>
-    <string name="saved_edit_amount_text_default"/>
+    <string name="saved_edit_amount_text_default" />
     <string name="saved_rate_updater_class">saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default">
         com.github.polurival.cc.model.CBRateUpdaterTask</string>
     <string name="saved_cb_rf_up_date_time">saved_cb_rf_up_date_time</string>
+    <string name="saved_yahoo_up_date_time">saved_yahoo_up_date_time</string>
     <string name="saved_custom_up_date_time">saved_custom_up_date_time</string>
 
+    <!-- RateUpdater class names -->
     <string name="cb_rf_rate_updater_class">
         com.github.polurival.cc.model.CBRateUpdaterTask</string>
+    <string name="yahoo_rate_updater_class">
+        com.github.polurival.cc.model.YahooRateUpdaterTask</string>
     <string name="custom_rate_updater_class">
         com.github.polurival.cc.model.CustomRateUpdaterMock</string>
 
-    <!-- currencies -->
+    <!-- Currencies -->
     <string name="aed">Emirati Dirham</string>
     <string name="afn">Afghan Afghani</string>
     <string name="all">Albanian Lek</string>

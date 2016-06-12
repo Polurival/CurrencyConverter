@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.model.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CustomRateUpdaterMock;
+import com.github.polurival.cc.model.YahooRateUpdaterTask;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.RateUpdater;
@@ -69,12 +70,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
     double currencyFromNominal;
-    double currencyFromToRubRate;
+    double currencyFromToXRate;
 
     private Spinner toSpinner;
     private int toSpinnerSelectedPos;
     double currencyToNominal;
-    double currencyToToRubRate;
+    double currencyToToXRate;
 
     private TextView tvDateTime;
 
@@ -159,10 +160,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void updateRatesFromSource() {
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).execute();
-            //todo yahoo
-        } /*else if (rateUpdater instanceof CustomRateUpdaterMock) {
-            //do nothing
-        }*/
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            ((YahooRateUpdaterTask) rateUpdater).execute();
+        }
     }
 
     @Override
@@ -172,12 +172,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
                     DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
-                    DBHelper.COLUMN_NAME_CB_RF_VALUE);
-            //todo yahoo
+                    DBHelper.COLUMN_NAME_CB_RF_RATE);
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            dbReaderTask.execute(DBHelper.COLUMN_NAME_YAHOO_SOURCE,
+                    DBHelper.COLUMN_NAME_YAHOO_NOMINAL,
+                    DBHelper.COLUMN_NAME_YAHOO_RATE);
         } else if (rateUpdater instanceof CustomRateUpdaterMock) {
             dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
                     DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
-                    DBHelper.COLUMN_NAME_CUSTOM_VALUE);
+                    DBHelper.COLUMN_NAME_CUSTOM_RATE);
         }
     }
 
@@ -278,9 +281,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
 
         if (isNeedToReSwapValues && (v.getId() != R.id.edit_to_amount)) {
-            double tempValFrom = currencyFromToRubRate;
-            currencyFromToRubRate = currencyToToRubRate;
-            currencyToToRubRate = tempValFrom;
+            double tempValFrom = currencyFromToXRate;
+            currencyFromToXRate = currencyToToXRate;
+            currencyToToXRate = tempValFrom;
 
             double tempNomFrom = currencyFromNominal;
             currencyFromNominal = currencyToNominal;
@@ -290,9 +293,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
 
         if (!isNeedToReSwapValues && (v.getId() == R.id.edit_to_amount)) {
-            double tempValFrom = currencyFromToRubRate;
-            currencyFromToRubRate = currencyToToRubRate;
-            currencyToToRubRate = tempValFrom;
+            double tempValFrom = currencyFromToXRate;
+            currencyFromToXRate = currencyToToXRate;
+            currencyToToXRate = tempValFrom;
 
             double tempNomFrom = currencyFromNominal;
             currencyFromNominal = currencyToNominal;
@@ -303,15 +306,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
 
-        //TODO if (rateUpdater NOT instanceof CBRateUpdaterTask) {
-        /*double result = enteredAmountOfMoney *
-                (currencyToToRubRate / currencyFromToRubRate) *
-                (currencyFromNominal / currencyToNominal);
-          } else {*/
+        double result;
+        if (rateUpdater instanceof CBRateUpdaterTask) {
+            result = enteredAmountOfMoney *
+                    (currencyFromToXRate / currencyToToXRate) *
+                    (currencyToNominal / currencyFromNominal);
+        } else {
+            result = enteredAmountOfMoney *
+                    (currencyToToXRate / currencyFromToXRate) *
+                    (currencyFromNominal / currencyToNominal);
+        }
 
-        double result = enteredAmountOfMoney *
-                (currencyFromToRubRate / currencyToToRubRate) *
-                (currencyToNominal / currencyFromNominal);
 
         if (v.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmount.getText().toString())) {
@@ -354,7 +359,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 fromCursor = (Cursor) parent.getItemAtPosition(position);
                 currencyFromNominal = (double) fromCursor.getInt(2);
-                currencyFromToRubRate = fromCursor.getDouble(3);
+                currencyFromToXRate = fromCursor.getDouble(3);
 
                 fromSpinnerSelectedPos = position;
 
@@ -373,7 +378,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 toCursor = (Cursor) parent.getItemAtPosition(position);
                 currencyToNominal = (double) toCursor.getInt(2);
-                currencyToToRubRate = toCursor.getDouble(3);
+                currencyToToXRate = toCursor.getDouble(3);
 
                 toSpinnerSelectedPos = position;
 
@@ -436,10 +441,22 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putInt(getString(R.string.saved_from_spinner_pos),
-                fromSpinnerSelectedPos);
-        editor.putInt(getString(R.string.saved_to_spinner_pos),
-                toSpinnerSelectedPos);
+        if (rateUpdater instanceof CBRateUpdaterTask) {
+            editor.putInt(getString(R.string.saved_cb_rf_from_spinner_pos),
+                    fromSpinnerSelectedPos);
+            editor.putInt(getString(R.string.saved_cb_rf_to_spinner_pos),
+                    toSpinnerSelectedPos);
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            editor.putInt(getString(R.string.saved_yahoo_from_spinner_pos),
+                    fromSpinnerSelectedPos);
+            editor.putInt(getString(R.string.saved_yahoo_to_spinner_pos),
+                    toSpinnerSelectedPos);
+        } else {
+            editor.putInt(getString(R.string.saved_custom_from_spinner_pos),
+                    fromSpinnerSelectedPos);
+            editor.putInt(getString(R.string.saved_custom_to_spinner_pos),
+                    toSpinnerSelectedPos);
+        }
 
         editor.putString(getString(R.string.saved_from_edit_amount_text),
                 editFromAmount.getText().toString());
@@ -461,6 +478,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (rateUpdater instanceof CBRateUpdaterTask) {
             editor.putLong(getString(R.string.saved_cb_rf_up_date_time),
                     DateUtil.getUpDateTimeInSeconds(upDateTime));
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            editor.putLong(getString(R.string.saved_yahoo_up_date_time),
+                    DateUtil.getUpDateTimeInSeconds(upDateTime));
         }
 
         editor.apply();
@@ -473,17 +493,19 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
-        editFromAmount.setText("");
+        editFromAmount.setText(""); //todo check without it and delete in case of useless
         editFromAmount.setText(editFromAmountText);
         String editToAmountText =
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
         editToAmount.setText(editToAmountText);
 
-        String savedUpDateTime = null;
+        String savedUpDateTime;
         if (rateUpdater instanceof CBRateUpdaterTask) {
             savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);
-        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            savedUpDateTime = getString(R.string.saved_yahoo_up_date_time);
+        } else {
             savedUpDateTime = getString(R.string.saved_custom_up_date_time);
         }
         long upDateTimeInSeconds =
@@ -513,12 +535,24 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        fromSpinnerSelectedPos =
-                preferences.getInt(getString(R.string.saved_from_spinner_pos), 0);
-        fromSpinner.setSelection(fromSpinnerSelectedPos);
+        if (rateUpdater instanceof CBRateUpdaterTask) {
+            fromSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_cb_rf_from_spinner_pos), 30);
+            toSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_cb_rf_to_spinner_pos), 23);
+        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+            fromSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 143);
+            toSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 116);
+        } else {
+            fromSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 143);
+            toSpinnerSelectedPos =
+                    preferences.getInt(getString(R.string.saved_custom_to_spinner_pos), 116);
+        }
 
-        toSpinnerSelectedPos =
-                preferences.getInt(getString(R.string.saved_to_spinner_pos), 0);
+        fromSpinner.setSelection(fromSpinnerSelectedPos);
         toSpinner.setSelection(toSpinnerSelectedPos);
     }
 
@@ -533,8 +567,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         switch (item.getItemId()) {
 
             case R.id.data_source_action:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                Intent dataSourceIntent = new Intent(this, DataSourceActivity.class);
+                startActivity(dataSourceIntent);
+                return true;
+
+            case R.id.currency_switching:
+                Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
+                startActivity(currencySwitchingIntent);
                 return true;
 
             case R.id.update_rates_action:
@@ -548,7 +587,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private void updateRates() {
         if (rateUpdater instanceof CustomRateUpdaterMock) {
-            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_SHORT).show();
             stopRefresh();
         } else {
             loadRateUpdaterProperties();

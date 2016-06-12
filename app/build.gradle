@@ -31,6 +31,14 @@ android {
 
         //https://github.com/chrisbanes/ActionBar-PullToRefresh/wiki/QuickStart-Stock
         compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+
+        //https://commons.apache.org/proper/commons-io/
+        compile "commons-io:commons-io:+"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
 }
 

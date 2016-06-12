@@ -14,6 +14,7 @@ import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.RateUpdater;
 import com.github.polurival.cc.model.RateUpdaterListener;
+import com.github.polurival.cc.model.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
 
 import java.util.EnumMap;
@@ -49,10 +50,17 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean> {
             ContentValues contentValues = new ContentValues();
 
             for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
+                int nominal = entry.getValue().getNominal();
+                double rate = entry.getValue().getRate();
+
                 if (rateUpdater instanceof CBRateUpdaterTask) {
-                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, entry.getValue().getNominal());
-                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_VALUE, entry.getValue().getValue());
-                } // TODO: 09.06.2016  add if else {...} for Yahoo
+                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, nominal);
+                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_RATE, rate);
+                } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+                    contentValues.put(DBHelper.COLUMN_NAME_YAHOO_NOMINAL, nominal);
+                    contentValues.put(DBHelper.COLUMN_NAME_YAHOO_RATE, rate);
+                }
+
                 db.update(DBHelper.TABLE_NAME,
                         contentValues,
                         DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",

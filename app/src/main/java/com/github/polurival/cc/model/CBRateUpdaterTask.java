@@ -30,9 +30,17 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
     private RateUpdaterListener rateUpdaterListener;
     private EnumMap<CharCode, Currency> currencyMap;
 
+    public CBRateUpdaterTask() {
+        this.appContext = AppContext.getContext();
+    }
+
+    @Override
+    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
+        this.rateUpdaterListener = rateUpdaterListener;
+    }
+
     @Override
     protected void onPreExecute() {
-        appContext = AppContext.getContext();
         currencyMap = new EnumMap<>(CharCode.class);
     }
 
@@ -67,11 +75,6 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
     }
 
     @Override
-    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        this.rateUpdaterListener = rateUpdaterListener;
-    }
-
-    @Override
     public <T> void fillCurrencyMapFromSource(T doc) {
         NodeList descNodes = ((Document) doc).getElementsByTagName("Valute");
 
@@ -79,7 +82,7 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
             NodeList currencyNodeList = descNodes.item(i).getChildNodes();
             CharCode charCode = null;
             String nominal = null;
-            String value = null;
+            String rate = null;
 
             for (int j = 0; j < currencyNodeList.getLength(); j++) {
                 String nodeName = currencyNodeList.item(j).getNodeName();
@@ -90,12 +93,12 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
                 } else if ("Nominal".equals(nodeName)) {
                     nominal = textContent;
                 } else if ("Value".equals(nodeName)) {
-                    value = textContent.replace(',', '.');
+                    rate = textContent.replace(',', '.');
                 }
 
-                if (charCode != null && nominal != null && value != null) {
+                if (null != charCode && null != nominal  && null != rate) {
                     currencyMap.put(charCode,
-                            new Currency(Integer.valueOf(nominal), Double.valueOf(value)));
+                            new Currency(Integer.valueOf(nominal), Double.valueOf(rate)));
                     break;
                 }
             }
@@ -147,6 +150,6 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
 
     @Override
     public String getDescription() {
-        return AppContext.getContext().getString(R.string.cbr);
+        return appContext.getString(R.string.cb_rf);
     }
 }

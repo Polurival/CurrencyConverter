@@ -12,7 +12,7 @@ import android.widget.Spinner;
 
 import com.github.polurival.cc.util.Logger;
 
-public class SettingsActivity extends Activity {
+public class DataSourceActivity extends Activity {
 
     private String rateUpdaterClassName;
     private CustomRateFragment customRateFragment;
@@ -44,7 +44,7 @@ public class SettingsActivity extends Activity {
 
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
 
-                if (position == 1) {
+                if (position == 2) {
                     if (!customRateFragment.isAdded()) {
                         ft.add(R.id.custom_rates_fragment_container, customRateFragment);
                         Logger.logD("fragment was added");
@@ -60,8 +60,11 @@ public class SettingsActivity extends Activity {
                         ft.hide(customRateFragment);
                         Logger.logD("fragment was hidden");
                     }
+
                     if (position == 0) {
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
+                    } else if (position == 1) {
+                        rateUpdaterClassName = getString(R.string.yahoo_rate_updater_class);
                     }
                 }
                 saveRateUpdaterNameProperty();
@@ -78,8 +81,10 @@ public class SettingsActivity extends Activity {
 
         if (rateUpdaterClassName.equals(getString(R.string.cb_rf_rate_updater_class))) {
             sourceSpinner.setSelection(0);
-        } else if (rateUpdaterClassName.equals(getString(R.string.custom_rate_updater_class))) {
+        } else if (rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
             sourceSpinner.setSelection(1);
+        } else if (rateUpdaterClassName.equals(getString(R.string.custom_rate_updater_class))) {
+            sourceSpinner.setSelection(2);
         }
     }
 
