@@ -7,6 +7,7 @@
     <color name="green">#41bb8a</color>
     <color name="azure">#2A52BE</color>
     <color name="app_background">#ededed</color>
+    <color name="grey">#767676</color>
     <color name="black">#ff000000</color>
 
 </resources>

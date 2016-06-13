@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="false"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/lv_flag_icon"
+        android:layout_width="@dimen/flag_icon_width"
+        android:layout_height="@dimen/flag_icon_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/view_horizontal_margin"
+        android:layout_marginStart="@dimen/view_horizontal_margin"
+        android:clickable="false"
+        android:contentDescription="@string/issuer_flag"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <TextView
+        android:id="@+id/lv_currency_name"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/view_horizontal_margin"
+        android:layout_marginRight="@dimen/view_horizontal_margin"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/lv_currency_char_code"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:alpha="0.8"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:textColor="@color/azure"
+        android:textSize="20sp" />
+
+    <CheckBox
+        android:id="@+id/cb_currency_turn_on_off"
+        android:layout_width="45dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+</LinearLayout>

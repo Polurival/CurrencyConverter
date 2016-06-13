@@ -277,6 +277,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     public void convertAndSetResult(View v) {
         if (null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem()) {
+            Toast.makeText(getApplicationContext(),
+                    getApplicationContext().getString(R.string.all_currencies_disabled),
+                    Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
@@ -389,6 +393,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        if (fromSpinner.getCount() == 0) {
+            Toast.makeText(getApplicationContext(),
+                    getApplicationContext().getString(R.string.all_currencies_disabled),
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     @Override
@@ -428,9 +439,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onStop() {
         saveProperties();
 
-        fromCursor.close();
-        toCursor.close();
-        cursor.close();
+        if (null != fromCursor) {
+            fromCursor.close();
+        }
+        if (null != toCursor) {
+            toCursor.close();
+        }
+        if (null != cursor) {
+            cursor.close();
+        }
         db.close();
 
         super.onStop();

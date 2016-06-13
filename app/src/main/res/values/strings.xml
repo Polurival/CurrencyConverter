@@ -9,13 +9,14 @@
     <string name="transfer_to">Convert to:</string>
     <string name="last_update">Last update:</string>
     <string name="swap">Swap selected currencies</string>
+    <string name="issuer_flag">Issuer\'s flag</string>
 
     <!-- Menu -->
     <string name="data_source">Data source</string>
-    <string name="currencies_list">Currencies List</string>
+    <string name="currencies_list">Currencies list</string>
     <string name="update_rates">Update rates</string>
 
-    CustomRateFragment
+    <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Nominal = </string>
     <string name="one_usd_equals_char_code">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
@@ -24,6 +25,8 @@
         \tExample: If you want to convert ₽ and €,\n
         set equality of 1$ to ₽ and €</string>
     <string name="save_new_value">Save</string>
+
+    <string name="turn_all_on_off">Turn all On/Off</string>
 
     <string-array name="data_source_array">
         <item>CB RF</item>
@@ -40,6 +43,7 @@
         Selected currency rate successfully updated.\nNominal = </string>
     <string name="db_custom_update_invalid_value">Invalid rate</string>
     <string name="custom_updating_info">Update rates in \'Data source\' menu</string>
+    <string name="all_currencies_disabled">Turn on currencies in \'Currencies list\' menu</string>
 
     <!-- Description -->
     <string name="cb_rf">CB RF rate on:\n</string>

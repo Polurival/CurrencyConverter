@@ -20,7 +20,7 @@ public class DataSourceActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_data_source);
 
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);

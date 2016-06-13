@@ -9,6 +9,7 @@
     <string name="transfer_to">Конвертировать в:</string>
     <string name="last_update">Последнее обновление:</string>
     <string name="swap">Поменять местами выбранные валюты</string>
+    <string name="issuer_flag">Флаг эмитента</string>
 
     <!-- Menu -->
     <string name="data_source">Источник данных</string>
@@ -23,6 +24,8 @@
         \tПример: Если хочешь конвертировать ₽ и €,\n
         задай по очереди чему равен 1$ в ₽ и €\n</string>
     <string name="save_new_value">Сохранить</string>
+
+    <string name="turn_all_on_off">Включить все/ничего</string>
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>
@@ -40,6 +43,7 @@
         Курс выбранной валюты успешно обновлен.\nНоминал = </string>
     <string name="db_custom_update_invalid_value">Недопустимое значение</string>
     <string name="custom_updating_info">Обновите курсы в меню \'Источник данных\'</string>
+    <string name="all_currencies_disabled">Включи валюты в меню \'Список валют\'</string>
 
     <!-- Description -->
     <string name="cb_rf">Курс ЦБ РФ на:\n</string>

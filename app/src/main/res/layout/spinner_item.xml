@@ -7,22 +7,28 @@
     <ImageView
         android:id="@+id/spinner_flag_icon"
         android:layout_width="@dimen/flag_icon_width"
-        android:layout_height="@dimen/flag_icon_height" />
+        android:layout_height="@dimen/flag_icon_height"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/view_horizontal_margin"
+        android:layout_marginStart="@dimen/view_horizontal_margin"
+        android:contentDescription="@string/issuer_flag" />
 
     <TextView
         android:id="@+id/spinner_currency_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/view_horizontal_margin"
         android:layout_marginRight="@dimen/view_horizontal_margin"
         android:layout_weight="5"
         android:textColor="@color/black"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/spinner_currency_char_code"
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:alpha="0.8"
         android:textColor="@color/azure"

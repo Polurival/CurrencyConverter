@@ -38,7 +38,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_CB_RF_SOURCE = "cb_rf";
     public static final String COLUMN_NAME_YAHOO_SOURCE = "yahoo";
 
-    public static final String COLUMN_NAME_SWITCHING = "SWITCHING";
+    public static final String COLUMN_NAME_SWITCHING = "switching";
 
     public static final String CUSTOM_SOURCE_MOCK = "custom_source";
 

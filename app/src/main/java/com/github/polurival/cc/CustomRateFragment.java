@@ -88,6 +88,14 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void saveCurrencyCustomValueAndCustomNominal() {
+        if (null == customCurrencySpinner || customCurrencySpinner.getCount() == 0) {
+            Toast.makeText(appContext,
+                    appContext.getString(R.string.all_currencies_disabled),
+                    Toast.LENGTH_SHORT)
+                    .show();
+            return;
+        }
+
         Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
         final int currencyNameId = currencyNameCursor.getInt(4);
 
@@ -223,15 +231,22 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void initCurrencyDataFromCustomSpinnerCursor() {
-        double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
-        setEditCustomCurrencyText(currencyRate);
+        if (null != customCurrencySpinner && customCurrencySpinner.getCount() != 0) {
+            double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
+            setEditCustomCurrencyText(currencyRate);
 
-        String charCode = ((Cursor) customCurrencySpinner.getSelectedItem()).getString(1);
-        tvCharCode.setText(charCode);
+            String charCode = ((Cursor) customCurrencySpinner.getSelectedItem()).getString(1);
+            tvCharCode.setText(charCode);
 
-        int currencyNominal = ((Cursor) customCurrencySpinner.getSelectedItem()).getInt(2);
-        tvCustomCurrencyNominal.setText(String.format("%s%s",
-                appContext.getString(R.string.custom_currency_nominal), currencyNominal));
+            int currencyNominal = ((Cursor) customCurrencySpinner.getSelectedItem()).getInt(2);
+            tvCustomCurrencyNominal.setText(String.format("%s%s",
+                    appContext.getString(R.string.custom_currency_nominal), currencyNominal));
+        } else {
+            Toast.makeText(appContext,
+                    appContext.getString(R.string.all_currencies_disabled),
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
     }
 
     private void setEditCustomCurrencyText(double currencyRate) {
