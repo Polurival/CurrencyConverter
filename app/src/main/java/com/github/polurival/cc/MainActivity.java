@@ -136,7 +136,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         checkAsyncTaskStatusAndSetNewInstance();
 
-        //update on Application Start
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
             updateRatesFromSource();
         }

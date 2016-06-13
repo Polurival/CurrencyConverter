@@ -1,21 +1,32 @@
 package com.github.polurival.cc.util;
 
-import com.github.polurival.cc.model.CBRateUpdaterTask;
-import com.github.polurival.cc.model.CustomRateUpdaterMock;
-import com.github.polurival.cc.model.YahooRateUpdaterTask;
-
 /**
  * Created by Polurival
  * on 01.06.2016.
  */
 public interface Constants {
+
     String LOG = "com.github.polurival.cc";
 
+    /**
+     * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
+     */
     String CBR_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
+    String CURRENCY_NODE_LIST = "Valute";
+    String CHAR_CODE_NODE = "CharCode";
+    String NOMINAL_NODE = "Nominal";
+    String RATE_NODE = "Value";
+
+    /**
+     * See <a href="http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json">source</a>
+     */
     String YAHOO_URL =
             "http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
+    String LIST_OBJECT = "list";
+    String RESOURCES_ARRAY = "resources";
+    String RESOURCE_OBJECT = "resource";
+    String FIELDS_OBJECT = "fields";
+    String SYMBOL_KEY = "symbol";
+    String PRICE_KEY = "price";
 
-    String CB_RF_RATE_UPDATER = CBRateUpdaterTask.class.getName();
-    String YAHOO_RATE_UPDATER = YahooRateUpdaterTask.class.getName();
-    String CUSTOM_RATE_UPDATER = CustomRateUpdaterMock.class.getName();
 }

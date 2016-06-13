@@ -14,9 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.EnumMap;
 
@@ -47,16 +45,12 @@ public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> impleme
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
-            //URL url = new URL(Constants.YAHOO_URL);
-            //URLConnection connection = url.openConnection();
-            //InputStream inputStream = connection.getInputStream();
             String jsonStr =
                     IOUtils.toString(new URL(Constants.YAHOO_URL), Charset.forName("UTF-8"));
 
             if (jsonStr != null) {
                 fillCurrencyMapFromSource(jsonStr);
             }
-
         } catch (Exception e) {
             return false;
         }
@@ -81,15 +75,16 @@ public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> impleme
     @Override
     public <T> void fillCurrencyMapFromSource(T doc) throws JSONException {
         JSONObject yahooAllCurrencies = new JSONObject((String) doc);
-        JSONObject list = yahooAllCurrencies.getJSONObject("list");
-        JSONArray resources = list.getJSONArray("resources");
+        JSONObject list = yahooAllCurrencies.getJSONObject(Constants.LIST_OBJECT);
+        JSONArray resources = list.getJSONArray(Constants.RESOURCES_ARRAY);
 
         for (int i = 0; i < resources.length(); i++) {
-            JSONObject resource = resources.getJSONObject(i).getJSONObject("resource");
-            JSONObject fields = resource.getJSONObject("fields");
+            JSONObject resource =
+                    resources.getJSONObject(i).getJSONObject(Constants.RESOURCE_OBJECT);
+            JSONObject fields = resource.getJSONObject(Constants.FIELDS_OBJECT);
 
-            String code = fields.getString("symbol").substring(0, 3);
-            double rate = fields.getDouble("price");
+            String code = fields.getString(Constants.SYMBOL_KEY).substring(0, 3);
+            double rate = fields.getDouble(Constants.PRICE_KEY);
 
             CharCode charCode;
             try {

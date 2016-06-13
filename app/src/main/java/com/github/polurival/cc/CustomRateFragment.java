@@ -27,7 +27,8 @@ import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.DateUtil;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Polurival
+ * on 07.06.2016.
  */
 public class CustomRateFragment extends Fragment implements View.OnClickListener {
 
@@ -171,7 +172,9 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    //https://github.com/codepath/android_guides/wiki/Populating-a-ListView-with-a-CursorAdapter
+    /**
+     * See <a href="https://github.com/codepath/android_guides/wiki/Populating-a-ListView-with-a-CursorAdapter">source</a>
+     */
     private class SpinnerCursorAdapter extends CursorAdapter {
 
         public SpinnerCursorAdapter(Context context, Cursor cursor) {
@@ -280,7 +283,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     private void saveCustomDateProperties() {
         SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(AppContext.getContext());
+                PreferenceManager.getDefaultSharedPreferences(appContext);
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putLong(getString(R.string.saved_custom_up_date_time),

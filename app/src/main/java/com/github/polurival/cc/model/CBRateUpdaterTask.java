@@ -76,7 +76,7 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
 
     @Override
     public <T> void fillCurrencyMapFromSource(T doc) {
-        NodeList descNodes = ((Document) doc).getElementsByTagName("Valute");
+        NodeList descNodes = ((Document) doc).getElementsByTagName(Constants.CURRENCY_NODE_LIST);
 
         for (int i = 0; i < descNodes.getLength(); i++) {
             NodeList currencyNodeList = descNodes.item(i).getChildNodes();
@@ -88,15 +88,15 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
                 String nodeName = currencyNodeList.item(j).getNodeName();
                 String textContent = currencyNodeList.item(j).getTextContent();
 
-                if ("CharCode".equals(nodeName)) {
+                if (Constants.CHAR_CODE_NODE.equals(nodeName)) {
                     charCode = CharCode.valueOf(textContent);
-                } else if ("Nominal".equals(nodeName)) {
+                } else if (Constants.NOMINAL_NODE.equals(nodeName)) {
                     nominal = textContent;
-                } else if ("Value".equals(nodeName)) {
+                } else if (Constants.RATE_NODE.equals(nodeName)) {
                     rate = textContent.replace(',', '.');
                 }
 
-                if (null != charCode && null != nominal  && null != rate) {
+                if (null != charCode && null != nominal && null != rate) {
                     currencyMap.put(charCode,
                             new Currency(Integer.valueOf(nominal), Double.valueOf(rate)));
                     break;
@@ -104,37 +104,6 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
             }
         }
     }
-
-    /*@Override
-    public void fillCurrencyMapFromSource(Document doc) {
-        NodeList descNodes = doc.getElementsByTagName("Valute");
-
-        for (int i = 0; i < descNodes.getLength(); i++) {
-            NodeList currencyNodeList = descNodes.item(i).getChildNodes();
-            CharCode charCode = null;
-            String nominal = null;
-            String value = null;
-
-            for (int j = 0; j < currencyNodeList.getLength(); j++) {
-                String nodeName = currencyNodeList.item(j).getNodeName();
-                String textContent = currencyNodeList.item(j).getTextContent();
-
-                if ("CharCode".equals(nodeName)) {
-                    charCode = CharCode.valueOf(textContent);
-                } else if ("Nominal".equals(nodeName)) {
-                    nominal = textContent;
-                } else if ("Value".equals(nodeName)) {
-                    value = textContent.replace(',', '.');
-                }
-
-                if (charCode != null && nominal != null && value != null) {
-                    currencyMap.put(charCode,
-                            new Currency(Integer.valueOf(nominal), Double.valueOf(value)));
-                    break;
-                }
-            }
-        }
-    }*/
 
     private Document parseXML(InputStream stream) throws Exception {
         DocumentBuilderFactory objDocumentBuilderFactory;

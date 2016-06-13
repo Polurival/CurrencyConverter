@@ -238,7 +238,6 @@ public class CurrencySwitchingActivity extends Activity {
     @Override
     public void onStop() {
         listCursor.close();
-        //db.close();
 
         super.onStop();
     }
