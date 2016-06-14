@@ -2,6 +2,8 @@ package com.github.polurival.cc.model;
 
 import android.database.Cursor;
 
+import com.github.polurival.cc.model.db.OnBackPressedListener;
+
 import org.joda.time.LocalDateTime;
 
 /**
@@ -9,6 +11,10 @@ import org.joda.time.LocalDateTime;
  * on 28.05.2016.
  */
 public interface RateUpdaterListener {
+
+    void setOnBackPressedListener(OnBackPressedListener onBackPressedListener);
+
+    void setMenuState(String menuState);
 
     void setCursor(Cursor cursor);
 

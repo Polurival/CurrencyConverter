@@ -15,11 +15,11 @@
         android:orderInCategory="20"
         android:title="@string/currencies_list"
         app:showAsAction="ifRoom" />
-    <item
+    <!--<item
         android:id="@+id/update_rates_action"
         android:icon="@drawable/ic_sync_24dp"
         android:orderInCategory="30"
         android:title="@string/update_rates"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" />-->
 
 </menu>

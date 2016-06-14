@@ -61,6 +61,7 @@ public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> impleme
     protected void onPostExecute(Boolean result) {
         if (result) {
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
+            rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();

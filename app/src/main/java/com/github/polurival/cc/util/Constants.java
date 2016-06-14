@@ -29,4 +29,7 @@ public interface Constants {
     String SYMBOL_KEY = "symbol";
     String PRICE_KEY = "price";
 
+    String MENU_HIDE = "menuHide";
+    String MENU_VISIBLE = "menuVisible";
+
 }

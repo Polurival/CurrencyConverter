@@ -22,7 +22,8 @@
 
     <TextView
         android:id="@+id/lv_currency_name"
-        android:layout_width="220dp"
+        android:layout_width="0dp"
+        android:layout_weight="15"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/view_horizontal_margin"
@@ -35,8 +36,9 @@
 
     <TextView
         android:id="@+id/lv_currency_char_code"
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="4"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:alpha="0.8"
         android:clickable="false"
@@ -47,7 +49,8 @@
 
     <CheckBox
         android:id="@+id/cb_currency_turn_on_off"
-        android:layout_width="45dp"
+        android:layout_width="0dp"
+        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:clickable="false"

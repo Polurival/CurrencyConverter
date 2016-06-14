@@ -23,7 +23,8 @@ import java.util.EnumMap;
  * Created by Polurival
  * on 29.05.2016.
  */
-public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean> {
+public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean>
+        implements OnBackPressedListener {
 
     private Context appContext;
     private RateUpdaterListener rateUpdaterListener;
@@ -88,6 +89,15 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean> {
             Toast.makeText(appContext, appContext.getString(R.string.db_writing_error),
                     Toast.LENGTH_SHORT)
                     .show();
+        }
+
+        rateUpdaterListener.setOnBackPressedListener(null);
+    }
+
+    @Override
+    public void notifyBackPressed() {
+        if (this.getStatus() != AsyncTask.Status.PENDING) {
+            this.cancel(true);
         }
     }
 }

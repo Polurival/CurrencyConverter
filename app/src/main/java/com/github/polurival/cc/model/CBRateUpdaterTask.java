@@ -63,6 +63,7 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
     protected void onPostExecute(Boolean result) {
         if (result) {
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
+            rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();

@@ -33,6 +33,8 @@ import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.RateUpdater;
 import com.github.polurival.cc.model.RateUpdaterListener;
+import com.github.polurival.cc.model.db.OnBackPressedListener;
+import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
 
@@ -53,6 +55,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Cursor cursor;
     private Cursor fromCursor;
     private Cursor toCursor;
+
+    private String menuState;
+    private OnBackPressedListener onBackPressedListener;
 
     private RateUpdater rateUpdater;
     private LocalDateTime upDateTime;
@@ -78,6 +83,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     double currencyToToXRate;
 
     private TextView tvDateTime;
+
+    @Override
+    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
+        this.onBackPressedListener = onBackPressedListener;
+    }
+
+    @Override
+    public void setMenuState(String menuState) {
+        this.menuState = menuState;
+        invalidateOptionsMenu();
+    }
 
     @Override
     public void setCursor(Cursor cursor) {
@@ -162,11 +178,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             ((YahooRateUpdaterTask) rateUpdater).execute();
         }
+
+        menuState = Constants.MENU_HIDE;
+        invalidateOptionsMenu();
     }
 
     @Override
     public void readDataFromDB() {
         DBReaderTask dbReaderTask = new DBReaderTask();
+        this.setOnBackPressedListener(dbReaderTask);
         dbReaderTask.setRateUpdaterListener(this);
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
@@ -509,7 +529,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
-        editFromAmount.setText(""); //todo check without it and delete in case of useless
+        //editFromAmount.setText(""); //todo check without it and delete in case of useless
         editFromAmount.setText(editFromAmountText);
         String editToAmountText =
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
@@ -575,6 +595,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        if (Constants.MENU_HIDE.equals(menuState)) {
+            for (int i = 0; i < menu.size(); i++) {
+                menu.getItem(i).setVisible(false);
+            }
+        }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -583,17 +610,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         switch (item.getItemId()) {
 
             case R.id.data_source_action:
+                cancelAsyncTask();
+
                 Intent dataSourceIntent = new Intent(this, DataSourceActivity.class);
                 startActivity(dataSourceIntent);
                 return true;
 
             case R.id.currency_switching:
+                cancelAsyncTask();
+
                 Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
                 startActivity(currencySwitchingIntent);
-                return true;
-
-            case R.id.update_rates_action:
-                updateRates();
                 return true;
 
             default:
@@ -613,6 +640,34 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             saveProperties();
 
             loadSpinnerProperties();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelAsyncTask();
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        cancelAsyncTask();
+
+        if (mPullToRefreshLayout.isRefreshing()) {
+            stopRefresh();
+        }
+
+        super.onUserLeaveHint();
+    }
+
+    private void cancelAsyncTask() {
+        if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
+            ((AsyncTask) rateUpdater).cancel(true);
+
+            if (null != onBackPressedListener) {
+                onBackPressedListener.notifyBackPressed();
+            }
         }
     }
 }

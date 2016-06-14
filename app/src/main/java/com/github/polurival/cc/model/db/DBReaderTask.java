@@ -15,7 +15,8 @@ import com.github.polurival.cc.model.RateUpdaterListener;
  * Created by Polurival
  * on 29.05.2016.
  */
-public class DBReaderTask extends AsyncTask<String, Void, Boolean> {
+public class DBReaderTask extends AsyncTask<String, Void, Boolean>
+        implements OnBackPressedListener {
 
     private Context appContext;
     private RateUpdaterListener rateUpdaterListener;
@@ -64,6 +65,8 @@ public class DBReaderTask extends AsyncTask<String, Void, Boolean> {
             if (rateUpdaterListener != null) {
                 rateUpdaterListener.setCursor(cursor);
 
+                rateUpdaterListener.setMenuState(null);
+
                 rateUpdaterListener.initSpinners();
                 rateUpdaterListener.loadSpinnerProperties();
                 rateUpdaterListener.initTvDateTime();
@@ -74,6 +77,16 @@ public class DBReaderTask extends AsyncTask<String, Void, Boolean> {
             Toast.makeText(appContext, appContext.getString(R.string.db_reading_error),
                     Toast.LENGTH_SHORT)
                     .show();
+        }
+
+        assert rateUpdaterListener != null;
+        rateUpdaterListener.setOnBackPressedListener(null);
+    }
+
+    @Override
+    public void notifyBackPressed() {
+        if (this.getStatus() != AsyncTask.Status.PENDING) {
+            this.cancel(true);
         }
     }
 }
