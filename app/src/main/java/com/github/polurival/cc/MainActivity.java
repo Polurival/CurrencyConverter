@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.model.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CustomRateUpdaterMock;
+import com.github.polurival.cc.model.TaskCanceler;
 import com.github.polurival.cc.model.YahooRateUpdaterTask;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
@@ -58,6 +61,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private String menuState;
     private OnBackPressedListener onBackPressedListener;
+
+    private Handler taskCancelerHandler;
+    private TaskCanceler taskCanceler;
 
     private RateUpdater rateUpdater;
     private LocalDateTime upDateTime;
@@ -178,7 +184,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             ((YahooRateUpdaterTask) rateUpdater).execute();
         }
+        taskCancelerHandler.postDelayed(taskCanceler, 15*1000);
 
+        hideMenuWhileUpdating();
+    }
+
+    private void hideMenuWhileUpdating() {
         menuState = Constants.MENU_HIDE;
         invalidateOptionsMenu();
     }
@@ -186,8 +197,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @Override
     public void readDataFromDB() {
         DBReaderTask dbReaderTask = new DBReaderTask();
-        this.setOnBackPressedListener(dbReaderTask);
+        setOnBackPressedListener(dbReaderTask);
         dbReaderTask.setRateUpdaterListener(this);
+
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
                     DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
@@ -529,7 +541,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
-        //editFromAmount.setText(""); //todo check without it and delete in case of useless
         editFromAmount.setText(editFromAmountText);
         String editToAmountText =
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
@@ -564,6 +575,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             e.printStackTrace();
         }
         rateUpdater.setRateUpdaterListener(this);
+
+        taskCancelerHandler = new Handler(Looper.getMainLooper());
+        taskCanceler = new TaskCanceler((AsyncTask) rateUpdater);
     }
 
     @Override

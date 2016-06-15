@@ -30,6 +30,5 @@ public interface Constants {
     String PRICE_KEY = "price";
 
     String MENU_HIDE = "menuHide";
-    String MENU_VISIBLE = "menuVisible";
 
 }

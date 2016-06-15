@@ -85,8 +85,8 @@ public class DBReaderTask extends AsyncTask<String, Void, Boolean>
 
     @Override
     public void notifyBackPressed() {
-        if (this.getStatus() != AsyncTask.Status.PENDING) {
-            this.cancel(true);
+        if (getStatus() != AsyncTask.Status.PENDING) {
+            cancel(true);
         }
     }
 }

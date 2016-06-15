@@ -69,7 +69,9 @@ public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> impleme
             Toast.makeText(appContext, appContext.getString(R.string.update_error),
                     Toast.LENGTH_SHORT)
                     .show();
+
             rateUpdaterListener.stopRefresh();
+            rateUpdaterListener.setMenuState(null);
         }
     }
 

@@ -13,11 +13,13 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +32,7 @@ public class CurrencySwitchingActivity extends Activity {
 
     private CheckBox cbTurnOnOffAllCurrencies;
 
-    private int lvSelectedPos = 0;
+    private int lvSelectedPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,8 @@ public class CurrencySwitchingActivity extends Activity {
 
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        lvSelectedPos = 0;
 
         lvAllCurrencies = (ListView) findViewById(R.id.lv_turn_on_off);
         cbTurnOnOffAllCurrencies = (CheckBox) findViewById(R.id.cb_turn_all_on_off);
@@ -121,7 +125,7 @@ public class CurrencySwitchingActivity extends Activity {
         final int firstListItemPosition = listView.getFirstVisiblePosition();
         final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 
-        if (pos < firstListItemPosition || pos > lastListItemPosition ) {
+        if (pos < firstListItemPosition || pos > lastListItemPosition) {
             return listView.getAdapter().getView(pos, null, listView);
         } else {
             final int childIndex = pos - firstListItemPosition;
@@ -130,6 +134,7 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     public void turnOnOffAllCurrencies(View view) {
+        lvSelectedPos = 0;
         if (cbTurnOnOffAllCurrencies.isChecked()) {
             turnOnOffAllListItems(1);
         } else {
@@ -148,20 +153,21 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     private void turnOnOffAllListItems(int selector) {
+        // попробовать сделать turnOnOffAllCurrencies(View view) через onClickListener
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        requestWindowFeature(Window.PROGRESS_VISIBILITY_ON);
         for (int i = 0; i < lvAllCurrencies.getCount(); i++) {
+
             String currencyCharCode = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getString(1);
             int currencyCondition = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getInt(4);
 
             if ((selector == 1 && currencyCondition == 0) ||
                     selector == 0 && currencyCondition == 1) {
 
-                if (i == lvAllCurrencies.getCount() - 1) {
-                    saveCurrencyOnOffCondition(currencyCharCode, selector);
-                } else {
-                    saveCurrencyOnOffCondition(currencyCharCode, selector);
-                }
+                saveCurrencyOnOffCondition(currencyCharCode, selector);
             }
         }
+        requestWindowFeature(Window.PROGRESS_VISIBILITY_OFF);
     }
 
     private void saveCurrencyOnOffCondition(
@@ -247,10 +253,10 @@ public class CurrencySwitchingActivity extends Activity {
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
-            editor.putInt(getString(R.string.saved_cb_rf_from_spinner_pos), 0);
-            editor.putInt(getString(R.string.saved_cb_rf_to_spinner_pos), 0);
+        editor.putInt(getString(R.string.saved_cb_rf_from_spinner_pos), 0);
+        editor.putInt(getString(R.string.saved_cb_rf_to_spinner_pos), 0);
 
-            editor.putInt(getString(R.string.saved_yahoo_from_spinner_pos), 0);
+        editor.putInt(getString(R.string.saved_yahoo_from_spinner_pos), 0);
         editor.putInt(getString(R.string.saved_yahoo_to_spinner_pos), 0);
 
         editor.putInt(getString(R.string.saved_custom_from_spinner_pos), 0);

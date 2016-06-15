@@ -71,7 +71,9 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
             Toast.makeText(appContext, appContext.getString(R.string.update_error),
                     Toast.LENGTH_SHORT)
                     .show();
+
             rateUpdaterListener.stopRefresh();
+            rateUpdaterListener.setMenuState(null);
         }
     }
 
