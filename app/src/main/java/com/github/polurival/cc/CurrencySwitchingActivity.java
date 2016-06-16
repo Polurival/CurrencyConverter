@@ -2,7 +2,6 @@ package com.github.polurival.cc;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,19 +9,15 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.polurival.cc.adapter.ListViewCursorAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
 
 public class CurrencySwitchingActivity extends Activity {
@@ -153,9 +148,6 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     private void turnOnOffAllListItems(int selector) {
-        // попробовать сделать turnOnOffAllCurrencies(View view) через onClickListener
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        requestWindowFeature(Window.PROGRESS_VISIBILITY_ON);
         for (int i = 0; i < lvAllCurrencies.getCount(); i++) {
 
             String currencyCharCode = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getString(1);
@@ -167,7 +159,6 @@ public class CurrencySwitchingActivity extends Activity {
                 saveCurrencyOnOffCondition(currencyCharCode, selector);
             }
         }
-        requestWindowFeature(Window.PROGRESS_VISIBILITY_OFF);
     }
 
     private void saveCurrencyOnOffCondition(
@@ -199,46 +190,6 @@ public class CurrencySwitchingActivity extends Activity {
                 }
             }
         });
-    }
-
-    private class ListViewCursorAdapter extends CursorAdapter {
-
-        public ListViewCursorAdapter(Context context, Cursor cursor) {
-            super(context, cursor, 0);
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return true;
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.list_view_item, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-
-            ImageView flagIcon = (ImageView) view.findViewById(R.id.lv_flag_icon);
-            int flagIconId = cursor.getInt(3);
-            flagIcon.setImageResource(flagIconId);
-
-            TextView currencyName = (TextView) view.findViewById(R.id.lv_currency_name);
-            int currencyNameId = cursor.getInt(2);
-            currencyName.setText(getString(currencyNameId));
-
-            TextView currencyCharCode =
-                    (TextView) view.findViewById(R.id.lv_currency_char_code);
-            currencyCharCode.setText(cursor.getString(1));
-
-            CheckBox turnOnOff = (CheckBox) view.findViewById(R.id.cb_currency_turn_on_off);
-            if (cursor.getInt(4) == 1) {
-                turnOnOff.setChecked(true);
-            } else {
-                turnOnOff.setChecked(false);
-            }
-        }
     }
 
     @Override

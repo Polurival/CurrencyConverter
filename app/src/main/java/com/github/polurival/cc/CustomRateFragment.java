@@ -14,14 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.DateUtil;
@@ -169,37 +168,6 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             tvCustomModeHelp.setVisibility(View.INVISIBLE);
         } else {
             tvCustomModeHelp.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
-     * See <a href="https://github.com/codepath/android_guides/wiki/Populating-a-ListView-with-a-CursorAdapter">source</a>
-     */
-    private class SpinnerCursorAdapter extends CursorAdapter {
-
-        public SpinnerCursorAdapter(Context context, Cursor cursor) {
-            super(context, cursor, 0);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-
-            ImageView flagIcon = (ImageView) view.findViewById(R.id.spinner_flag_icon);
-            int flagIconId = cursor.getInt(5);
-            flagIcon.setImageResource(flagIconId);
-
-            TextView currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
-            int currencyNameId = cursor.getInt(4);
-            currencyName.setText(getString(currencyNameId));
-
-            TextView currencyCharCode =
-                    (TextView) view.findViewById(R.id.spinner_currency_char_code);
-            currencyCharCode.setText(cursor.getString(1));
         }
     }
 

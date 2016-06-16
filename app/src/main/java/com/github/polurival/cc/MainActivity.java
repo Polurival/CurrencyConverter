@@ -14,20 +14,17 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.CursorAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.TaskCanceler;
@@ -58,6 +55,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Cursor cursor;
     private Cursor fromCursor;
     private Cursor toCursor;
+
+    private SharedPreferences preferences;
 
     private String menuState;
     private OnBackPressedListener onBackPressedListener;
@@ -130,6 +129,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         ignoreEditFromAmountChange = false;
         ignoreEditToAmountChange = false;
@@ -438,34 +439,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         updateRates();
     }
 
-    private class SpinnerCursorAdapter extends CursorAdapter {
-
-        public SpinnerCursorAdapter(Context context, Cursor cursor) {
-            super(context, cursor, 0);
-        }
-
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.spinner_item, parent, false);
-        }
-
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-
-            ImageView flagIcon = (ImageView) view.findViewById(R.id.spinner_flag_icon);
-            int flagIconId = cursor.getInt(5);
-            flagIcon.setImageResource(flagIconId);
-
-            TextView currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
-            int currencyNameId = cursor.getInt(4);
-            currencyName.setText(getString(currencyNameId));
-
-            TextView currencyCharCode =
-                    (TextView) view.findViewById(R.id.spinner_currency_char_code);
-            currencyCharCode.setText(cursor.getString(1));
-        }
-    }
-
     @Override
     protected void onStop() {
         saveProperties();
@@ -485,8 +458,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void saveProperties() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -519,8 +490,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void saveDateProperties() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -535,9 +504,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void loadProperties() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
@@ -561,9 +527,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void loadRateUpdaterProperties() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         String rateUpdaterName =
                 preferences.getString(getString(R.string.saved_rate_updater_class),
                         getString(R.string.saved_rate_updater_class_default));
@@ -582,9 +545,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void loadSpinnerProperties() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         if (rateUpdater instanceof CBRateUpdaterTask) {
             fromSpinnerSelectedPos =
                     preferences.getInt(getString(R.string.saved_cb_rf_from_spinner_pos), 30);
