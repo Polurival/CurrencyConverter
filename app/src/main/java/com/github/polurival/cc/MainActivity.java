@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -40,6 +41,8 @@ import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
 
 import org.joda.time.LocalDateTime;
+
+import java.lang.reflect.Method;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -475,9 +478,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (null != cursor) {
             cursor.close();
         }
-        db.close();
 
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+
+        super.onDestroy();
     }
 
     private void saveProperties() {
@@ -603,6 +612,27 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         shareActionProvider = (ShareActionProvider) shareAction.getActionProvider();
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * See <a href="http://stackoverflow.com/a/22668665/5349748">source</a>
+     */
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    Logger.logD("onMenuOpened error");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
     }
 
     @Override
