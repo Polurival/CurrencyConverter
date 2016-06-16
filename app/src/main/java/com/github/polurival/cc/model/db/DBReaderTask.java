@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.model.RateUpdaterListener;
+import com.github.polurival.cc.RateUpdaterListener;
 
 /**
  * Created by Polurival

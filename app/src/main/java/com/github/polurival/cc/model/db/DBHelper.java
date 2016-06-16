@@ -42,7 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public static final String CUSTOM_SOURCE_MOCK = "custom_source";
 
-    //http://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html
+    /**
+     * See <a href="http://www.androiddesignpatterns.com/2012/05/correctly-managing-your-sqlite-database.html">source</a>
+     */
     public static synchronized DBHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DBHelper(context.getApplicationContext());

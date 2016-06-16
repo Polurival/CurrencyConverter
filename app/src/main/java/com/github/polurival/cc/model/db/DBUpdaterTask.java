@@ -9,12 +9,12 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.model.CBRateUpdaterTask;
+import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.RateUpdater;
-import com.github.polurival.cc.model.RateUpdaterListener;
-import com.github.polurival.cc.model.YahooRateUpdaterTask;
+import com.github.polurival.cc.model.updater.RateUpdater;
+import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
 
 import java.util.EnumMap;

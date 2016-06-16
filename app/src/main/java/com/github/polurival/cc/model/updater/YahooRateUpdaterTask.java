@@ -1,4 +1,4 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc.model.updater;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,6 +6,9 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.model.CharCode;
+import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.db.DBUpdaterTask;
 import com.github.polurival.cc.util.Constants;
 

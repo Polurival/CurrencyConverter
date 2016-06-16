@@ -14,7 +14,7 @@
     <!-- Menu -->
     <string name="data_source">Data source</string>
     <string name="currencies_list">Currencies list</string>
-    <string name="update_rates">Update rates</string>
+    <string name="share_action">Send</string>
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Nominal = </string>
@@ -63,18 +63,18 @@
     <string name="saved_edit_amount_text_default" />
     <string name="saved_rate_updater_class">saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default">
-        com.github.polurival.cc.model.CBRateUpdaterTask</string>
+        com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
     <string name="saved_cb_rf_up_date_time">saved_cb_rf_up_date_time</string>
     <string name="saved_yahoo_up_date_time">saved_yahoo_up_date_time</string>
     <string name="saved_custom_up_date_time">saved_custom_up_date_time</string>
 
     <!-- RateUpdater class names -->
     <string name="cb_rf_rate_updater_class">
-        com.github.polurival.cc.model.CBRateUpdaterTask</string>
+        com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
     <string name="yahoo_rate_updater_class">
-        com.github.polurival.cc.model.YahooRateUpdaterTask</string>
+        com.github.polurival.cc.model.updater.YahooRateUpdaterTask</string>
     <string name="custom_rate_updater_class">
-        com.github.polurival.cc.model.CustomRateUpdaterMock</string>
+        com.github.polurival.cc.model.updater.CustomRateUpdaterMock</string>
 
     <!-- Currencies -->
     <string name="aed">Emirati Dirham</string>

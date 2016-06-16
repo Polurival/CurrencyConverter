@@ -1,6 +1,6 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc.model.updater;
 
-import org.w3c.dom.Document;
+import com.github.polurival.cc.RateUpdaterListener;
 
 /**
  * Created by Polurival

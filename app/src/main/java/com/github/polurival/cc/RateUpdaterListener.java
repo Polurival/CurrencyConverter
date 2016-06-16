@@ -1,7 +1,8 @@
-package com.github.polurival.cc.model;
+package com.github.polurival.cc;
 
 import android.database.Cursor;
 
+import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.model.db.OnBackPressedListener;
 
 import org.joda.time.LocalDateTime;

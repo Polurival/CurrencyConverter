@@ -20,19 +20,20 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
-import com.github.polurival.cc.model.CBRateUpdaterTask;
-import com.github.polurival.cc.model.CustomRateUpdaterMock;
+import com.github.polurival.cc.model.CharCode;
+import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
+import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.TaskCanceler;
-import com.github.polurival.cc.model.YahooRateUpdaterTask;
+import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
-import com.github.polurival.cc.model.RateUpdater;
-import com.github.polurival.cc.model.RateUpdaterListener;
+import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.model.db.OnBackPressedListener;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
@@ -58,6 +59,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private SharedPreferences preferences;
 
+    private ShareActionProvider shareActionProvider;
+
     private String menuState;
     private OnBackPressedListener onBackPressedListener;
 
@@ -79,11 +82,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
+    private String currencyFromCharCode;
     double currencyFromNominal;
     double currencyFromToXRate;
 
     private Spinner toSpinner;
     private int toSpinnerSelectedPos;
+    private String currencyToCharCode;
     double currencyToNominal;
     double currencyToToXRate;
 
@@ -185,7 +190,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             ((YahooRateUpdaterTask) rateUpdater).execute();
         }
-        taskCancelerHandler.postDelayed(taskCanceler, 15*1000);
+        taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
 
         hideMenuWhileUpdating();
     }
@@ -244,6 +249,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if ("".equals(s.toString())) {
                     editToAmount.getText().clear();
                 }
+
+                syncShareActionData();
             }
         });
 
@@ -269,6 +276,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if ("".equals(s.toString())) {
                     editFromAmount.getText().clear();
                 }
+
+                syncShareActionData();
             }
         });
     }
@@ -394,12 +403,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 fromCursor = (Cursor) parent.getItemAtPosition(position);
+
+                currencyFromCharCode = fromCursor.getString(1);
                 currencyFromNominal = (double) fromCursor.getInt(2);
                 currencyFromToXRate = fromCursor.getDouble(3);
 
                 fromSpinnerSelectedPos = position;
 
                 editFromAmount.setText(editFromAmount.getText());
+
+                syncShareActionData();
             }
 
             @Override
@@ -413,12 +426,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 toCursor = (Cursor) parent.getItemAtPosition(position);
+
+                currencyToCharCode = toCursor.getString(1);
                 currencyToNominal = (double) toCursor.getInt(2);
                 currencyToToXRate = toCursor.getDouble(3);
 
                 toSpinnerSelectedPos = position;
 
                 editFromAmount.setText(editFromAmount.getText());
+
+                syncShareActionData();
             }
 
             @Override
@@ -431,6 +448,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     getApplicationContext().getString(R.string.all_currencies_disabled),
                     Toast.LENGTH_SHORT)
                     .show();
+        }
+    }
+
+    private void syncShareActionData() {
+        if (isPropertiesLoaded) {
+            setShareIntent(composeText());
         }
     }
 
@@ -576,6 +599,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             }
         }
 
+        MenuItem shareAction = menu.findItem(R.id.share_action);
+        shareActionProvider = (ShareActionProvider) shareAction.getActionProvider();
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -590,7 +616,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 startActivity(dataSourceIntent);
                 return true;
 
-            case R.id.currency_switching:
+            case R.id.currency_switching_action:
                 cancelAsyncTask();
 
                 Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
@@ -600,6 +626,19 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setShareIntent(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        shareActionProvider.setShareIntent(intent);
+    }
+
+    private String composeText() {
+        return String.format("%s %s = %s %s",
+                editFromAmount.getText().toString(), currencyFromCharCode,
+                editToAmount.getText().toString(), currencyToCharCode);
     }
 
     private void updateRates() {
