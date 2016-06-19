@@ -1,15 +1,8 @@
 package com.github.polurival.cc.model.updater;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.widget.Toast;
-
-import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.RateUpdaterListener;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.db.DBUpdaterTask;
 import com.github.polurival.cc.util.Constants;
 
 import org.w3c.dom.Document;
@@ -18,7 +11,6 @@ import org.w3c.dom.NodeList;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.EnumMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,25 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
  * Created by Polurival
  * on 26.03.2016.
  */
-public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
-
-    private Context appContext;
-    private RateUpdaterListener rateUpdaterListener;
-    private EnumMap<CharCode, Currency> currencyMap;
-
-    public CBRateUpdaterTask() {
-        this.appContext = AppContext.getContext();
-    }
-
-    @Override
-    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        this.rateUpdaterListener = rateUpdaterListener;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        currencyMap = new EnumMap<>(CharCode.class);
-    }
+public class CBRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -60,24 +34,6 @@ public class CBRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        if (result) {
-            DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
-            rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);
-            dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
-            dbUpdaterTask.setCurrencyMap(currencyMap);
-            dbUpdaterTask.execute();
-        } else {
-            Toast.makeText(appContext, appContext.getString(R.string.update_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
-
-            rateUpdaterListener.stopRefresh();
-            rateUpdaterListener.setMenuState(null);
-        }
     }
 
     @Override

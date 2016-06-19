@@ -1,15 +1,8 @@
 package com.github.polurival.cc.model.updater;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.widget.Toast;
-
-import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.RateUpdaterListener;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.db.DBUpdaterTask;
 import com.github.polurival.cc.util.Constants;
 
 import org.apache.commons.io.IOUtils;
@@ -19,31 +12,12 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.EnumMap;
 
 /**
  * Created by Polurival
  * on 11.06.2016.
  */
-public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
-
-    private Context appContext;
-    private RateUpdaterListener rateUpdaterListener;
-    private EnumMap<CharCode, Currency> currencyMap;
-
-    public YahooRateUpdaterTask() {
-        this.appContext = AppContext.getContext();
-    }
-
-    @Override
-    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        this.rateUpdaterListener = rateUpdaterListener;
-    }
-
-    @Override
-    protected void onPreExecute() {
-        currencyMap = new EnumMap<>(CharCode.class);
-    }
+public class YahooRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     protected Boolean doInBackground(Void... params) {
@@ -58,24 +32,6 @@ public class YahooRateUpdaterTask extends AsyncTask<Void, Void, Boolean> impleme
             return false;
         }
         return true;
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        if (result) {
-            DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
-            rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);
-            dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
-            dbUpdaterTask.setCurrencyMap(currencyMap);
-            dbUpdaterTask.execute();
-        } else {
-            Toast.makeText(appContext, appContext.getString(R.string.update_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
-
-            rateUpdaterListener.stopRefresh();
-            rateUpdaterListener.setMenuState(null);
-        }
     }
 
     @Override
