@@ -88,7 +88,7 @@
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:alpha="0.6"
+                android:alpha="0.8"
                 android:gravity="center_horizontal"
                 android:minHeight="@dimen/text_view_date_time_min_height"
                 android:textSize="16sp" />

@@ -130,6 +130,7 @@ public class CurrencySwitchingActivity extends Activity {
 
     public void turnOnOffAllCurrencies(View view) {
         lvSelectedPos = 0;
+
         if (cbTurnOnOffAllCurrencies.isChecked()) {
             turnOnOffAllListItems(1);
         } else {

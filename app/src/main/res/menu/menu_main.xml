@@ -18,6 +18,7 @@
     <item
         android:id="@+id/share_action"
         android:actionProviderClass="android.widget.ShareActionProvider"
+        android:icon="@drawable/ic_send_24dp"
         android:orderInCategory="30"
         android:title="@string/share_action"
         app:showAsAction="ifRoom" />

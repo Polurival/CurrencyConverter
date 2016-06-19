@@ -168,6 +168,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         checkAsyncTaskStatusAndSetNewInstance();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
+            mPullToRefreshLayout.setRefreshing(true);
             updateRatesFromSource();
         }
     }
@@ -226,7 +227,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void stopRefresh() {
-        mPullToRefreshLayout.setRefreshComplete();
+        if (mPullToRefreshLayout.isRefreshing()) {
+            mPullToRefreshLayout.setRefreshComplete();
+        }
     }
 
     private void initEditAmount() {
@@ -697,9 +700,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onUserLeaveHint() {
         cancelAsyncTask();
 
-        if (mPullToRefreshLayout.isRefreshing()) {
-            stopRefresh();
-        }
+        stopRefresh();
 
         super.onUserLeaveHint();
     }

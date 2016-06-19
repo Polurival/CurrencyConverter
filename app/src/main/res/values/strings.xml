@@ -26,6 +26,7 @@
         set equality of 1$ to ₽ and €</string>
     <string name="save_new_value">Save</string>
 
+    <string name="empty"> </string>
     <string name="turn_all_on_off">Turn all On/Off</string>
 
     <string-array name="data_source_array">

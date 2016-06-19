@@ -6,6 +6,7 @@
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
     android:focusableInTouchMode="false"
+    android:gravity="end"
     android:orientation="horizontal">
 
     <ImageView
@@ -23,11 +24,11 @@
     <TextView
         android:id="@+id/lv_currency_name"
         android:layout_width="0dp"
-        android:layout_weight="15"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/view_horizontal_margin"
         android:layout_marginRight="@dimen/view_horizontal_margin"
+        android:layout_weight="17"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -37,9 +38,9 @@
     <TextView
         android:id="@+id/lv_currency_char_code"
         android:layout_width="0dp"
-        android:layout_weight="4"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_weight="4"
         android:alpha="0.8"
         android:clickable="false"
         android:focusable="false"
@@ -50,9 +51,9 @@
     <CheckBox
         android:id="@+id/cb_currency_turn_on_off"
         android:layout_width="0dp"
-        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_weight="3"
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false" />
