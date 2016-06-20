@@ -14,15 +14,14 @@
     <!-- Menu -->
     <string name="data_source">Data source</string>
     <string name="currencies_list">Currencies list</string>
-    <string name="share_action">Send</string>
+    <string name="share_action">Share</string>
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Nominal = </string>
     <string name="one_usd_equals_char_code">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
-    <string name="view_custom_mode_help">\t**For converting currencies to each other,\n
-        you need to set their rates relative to $\n
-        \tExample: If you want to convert ₽ and €,\n
+    <string name="view_custom_mode_help">\t**For converting currencies to each other,
+        you need to set their rates relative to $. Example: If you want to convert ₽ and €,
         set equality of 1$ to ₽ and €</string>
     <string name="save_new_value">Save</string>
 

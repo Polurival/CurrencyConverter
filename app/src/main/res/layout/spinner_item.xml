@@ -20,7 +20,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/view_horizontal_margin"
         android:layout_marginRight="@dimen/view_horizontal_margin"
-        android:layout_weight="5"
+        android:layout_weight="9"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -29,7 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"
+        android:layout_marginEnd="@dimen/spinner_margin_end"
+        android:layout_marginRight="@dimen/spinner_margin_end"
+        android:layout_weight="2"
         android:alpha="0.8"
         android:textColor="@color/azure"
         android:textSize="20sp" />

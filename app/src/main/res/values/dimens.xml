@@ -7,6 +7,7 @@
     <dimen name="edit_text_custom_currency_horizontal_margin">7dp</dimen>
     <dimen name="view_vertical_margin">5dp</dimen>
     <dimen name="view_horizontal_margin">5dp</dimen>
+    <dimen name="spinner_margin_end">10dp</dimen>
     <dimen name="text_view_result_min_height">120dp</dimen>
     <dimen name="text_view_date_time_min_height">40dp</dimen>
     <dimen name="btn_swap_width">30dp</dimen>

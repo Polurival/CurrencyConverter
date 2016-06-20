@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
-import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.TaskCanceler;
@@ -168,7 +166,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         checkAsyncTaskStatusAndSetNewInstance();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
-            mPullToRefreshLayout.setRefreshing(true);
+            if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
+                mPullToRefreshLayout.setRefreshing(true);
+            }
             updateRatesFromSource();
         }
     }
@@ -180,6 +180,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         checkAsyncTaskStatusAndSetNewInstance();
     }
 
+    @Override
+    protected void onPause() {
+        cancelAsyncTask();
+
+        super.onPause();
+    }
+
     private void checkAsyncTaskStatusAndSetNewInstance() {
         if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
@@ -189,12 +196,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void updateRatesFromSource() {
+        taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).execute();
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             ((YahooRateUpdaterTask) rateUpdater).execute();
         }
-        taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
 
         hideMenuWhileUpdating();
     }
@@ -482,6 +489,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             cursor.close();
         }
 
+        if(null != taskCanceler && null != taskCancelerHandler) {
+            taskCancelerHandler.removeCallbacks(taskCanceler);
+        }
+
         super.onStop();
     }
 
@@ -574,8 +585,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
         rateUpdater.setRateUpdaterListener(this);
 
-        taskCancelerHandler = new Handler(Looper.getMainLooper());
-        taskCanceler = new TaskCanceler((AsyncTask) rateUpdater);
+        taskCancelerHandler = new Handler();
+        taskCanceler = new TaskCanceler((AsyncTask) rateUpdater, this);
     }
 
     @Override
@@ -618,6 +629,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     /**
+     * Show menu icons
      * See <a href="http://stackoverflow.com/a/22668665/5349748">source</a>
      */
     @Override
@@ -700,14 +712,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onUserLeaveHint() {
         cancelAsyncTask();
 
-        stopRefresh();
-
         super.onUserLeaveHint();
     }
 
     private void cancelAsyncTask() {
-        if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
-            ((AsyncTask) rateUpdater).cancel(true);
+        stopRefresh();
+
+        AsyncTask task = (AsyncTask) rateUpdater;
+        if (task.getStatus() != AsyncTask.Status.PENDING) {
+            task.cancel(true);
 
             if (null != onBackPressedListener) {
                 onBackPressedListener.notifyBackPressed();

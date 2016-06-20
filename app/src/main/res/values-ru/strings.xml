@@ -14,15 +14,14 @@
     <!-- Menu -->
     <string name="data_source">Источник данных</string>
     <string name="currencies_list">Список валют</string>
-    <string name="share_action">Отправить</string>
+    <string name="share_action">Поделиться</string>
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Номинал = </string>
     <string name="custom_mode_help">Как этим пользоваться?</string>
-    <string name="view_custom_mode_help">\t**Чтобы конвертировать валюты между собой,\n
-        необходимо задать их курсы по отношению к $\n
-        \tПример: Если хочешь конвертировать ₽ и €,\n
-        задай по очереди чему равен 1$ в ₽ и €\n</string>
+    <string name="view_custom_mode_help">\t**Чтобы конвертировать валюты между собой,
+        необходимо задать их курсы по отношению к $. Пример: Если хочешь конвертировать ₽ и €,
+        задай по очереди чему равен 1$ в ₽ и €</string>
     <string name="save_new_value">Сохранить</string>
 
     <string name="empty"> </string>
