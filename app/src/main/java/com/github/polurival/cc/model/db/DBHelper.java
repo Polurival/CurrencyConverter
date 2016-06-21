@@ -87,7 +87,7 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.AFN, 0, 1, 1, 0, 69.279999, 69.279999, R.string.afn, R.drawable.afn, 0, 1, 1);
             insertCurrency(db, CharCode.ALL, 0, 1, 1, 0, 122.419502, 122.419502, R.string.all, R.drawable.all, 0, 1, 1);
             insertCurrency(db, CharCode.AMD, 100, 1, 1, 13.5089, 478.820007, 478.820007, R.string.amd, R.drawable.amd, 1, 1, 1); //cb_rf
-            insertCurrency(db, CharCode.ANG, 0, 1, 1, 0, 1.790000, 1.790000, R.string.ang, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.ANG, 0, 1, 1, 0, 1.790000, 1.790000, R.string.ang, R.drawable.ang, 0, 1, 1);
             insertCurrency(db, CharCode.AOA, 0, 1, 1, 0, 165.733002, 165.733002, R.string.aoa, R.drawable.aoa, 0, 1, 1);
             insertCurrency(db, CharCode.ARS, 0, 1, 1, 0, 13.815950, 13.815950, R.string.ars, R.drawable.ars, 0, 1, 1);
             insertCurrency(db, CharCode.AUD, 1, 1, 1, 47.9031, 1.355730, 1.355730, R.string.aud, R.drawable.aud, 1, 1, 1); //cb_rf
@@ -258,15 +258,15 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.WST, 0, 1, 1, 0, 2.529086, 2.529086, R.string.wst, R.drawable.wst, 0, 1, 1);
 
             insertCurrency(db, CharCode.XAF, 0, 1, 1, 0, 583.021057, 583.021057, R.string.xaf, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XAG, 0, 100, 100, 0, 5.7753, 5.7753, R.string.xag, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XAU, 0, 10000, 10000, 0, 7.85, 7.85, R.string.xau, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.XAG, 0, 100, 100, 0, 5.7753, 5.7753, R.string.xag, R.drawable.xag, 0, 1, 1);
+            insertCurrency(db, CharCode.XAU, 0, 10000, 10000, 0, 7.85, 7.85, R.string.xau, R.drawable.xau, 0, 1, 1);
             insertCurrency(db, CharCode.XCD, 0, 1, 1, 0, 2.700000, 2.700000, R.string.xcd, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XCP, 0, 10, 10, 0, 4.92247, 4.92247, R.string.xcp, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.XCP, 0, 10, 10, 0, 4.92247, 4.92247, R.string.xcp, R.drawable.xcp, 0, 1, 1);
             insertCurrency(db, CharCode.XDR, 1, 10, 10, 91.4947, 7.10600, 7.10600, R.string.xdr, 0, 1, 1, 1); //cb_rf
             insertCurrency(db, CharCode.XOF, 0, 1, 1, 0, 583.021057, 583.021057, R.string.xof, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XPD, 0, 1000, 1000, 0, 1.828, 1.828, R.string.xpd, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.XPD, 0, 1000, 1000, 0, 1.828, 1.828, R.string.xpd, R.drawable.xpd, 0, 1, 1);
             insertCurrency(db, CharCode.XPF, 0, 1, 1, 0, 106.063202, 106.063202, R.string.xpf, 0, 0, 1, 1);
-            insertCurrency(db, CharCode.XPT, 0, 1000, 1000, 0, 1.006, 1.006, R.string.xpt, 0, 0, 1, 1);
+            insertCurrency(db, CharCode.XPT, 0, 1000, 1000, 0, 1.006, 1.006, R.string.xpt, R.drawable.xpt, 0, 1, 1);
 
             insertCurrency(db, CharCode.YER, 0, 1, 1, 0, 250.100006, 250.100006, R.string.yer, R.drawable.yer, 0, 1, 1);
 

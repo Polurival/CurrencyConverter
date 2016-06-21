@@ -8,9 +8,12 @@ import com.github.polurival.cc.RateUpdaterListener;
  */
 public interface RateUpdater {
 
+
     void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener);
 
+
     <T> void fillCurrencyMapFromSource(T doc) throws Exception;
+
 
     String getDescription();
 

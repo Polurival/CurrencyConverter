@@ -201,7 +201,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             cursor.close();
         }
 
-        if(null != taskCanceler && null != taskCancelerHandler) {
+        if (null != taskCanceler && null != taskCancelerHandler) {
             taskCancelerHandler.removeCallbacks(taskCanceler);
         }
 

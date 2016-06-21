@@ -11,7 +11,7 @@ import com.github.polurival.cc.RateUpdaterListener;
 /**
  * Created by Polurival
  * on 15.06.2016.
- *
+ * <p/>
  * <p>See <a href="http://stackoverflow.com/questions/17315372/cancel-asynctask-after-some-time">source</a></p>
  */
 public class TaskCanceler implements Runnable {
