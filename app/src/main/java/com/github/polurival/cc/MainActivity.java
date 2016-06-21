@@ -187,11 +187,141 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         super.onPause();
     }
 
+    @Override
+    protected void onStop() {
+        saveProperties();
+
+        if (null != fromCursor) {
+            fromCursor.close();
+        }
+        if (null != toCursor) {
+            toCursor.close();
+        }
+        if (null != cursor) {
+            cursor.close();
+        }
+
+        if(null != taskCanceler && null != taskCancelerHandler) {
+            taskCancelerHandler.removeCallbacks(taskCanceler);
+        }
+
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        db.close();
+
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelAsyncTask();
+
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        cancelAsyncTask();
+
+        super.onUserLeaveHint();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        if (Constants.MENU_HIDE.equals(menuState)) {
+            for (int i = 0; i < menu.size(); i++) {
+                menu.getItem(i).setVisible(false);
+            }
+        }
+
+        MenuItem shareAction = menu.findItem(R.id.share_action);
+        shareActionProvider = (ShareActionProvider) shareAction.getActionProvider();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * Show menu icons
+     * See <a href="http://stackoverflow.com/a/22668665/5349748">source</a>
+     */
+    @Override
+    public boolean onMenuOpened(int featureId, Menu menu) {
+        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    Method m = menu.getClass().getDeclaredMethod(
+                            "setOptionalIconsVisible", Boolean.TYPE);
+                    m.setAccessible(true);
+                    m.invoke(menu, true);
+                } catch (Exception e) {
+                    Logger.logD("onMenuOpened error");
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return super.onMenuOpened(featureId, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.data_source_action:
+                cancelAsyncTask();
+
+                Intent dataSourceIntent = new Intent(this, DataSourceActivity.class);
+                startActivity(dataSourceIntent);
+                return true;
+
+            case R.id.currency_switching_action:
+                cancelAsyncTask();
+
+                Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
+                startActivity(currencySwitchingIntent);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     private void checkAsyncTaskStatusAndSetNewInstance() {
         if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
                 loadRateUpdaterProperties();
             }
+        }
+    }
+
+    @Override
+    public void onRefreshStarted(View view) {
+        updateRates();
+    }
+
+    @Override
+    public void stopRefresh() {
+        if (mPullToRefreshLayout.isRefreshing()) {
+            mPullToRefreshLayout.setRefreshComplete();
+        }
+    }
+
+    private void updateRates() {
+        if (rateUpdater instanceof CustomRateUpdaterMock) {
+            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_SHORT).show();
+            stopRefresh();
+        } else {
+            loadRateUpdaterProperties();
+
+            updateRatesFromSource();
+
+            saveProperties();
+
+            loadSpinnerProperties();
         }
     }
 
@@ -233,9 +363,61 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     @Override
-    public void stopRefresh() {
-        if (mPullToRefreshLayout.isRefreshing()) {
-            mPullToRefreshLayout.setRefreshComplete();
+    public void initSpinners() {
+        SpinnerCursorAdapter cursorAdapter =
+                new SpinnerCursorAdapter(getApplicationContext(), cursor);
+
+        fromSpinner = (Spinner) findViewById(R.id.from_spinner);
+        fromSpinner.setAdapter(cursorAdapter);
+        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                fromCursor = (Cursor) parent.getItemAtPosition(position);
+
+                currencyFromCharCode = fromCursor.getString(1);
+                currencyFromNominal = (double) fromCursor.getInt(2);
+                currencyFromToXRate = fromCursor.getDouble(3);
+
+                fromSpinnerSelectedPos = position;
+
+                editFromAmount.setText(editFromAmount.getText());
+
+                syncShareActionData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        toSpinner = (Spinner) findViewById(R.id.to_spinner);
+        toSpinner.setAdapter(cursorAdapter);
+        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                toCursor = (Cursor) parent.getItemAtPosition(position);
+
+                currencyToCharCode = toCursor.getString(1);
+                currencyToNominal = (double) toCursor.getInt(2);
+                currencyToToXRate = toCursor.getDouble(3);
+
+                toSpinnerSelectedPos = position;
+
+                editFromAmount.setText(editFromAmount.getText());
+
+                syncShareActionData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        if (fromSpinner.getCount() == 0) {
+            Toast.makeText(getApplicationContext(),
+                    getApplicationContext().getString(R.string.all_currencies_disabled),
+                    Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -329,7 +511,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    public void convertAndSetResult(View v) {
+    private void convertAndSetResult(View v) {
         if (null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem()) {
             Toast.makeText(getApplicationContext(),
                     getApplicationContext().getString(R.string.all_currencies_disabled),
@@ -403,104 +585,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             }
             return (double) Float.parseFloat(editToAmount.getText().toString().replace(",", "."));
         }
-    }
-
-    @Override
-    public void initSpinners() {
-        SpinnerCursorAdapter cursorAdapter =
-                new SpinnerCursorAdapter(getApplicationContext(), cursor);
-
-        fromSpinner = (Spinner) findViewById(R.id.from_spinner);
-        fromSpinner.setAdapter(cursorAdapter);
-        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                fromCursor = (Cursor) parent.getItemAtPosition(position);
-
-                currencyFromCharCode = fromCursor.getString(1);
-                currencyFromNominal = (double) fromCursor.getInt(2);
-                currencyFromToXRate = fromCursor.getDouble(3);
-
-                fromSpinnerSelectedPos = position;
-
-                editFromAmount.setText(editFromAmount.getText());
-
-                syncShareActionData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        toSpinner = (Spinner) findViewById(R.id.to_spinner);
-        toSpinner.setAdapter(cursorAdapter);
-        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                toCursor = (Cursor) parent.getItemAtPosition(position);
-
-                currencyToCharCode = toCursor.getString(1);
-                currencyToNominal = (double) toCursor.getInt(2);
-                currencyToToXRate = toCursor.getDouble(3);
-
-                toSpinnerSelectedPos = position;
-
-                editFromAmount.setText(editFromAmount.getText());
-
-                syncShareActionData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        if (fromSpinner.getCount() == 0) {
-            Toast.makeText(getApplicationContext(),
-                    getApplicationContext().getString(R.string.all_currencies_disabled),
-                    Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-
-    private void syncShareActionData() {
-        if (isPropertiesLoaded) {
-            setShareIntent(composeText());
-        }
-    }
-
-    @Override
-    public void onRefreshStarted(View view) {
-        updateRates();
-    }
-
-    @Override
-    protected void onStop() {
-        saveProperties();
-
-        if (null != fromCursor) {
-            fromCursor.close();
-        }
-        if (null != toCursor) {
-            toCursor.close();
-        }
-        if (null != cursor) {
-            cursor.close();
-        }
-
-        if(null != taskCanceler && null != taskCancelerHandler) {
-            taskCancelerHandler.removeCallbacks(taskCanceler);
-        }
-
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        db.close();
-
-        super.onDestroy();
     }
 
     private void saveProperties() {
@@ -612,64 +696,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         toSpinner.setSelection(toSpinnerSelectedPos);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        if (Constants.MENU_HIDE.equals(menuState)) {
-            for (int i = 0; i < menu.size(); i++) {
-                menu.getItem(i).setVisible(false);
-            }
-        }
-
-        MenuItem shareAction = menu.findItem(R.id.share_action);
-        shareActionProvider = (ShareActionProvider) shareAction.getActionProvider();
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /**
-     * Show menu icons
-     * See <a href="http://stackoverflow.com/a/22668665/5349748">source</a>
-     */
-    @Override
-    public boolean onMenuOpened(int featureId, Menu menu) {
-        if (featureId == Window.FEATURE_ACTION_BAR && menu != null) {
-            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
-                try {
-                    Method m = menu.getClass().getDeclaredMethod(
-                            "setOptionalIconsVisible", Boolean.TYPE);
-                    m.setAccessible(true);
-                    m.invoke(menu, true);
-                } catch (Exception e) {
-                    Logger.logD("onMenuOpened error");
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return super.onMenuOpened(featureId, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case R.id.data_source_action:
-                cancelAsyncTask();
-
-                Intent dataSourceIntent = new Intent(this, DataSourceActivity.class);
-                startActivity(dataSourceIntent);
-                return true;
-
-            case R.id.currency_switching_action:
-                cancelAsyncTask();
-
-                Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
-                startActivity(currencySwitchingIntent);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+    private void syncShareActionData() {
+        if (isPropertiesLoaded) {
+            setShareIntent(composeText());
         }
     }
 
@@ -684,35 +713,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         return String.format("%s %s = %s %s",
                 editFromAmount.getText().toString(), currencyFromCharCode,
                 editToAmount.getText().toString(), currencyToCharCode);
-    }
-
-    private void updateRates() {
-        if (rateUpdater instanceof CustomRateUpdaterMock) {
-            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_SHORT).show();
-            stopRefresh();
-        } else {
-            loadRateUpdaterProperties();
-
-            updateRatesFromSource();
-
-            saveProperties();
-
-            loadSpinnerProperties();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        cancelAsyncTask();
-
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        cancelAsyncTask();
-
-        super.onUserLeaveHint();
     }
 
     private void cancelAsyncTask() {

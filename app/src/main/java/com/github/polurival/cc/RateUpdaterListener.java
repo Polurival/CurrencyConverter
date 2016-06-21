@@ -13,27 +13,64 @@ import org.joda.time.LocalDateTime;
  */
 public interface RateUpdaterListener {
 
+    /**
+     * For cancel AsyncTask when Back pressed
+     */
     void setOnBackPressedListener(OnBackPressedListener onBackPressedListener);
 
+    /**
+     * For hide menu when updating
+     * @param menuState - Constants.MENU_HIDE or NULL
+     */
     void setMenuState(String menuState);
 
+    /**
+     * Set Cursor after reading from database
+     */
     void setCursor(Cursor cursor);
 
+    /**
+     * Start convert after loading all necessary SharedPreferences
+     */
     void setPropertiesLoaded(boolean isLoaded);
 
+    /**
+     * Set proper Date and Time for respective RateUpdater
+     */
     void setUpDateTime(LocalDateTime upDateTime);
 
+    /**
+     * Init Spinners after reading from database
+     */
     void initSpinners();
 
+    /**
+     * Init TextView for Date and Time after reading from database
+     */
     void initTvDateTime();
 
+    /**
+     * Set selected positions for spinners
+     */
     void loadSpinnerProperties();
 
+    /**
+     * Save Date and Time in SharedPreferences after successful updating
+     */
     void saveDateProperties();
 
+    /**
+     * Read all necessary data
+     */
     void readDataFromDB();
 
+    /**
+     * stop refresh animation of PullToRefreshLayout
+     */
     void stopRefresh();
 
+    /**
+     * For determining which columns of database should be updated
+     */
     RateUpdater getRateUpdater();
 }

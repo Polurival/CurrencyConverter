@@ -33,6 +33,7 @@ public class DateUtil {
         LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
         return localDate.toString(formatter);
     }
+
     public static long getDefaultDateTimeInSeconds() {
         LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
         return localDate.toDate().getTime();

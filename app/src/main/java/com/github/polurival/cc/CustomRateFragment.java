@@ -74,6 +74,13 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
+    public void onStop() {
+        spinnerCursor.close();
+
+        super.onStop();
+    }
+
+    @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
@@ -84,6 +91,14 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             case R.id.btn_custom_save:
                 saveCurrencyCustomValueAndCustomNominal();
                 break;
+        }
+    }
+
+    private void showHideHint() {
+        if (tvCustomModeHelp.isShown()) {
+            tvCustomModeHelp.setVisibility(View.INVISIBLE);
+        } else {
+            tvCustomModeHelp.setVisibility(View.VISIBLE);
         }
     }
 
@@ -163,14 +178,6 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         return new Object[]{nominal, customRateStr};
     }
 
-    private void showHideHint() {
-        if (tvCustomModeHelp.isShown()) {
-            tvCustomModeHelp.setVisibility(View.INVISIBLE);
-        } else {
-            tvCustomModeHelp.setVisibility(View.VISIBLE);
-        }
-    }
-
     private void readSpinnerDataFromDB() {
         final SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
         Handler handler = new Handler();
@@ -201,6 +208,24 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         });
     }
 
+    private void initCustomSpinner() {
+        SpinnerCursorAdapter cursorAdapter =
+                new SpinnerCursorAdapter(appContext, spinnerCursor);
+        customCurrencySpinner.setAdapter(cursorAdapter);
+        loadCustomSpinnerSelectedPos();
+
+        customCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                initCurrencyDataFromCustomSpinnerCursor();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+    }
+
     private void initCurrencyDataFromCustomSpinnerCursor() {
         if (null != customCurrencySpinner && customCurrencySpinner.getCount() != 0) {
             double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
@@ -222,31 +247,6 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     private void setEditCustomCurrencyText(double currencyRate) {
         editCustomCurrency.setText(String.format("%.4f", currencyRate).replace(",", "."));
-    }
-
-    private void initCustomSpinner() {
-        SpinnerCursorAdapter cursorAdapter =
-                new SpinnerCursorAdapter(appContext, spinnerCursor);
-        customCurrencySpinner.setAdapter(cursorAdapter);
-        loadCustomSpinnerSelectedPos();
-
-        customCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                initCurrencyDataFromCustomSpinnerCursor();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-    }
-
-    @Override
-    public void onStop() {
-        spinnerCursor.close();
-
-        super.onStop();
     }
 
     private void saveCustomDateProperties() {

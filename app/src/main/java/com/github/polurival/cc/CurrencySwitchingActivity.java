@@ -54,6 +54,13 @@ public class CurrencySwitchingActivity extends Activity {
         readListDataFromDB();
     }
 
+    @Override
+    public void onStop() {
+        listCursor.close();
+
+        super.onStop();
+    }
+
     private void readListDataFromDB() {
         final SQLiteDatabase db =
                 DBHelper.getInstance(getApplicationContext()).getWritableDatabase();
@@ -191,13 +198,6 @@ public class CurrencySwitchingActivity extends Activity {
                 }
             }
         });
-    }
-
-    @Override
-    public void onStop() {
-        listCursor.close();
-
-        super.onStop();
     }
 
     private void saveDefaultPositionProperties() {

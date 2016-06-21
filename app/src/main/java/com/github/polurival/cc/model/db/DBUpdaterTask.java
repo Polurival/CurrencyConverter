@@ -1,19 +1,15 @@
 package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.updater.RateUpdater;
-import com.github.polurival.cc.RateUpdaterListener;
 import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
 
@@ -23,28 +19,16 @@ import java.util.EnumMap;
  * Created by Polurival
  * on 29.05.2016.
  */
-public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean>
-        implements OnBackPressedListener {
+public class DBUpdaterTask extends DBTask {
 
-    private Context appContext;
-    private RateUpdaterListener rateUpdaterListener;
     private EnumMap<CharCode, Currency> currencyMap;
 
     public void setCurrencyMap(EnumMap<CharCode, Currency> currencyMap) {
         this.currencyMap = currencyMap;
     }
 
-    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        this.rateUpdaterListener = rateUpdaterListener;
-    }
-
     @Override
-    protected void onPreExecute() {
-        appContext = AppContext.getContext();
-    }
-
-    @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Boolean doInBackground(String... params) {
         try {
             RateUpdater rateUpdater = rateUpdaterListener.getRateUpdater();
             SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
@@ -92,12 +76,5 @@ public class DBUpdaterTask extends AsyncTask<Void, Void, Boolean>
         }
 
         rateUpdaterListener.setOnBackPressedListener(null);
-    }
-
-    @Override
-    public void notifyBackPressed() {
-        if (getStatus() != AsyncTask.Status.PENDING) {
-            cancel(true);
-        }
     }
 }
