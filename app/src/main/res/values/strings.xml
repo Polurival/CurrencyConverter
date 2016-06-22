@@ -18,14 +18,14 @@
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Nominal = </string>
-    <string name="one_usd_equals_char_code">1 USD = </string>
+    <string name="one_usd_equals_char_code" translatable="false">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
     <string name="view_custom_mode_help">\t**For converting currencies to each other,
         you need to set their rates relative to $. Example: If you want to convert ₽ and €,
         set equality of 1$ to ₽ and €</string>
     <string name="save_new_value">Save</string>
 
-    <string name="empty"> </string>
+    <string name="space"> </string>
     <string name="turn_all_on_off">Turn all On/Off</string>
 
     <string-array name="data_source_array">
@@ -51,29 +51,42 @@
     <string name="custom">Custom source\nlast modified:\n</string>
 
     <!-- Shared preferences -->
-    <string name="saved_cb_rf_from_spinner_pos">saved_cb_rf_from_spinner_pos</string>
-    <string name="saved_cb_rf_to_spinner_pos">saved_cb_rf_to_spinner_pos</string>
-    <string name="saved_yahoo_from_spinner_pos">saved_yahoo_from_spinner_pos</string>
-    <string name="saved_yahoo_to_spinner_pos">saved_yahoo_to_spinner_pos</string>
-    <string name="saved_custom_from_spinner_pos">saved_custom_from_spinner_pos</string>
-    <string name="saved_custom_to_spinner_pos">saved_custom_to_spinner_pos</string>
-    <string name="saved_custom_spinner_pos">saved_custom_spinner_pos</string>
-    <string name="saved_from_edit_amount_text">saved_from_edit_amount_text</string>
-    <string name="saved_to_edit_amount_text">saved_to_edit_amount_text</string>
-    <string name="saved_edit_amount_text_default" />
-    <string name="saved_rate_updater_class">saved_rate_updater_class</string>
-    <string name="saved_rate_updater_class_default">
+    <string name="saved_cb_rf_from_spinner_pos" translatable="false">
+        saved_cb_rf_from_spinner_pos</string>
+    <string name="saved_cb_rf_to_spinner_pos" translatable="false">
+        saved_cb_rf_to_spinner_pos</string>
+    <string name="saved_yahoo_from_spinner_pos" translatable="false">
+        saved_yahoo_from_spinner_pos</string>
+    <string name="saved_yahoo_to_spinner_pos" translatable="false">
+        saved_yahoo_to_spinner_pos</string>
+    <string name="saved_custom_from_spinner_pos" translatable="false">
+        saved_custom_from_spinner_pos</string>
+    <string name="saved_custom_to_spinner_pos" translatable="false">
+        saved_custom_to_spinner_pos</string>
+    <string name="saved_custom_spinner_pos" translatable="false">
+        saved_custom_spinner_pos</string>
+    <string name="saved_from_edit_amount_text" translatable="false">
+        saved_from_edit_amount_text</string>
+    <string name="saved_to_edit_amount_text" translatable="false">
+        saved_to_edit_amount_text</string>
+    <string name="saved_edit_amount_text_default" translatable="false" />
+    <string name="saved_rate_updater_class" translatable="false">
+        saved_rate_updater_class</string>
+    <string name="saved_rate_updater_class_default" translatable="false">
         com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
-    <string name="saved_cb_rf_up_date_time">saved_cb_rf_up_date_time</string>
-    <string name="saved_yahoo_up_date_time">saved_yahoo_up_date_time</string>
-    <string name="saved_custom_up_date_time">saved_custom_up_date_time</string>
+    <string name="saved_cb_rf_up_date_time" translatable="false">
+        saved_cb_rf_up_date_time</string>
+    <string name="saved_yahoo_up_date_time" translatable="false">
+        saved_yahoo_up_date_time</string>
+    <string name="saved_custom_up_date_time" translatable="false">
+        saved_custom_up_date_time</string>
 
     <!-- RateUpdater class names -->
-    <string name="cb_rf_rate_updater_class">
+    <string name="cb_rf_rate_updater_class" translatable="false">
         com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
-    <string name="yahoo_rate_updater_class">
+    <string name="yahoo_rate_updater_class" translatable="false">
         com.github.polurival.cc.model.updater.YahooRateUpdaterTask</string>
-    <string name="custom_rate_updater_class">
+    <string name="custom_rate_updater_class" translatable="false">
         com.github.polurival.cc.model.updater.CustomRateUpdaterMock</string>
 
     <!-- Currencies -->

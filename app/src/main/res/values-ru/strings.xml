@@ -24,7 +24,7 @@
         задай по очереди чему равен 1$ в ₽ и €</string>
     <string name="save_new_value">Сохранить</string>
 
-    <string name="empty"> </string>
+    <string name="space"> </string>
     <string name="turn_all_on_off">Включить все/ничего</string>
 
     <string-array name="data_source_array">
