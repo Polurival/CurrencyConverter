@@ -8,13 +8,19 @@ import com.github.polurival.cc.RateUpdaterListener;
  */
 public interface RateUpdater {
 
-
+    /**
+     * Set Activity that get data from RateUpdater
+     */
     void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener);
 
-
+    /**
+     * Map used for writing data to the database
+     */
     <T> void fillCurrencyMapFromSource(T doc) throws Exception;
 
-
+    /**
+     * return RateUpdater source name
+     */
     String getDescription();
 
 }

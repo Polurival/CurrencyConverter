@@ -136,6 +136,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         ignoreEditFromAmountChange = false;
@@ -160,11 +161,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onStart() {
         super.onStart();
 
-        db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
-        readDataFromDB();
-
-        checkAsyncTaskStatusAndSetNewInstance();
-
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
             if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
                 mPullToRefreshLayout.setRefreshing(true);
@@ -177,6 +173,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onResume() {
         super.onResume();
 
+        readDataFromDB();
         checkAsyncTaskStatusAndSetNewInstance();
     }
 
