@@ -188,16 +188,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onStop() {
         saveProperties();
 
-        if (null != fromCursor) {
-            fromCursor.close();
-        }
-        if (null != toCursor) {
-            toCursor.close();
-        }
-        if (null != cursor) {
-            cursor.close();
-        }
-
         if (null != taskCanceler && null != taskCancelerHandler) {
             taskCancelerHandler.removeCallbacks(taskCanceler);
         }
@@ -207,7 +197,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     protected void onDestroy() {
-        db.close();
+        if (null != fromCursor) fromCursor.close();
+        if (null != toCursor) toCursor.close();
+        if (null != cursor) cursor.close();
+
+        if (null != db) db.close();
 
         super.onDestroy();
     }
