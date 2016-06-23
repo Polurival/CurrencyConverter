@@ -7,7 +7,6 @@
     <string name="enter_from_amount">введите сумму…</string>
     <string name="transfer_from">Конвертировать из:</string>
     <string name="transfer_to">Конвертировать в:</string>
-    <string name="last_update">Последнее обновление:</string>
     <string name="swap">Поменять местами выбранные валюты</string>
     <string name="issuer_flag">Флаг эмитента</string>
 
@@ -46,9 +45,9 @@
     <string name="all_currencies_disabled">Включи валюты в меню \'Список валют\'</string>
 
     <!-- Description -->
-    <string name="cb_rf">Курс ЦБ РФ на:\n</string>
-    <string name="yahoo">Курс Яху! на:\n</string>
-    <string name="custom">Настраиваемый источник\nдата последнего изменения:\n</string>
+    <string name="cb_rf">Курс ЦБ РФ на\n</string>
+    <string name="yahoo">Курс Яху! на\n</string>
+    <string name="custom">Настраиваемый источник\nдата последнего изменения\n</string>
 
     <!-- Currencies -->
     <string name="aed">ОАЭ дирхам Dh</string>

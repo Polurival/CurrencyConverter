@@ -7,7 +7,6 @@
     <string name="enter_from_amount">Enter amount…</string>
     <string name="transfer_from">Convert from:</string>
     <string name="transfer_to">Convert to:</string>
-    <string name="last_update">Last update:</string>
     <string name="swap">Swap selected currencies</string>
     <string name="issuer_flag">Issuer\'s flag</string>
 
@@ -46,9 +45,9 @@
     <string name="all_currencies_disabled">Turn on currencies in \'Currencies list\' menu</string>
 
     <!-- Description -->
-    <string name="cb_rf">CB RF rate on:\n</string>
-    <string name="yahoo">Yahoo! rate on:\n</string>
-    <string name="custom">Custom source\nlast modified:\n</string>
+    <string name="cb_rf">CB RF rate on\n</string>
+    <string name="yahoo">Yahoo! rate on\n</string>
+    <string name="custom">Custom source\nlast modified\n</string>
 
     <!-- Shared preferences -->
     <string name="saved_cb_rf_from_spinner_pos" translatable="false">

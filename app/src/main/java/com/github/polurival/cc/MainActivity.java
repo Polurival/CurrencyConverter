@@ -162,6 +162,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         super.onStart();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
+            readDataFromDB();
             if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
                 mPullToRefreshLayout.setRefreshing(true);
             }
