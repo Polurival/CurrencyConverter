@@ -18,6 +18,35 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/view_vertical_margin"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/btn_custom_save"
+            android:layout_width="@dimen/btn_save_width"
+            android:layout_height="@dimen/btn_save_height"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:alpha="0.8"
+            android:background="@drawable/ic_save_40dp"
+            android:contentDescription="@string/save_new_value" />
+
+        <ImageButton
+            android:id="@+id/btn_custom_hint"
+            android:layout_width="@dimen/btn_save_width"
+            android:layout_height="@dimen/btn_save_height"
+            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
+            android:alpha="0.8"
+            android:background="@drawable/ic_help_40dp"
+            android:contentDescription="@string/custom_mode_help" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/view_vertical_margin"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -49,35 +78,6 @@
             android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
             android:textSize="20sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/view_vertical_margin"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/btn_custom_save"
-            android:layout_width="@dimen/btn_save_width"
-            android:layout_height="@dimen/btn_save_height"
-            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:alpha="0.8"
-            android:background="@drawable/ic_save_40dp"
-            android:contentDescription="@string/save_new_value" />
-
-        <ImageButton
-            android:id="@+id/btn_custom_hint"
-            android:layout_width="@dimen/btn_save_width"
-            android:layout_height="@dimen/btn_save_height"
-            android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
-            android:alpha="0.8"
-            android:background="@drawable/ic_help_40dp"
-            android:contentDescription="@string/custom_mode_help" />
 
     </LinearLayout>
 

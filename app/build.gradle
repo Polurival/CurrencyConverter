@@ -25,6 +25,7 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
@@ -54,5 +55,4 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:23.4.0'
 }
