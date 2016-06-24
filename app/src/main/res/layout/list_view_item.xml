@@ -33,7 +33,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="@dimen/text_size_small" />
 
     <TextView
         android:id="@+id/lv_currency_char_code"
@@ -46,7 +46,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:textColor="@color/azure"
-        android:textSize="20sp" />
+        android:textSize="@dimen/text_size_medium" />
 
     <CheckBox
         android:id="@+id/cb_currency_turn_on_off"
