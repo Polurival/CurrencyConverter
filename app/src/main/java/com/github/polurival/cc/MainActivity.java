@@ -152,14 +152,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initEditAmount();
-
-        loadRateUpdaterProperties();
-        loadProperties();
+        loadEditAmountProperties();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        loadRateUpdaterProperties();
+        loadUpDateTimeProperties();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
             readDataFromDB();
@@ -625,7 +626,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         editor.apply();
     }
 
-    private void loadProperties() {
+    private void loadEditAmountProperties() {
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
@@ -634,7 +635,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
         editToAmount.setText(editToAmountText);
+    }
 
+    private void loadUpDateTimeProperties() {
         String savedUpDateTime;
         if (rateUpdater instanceof CBRateUpdaterTask) {
             savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);

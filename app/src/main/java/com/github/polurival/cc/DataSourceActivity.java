@@ -69,7 +69,6 @@ public class DataSourceActivity extends Activity {
                 }
                 saveRateUpdaterNameProperty();
 
-                ft.addToBackStack(null); //todo - correct fragment BackStack
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
             }
