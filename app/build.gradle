@@ -53,5 +53,3 @@ android {
         exclude 'META-INF/NOTICE.txt'
     }
 }
-
-apply plugin: 'com.google.gms.google-services'

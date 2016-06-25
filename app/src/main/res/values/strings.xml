@@ -12,7 +12,7 @@
 
     <!-- Menu -->
     <string name="data_source">Data source</string>
-    <string name="currencies_list">Currencies list</string>
+    <string name="currencies_list">Currency list</string>
     <string name="share_action">Share</string>
 
     <!-- CustomRateFragment -->
