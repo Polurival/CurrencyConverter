@@ -53,8 +53,8 @@ public class DataSourceActivity extends Activity {
                         ft.show(customRateFragment);
                         Logger.logD("fragment was shown");
                     }
-                    rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
 
+                    rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
                 } else {
                     if (customRateFragment.isVisible()) {
                         ft.hide(customRateFragment);
@@ -69,6 +69,7 @@ public class DataSourceActivity extends Activity {
                 }
                 saveRateUpdaterNameProperty();
 
+                ft.addToBackStack(rateUpdaterClassName); //todo - correct fragment BackStack
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
             }

@@ -97,7 +97,8 @@ public class CurrencySwitchingActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 View rowLayout = getViewByPosition(position, lvAllCurrencies);
-                lvSelectedPos = position;
+
+                lvSelectedPos = lvAllCurrencies.getFirstVisiblePosition();
 
                 TextView tvCharCode = (TextView) ((ViewGroup) rowLayout).getChildAt(2);
                 String currencyCharCode = tvCharCode.getText().toString();

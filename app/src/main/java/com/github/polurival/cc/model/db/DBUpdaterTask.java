@@ -66,8 +66,11 @@ public class DBUpdaterTask extends DBTask {
                     .show();
 
             rateUpdaterListener.stopRefresh();
+            rateUpdaterListener.setMenuState(null);
+
             rateUpdaterListener.setUpDateTime(DateUtil.getCurrentDateTime());
             rateUpdaterListener.saveDateProperties();
+
             rateUpdaterListener.readDataFromDB();
         } else {
             Toast.makeText(appContext, appContext.getString(R.string.db_writing_error),

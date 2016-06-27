@@ -19,8 +19,8 @@
     <string name="custom_currency_nominal">\t*Номинал = </string>
     <string name="custom_mode_help">Как этим пользоваться?</string>
     <string name="view_custom_mode_help">\t**Чтобы конвертировать валюты между собой,
-        необходимо задать их курсы по отношению к $. Пример: Если хочешь конвертировать ₽ и €,
-        задай по очереди чему равен 1$ в ₽ и €</string>
+        необходимо задать их курсы по отношению к USD. Пример: Если хочешь конвертировать RUB и EUR,
+        задай по очереди чему равен 1 USD в RUB и EUR</string>
     <string name="save_new_value">Сохранить</string>
 
     <string name="space"> </string>

@@ -20,8 +20,8 @@
     <string name="one_usd_equals_char_code" translatable="false">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
     <string name="view_custom_mode_help">\t**For converting currencies to each other,
-        you need to set their rates relative to $. Example: If you want to convert ₽ and €,
-        set equality of 1$ to ₽ and €</string>
+        you need to set their rates relative to USD. Example: If you want to convert RUB and EUR,
+        set equality of 1 USD to RUB and EUR</string>
     <string name="save_new_value">Save</string>
 
     <string name="space"> </string>

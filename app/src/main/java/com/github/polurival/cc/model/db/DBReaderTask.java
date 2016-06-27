@@ -49,8 +49,6 @@ public class DBReaderTask extends DBTask {
             if (rateUpdaterListener != null) {
                 rateUpdaterListener.setCursor(cursor);
 
-                rateUpdaterListener.setMenuState(null);
-
                 rateUpdaterListener.initSpinners();
                 rateUpdaterListener.loadSpinnerProperties();
                 rateUpdaterListener.initTvDateTime();
