@@ -19,12 +19,21 @@
         android:layout_alignParentTop="true"
         android:layout_marginBottom="@dimen/activity_vertical_margin" />
 
-    <FrameLayout
-        android:id="@+id/custom_rates_fragment_container"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/custom_rates_fragment_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/source_spinner" />
+        android:layout_below="@+id/source_spinner">
+
+        <fragment
+            android:id="@+id/custom_rates_fragment"
+            android:name="com.github.polurival.cc.CustomRateFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout="@layout/fragment_custom_rates" />
+
+    </LinearLayout>
 
 </RelativeLayout>

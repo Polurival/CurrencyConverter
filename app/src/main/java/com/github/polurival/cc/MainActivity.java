@@ -17,13 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
@@ -37,6 +35,7 @@ import com.github.polurival.cc.model.db.OnBackPressedListener;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
+import com.github.polurival.cc.util.Toaster;
 
 import org.joda.time.LocalDateTime;
 
@@ -150,16 +149,18 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 .listener(this)
                 .setup(mPullToRefreshLayout);
 
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initEditAmount();
 
-        loadRateUpdaterProperties();
         loadProperties();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        loadRateUpdaterProperties();
+        loadUpDateTimeProperties();
 
         if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
             readDataFromDB();
@@ -225,7 +226,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (Constants.MENU_HIDE.equals(menuState)) {
+        if (Constants.MENU_HIDE.equals(menuState) &&
+                !(rateUpdater instanceof CustomRateUpdaterMock)) {
             for (int i = 0; i < menu.size(); i++) {
                 menu.getItem(i).setVisible(false);
             }
@@ -304,7 +306,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private void updateRates() {
         if (rateUpdater instanceof CustomRateUpdaterMock) {
-            Toast.makeText(this, R.string.custom_updating_info, Toast.LENGTH_SHORT).show();
+            Toaster.showCenterToast(getString(R.string.custom_updating_info));
             stopRefresh();
         } else {
             loadRateUpdaterProperties();
@@ -406,10 +408,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         });
 
         if (fromSpinner.getCount() == 0) {
-            Toast.makeText(getApplicationContext(),
-                    getApplicationContext().getString(R.string.all_currencies_disabled),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
         }
     }
 
@@ -500,39 +499,37 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
             fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
             toSpinner.setSelection(fromSpinnerSelectedItemPos);
+
+            if (isNeedToReSwapValues) {
+                reswapEditAmountsValues();
+                isNeedToReSwapValues = false;
+            }
         }
+    }
+
+    private void reswapEditAmountsValues() {
+        double tempValFrom = currencyFromToXRate;
+        currencyFromToXRate = currencyToToXRate;
+        currencyToToXRate = tempValFrom;
+
+        double tempNomFrom = currencyFromNominal;
+        currencyFromNominal = currencyToNominal;
+        currencyToNominal = tempNomFrom;
     }
 
     private void convertAndSetResult(View v) {
         if (null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem()) {
-            Toast.makeText(getApplicationContext(),
-                    getApplicationContext().getString(R.string.all_currencies_disabled),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
             return;
         }
 
         if (isNeedToReSwapValues && (v.getId() != R.id.edit_to_amount)) {
-            double tempValFrom = currencyFromToXRate;
-            currencyFromToXRate = currencyToToXRate;
-            currencyToToXRate = tempValFrom;
-
-            double tempNomFrom = currencyFromNominal;
-            currencyFromNominal = currencyToNominal;
-            currencyToNominal = tempNomFrom;
-
+            reswapEditAmountsValues();
             isNeedToReSwapValues = false;
         }
 
         if (!isNeedToReSwapValues && (v.getId() == R.id.edit_to_amount)) {
-            double tempValFrom = currencyFromToXRate;
-            currencyFromToXRate = currencyToToXRate;
-            currencyToToXRate = tempValFrom;
-
-            double tempNomFrom = currencyFromNominal;
-            currencyFromNominal = currencyToNominal;
-            currencyToNominal = tempNomFrom;
-
+            reswapEditAmountsValues();
             isNeedToReSwapValues = true;
         }
 
@@ -635,6 +632,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                         getString(R.string.saved_edit_amount_text_default));
         editToAmount.setText(editToAmountText);
 
+    }
+
+    private void loadUpDateTimeProperties() {
         String savedUpDateTime;
         if (rateUpdater instanceof CBRateUpdaterTask) {
             savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);

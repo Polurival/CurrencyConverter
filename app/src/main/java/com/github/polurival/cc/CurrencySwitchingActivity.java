@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.ListViewCursorAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.util.Toaster;
 
 public class CurrencySwitchingActivity extends Activity {
 
@@ -80,9 +81,7 @@ public class CurrencySwitchingActivity extends Activity {
                     initLvAllCurrencies();
 
                 } catch (SQLiteException e) {
-                    Toast.makeText(getApplicationContext(), R.string.db_reading_error,
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    Toaster.showCenterToast(getString(R.string.db_reading_error));
                 }
             }
         });
@@ -192,10 +191,7 @@ public class CurrencySwitchingActivity extends Activity {
                     readListDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toast.makeText(getApplicationContext(),
-                            getApplicationContext().getString(R.string.db_writing_error),
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    Toaster.showCenterToast(getString(R.string.db_writing_error));
                 }
             }
         });

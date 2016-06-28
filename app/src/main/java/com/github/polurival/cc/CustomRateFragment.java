@@ -18,12 +18,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.Toaster;
 
 /**
  * Created by Polurival
@@ -104,10 +104,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     private void saveCurrencyCustomValueAndCustomNominal() {
         if (null == customCurrencySpinner || customCurrencySpinner.getCount() == 0) {
-            Toast.makeText(appContext,
-                    appContext.getString(R.string.all_currencies_disabled),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.all_currencies_disabled));
             return;
         }
 
@@ -117,10 +114,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         String customValue = editCustomCurrency.getText().toString();
         customValue = customValue.replace(",", ".");
         if ("".equals(customValue) || (Double.valueOf(customValue) == 0)) {
-            Toast.makeText(appContext,
-                    appContext.getString(R.string.db_custom_update_invalid_value),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.db_custom_update_invalid_value));
             return;
         }
 
@@ -143,19 +137,15 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                             DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
                             new String[]{String.valueOf(currencyNameId)});
 
-                    Toast.makeText(appContext, appContext.getString(
-                                    R.string.db_custom_update_success) + preparedCustomNominal,
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    Toaster.showCenterToast(appContext.getString(
+                            R.string.db_custom_update_success) + preparedCustomNominal);
 
                     saveCustomDateProperties();
                     saveCustomSpinnerSelectedPos();
                     readSpinnerDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toast.makeText(appContext, appContext.getString(R.string.db_writing_error),
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    Toaster.showCenterToast(appContext.getString(R.string.db_writing_error));
                 }
             }
         });
@@ -200,9 +190,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                     initCurrencyDataFromCustomSpinnerCursor();
 
                 } catch (SQLiteException e) {
-                    Toast.makeText(appContext, appContext.getString(R.string.db_reading_error),
-                            Toast.LENGTH_SHORT)
-                            .show();
+                    Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
                 }
             }
         });
@@ -238,10 +226,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             tvCustomCurrencyNominal.setText(String.format("%s%s",
                     appContext.getString(R.string.custom_currency_nominal), currencyNominal));
         } else {
-            Toast.makeText(appContext,
-                    appContext.getString(R.string.all_currencies_disabled),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.all_currencies_disabled));
         }
     }
 

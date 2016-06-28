@@ -3,9 +3,9 @@ package com.github.polurival.cc.model.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.widget.Toast;
 
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.util.Toaster;
 
 /**
  * Created by Polurival
@@ -56,9 +56,7 @@ public class DBReaderTask extends DBTask {
                 rateUpdaterListener.setPropertiesLoaded(true);
             }
         } else {
-            Toast.makeText(appContext, appContext.getString(R.string.db_reading_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
         }
 
         assert rateUpdaterListener != null;

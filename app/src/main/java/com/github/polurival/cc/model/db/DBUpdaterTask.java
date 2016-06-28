@@ -3,7 +3,6 @@ package com.github.polurival.cc.model.db;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
-import android.widget.Toast;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
@@ -12,6 +11,7 @@ import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.Toaster;
 
 import java.util.EnumMap;
 
@@ -61,9 +61,7 @@ public class DBUpdaterTask extends DBTask {
     @Override
     protected void onPostExecute(Boolean result) {
         if (result) {
-            Toast.makeText(appContext, appContext.getString(R.string.db_update_success),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.db_update_success));
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
@@ -73,9 +71,7 @@ public class DBUpdaterTask extends DBTask {
 
             rateUpdaterListener.readDataFromDB();
         } else {
-            Toast.makeText(appContext, appContext.getString(R.string.db_writing_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.db_writing_error));
         }
 
         rateUpdaterListener.setOnBackPressedListener(null);

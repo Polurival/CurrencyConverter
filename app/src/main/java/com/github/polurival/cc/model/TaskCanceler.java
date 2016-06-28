@@ -1,12 +1,11 @@
 package com.github.polurival.cc.model;
 
-import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.util.Toaster;
 
 /**
  * Created by Polurival
@@ -31,10 +30,7 @@ public class TaskCanceler implements Runnable {
             rateUpdaterListener.setMenuState(null);
             task.cancel(true);
 
-            Context appContext = AppContext.getContext();
-            Toast.makeText(appContext, appContext.getString(R.string.update_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(AppContext.getContext().getString(R.string.update_error));
         }
     }
 }

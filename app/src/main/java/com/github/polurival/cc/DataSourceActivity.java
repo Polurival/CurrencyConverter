@@ -1,13 +1,13 @@
 package com.github.polurival.cc;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.github.polurival.cc.util.Logger;
@@ -15,7 +15,7 @@ import com.github.polurival.cc.util.Logger;
 public class DataSourceActivity extends Activity {
 
     private String rateUpdaterClassName;
-    private CustomRateFragment customRateFragment;
+    private LinearLayout customRateFragmentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,8 @@ public class DataSourceActivity extends Activity {
 
         rateUpdaterClassName = loadRateUpdaterNameProperty();
 
-        customRateFragment = new CustomRateFragment();
+        customRateFragmentLayout = (LinearLayout) findViewById(R.id.custom_rates_fragment);
+
         initSourceSpinner();
     }
 
@@ -42,24 +43,11 @@ public class DataSourceActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-
                 if (position == 2) {
-                    if (!customRateFragment.isAdded()) {
-                        ft.add(R.id.custom_rates_fragment_container, customRateFragment);
-                        Logger.logD("fragment was added");
-                    }
-                    if (customRateFragment.isHidden()) {
-                        ft.show(customRateFragment);
-                        Logger.logD("fragment was shown");
-                    }
-
+                    customRateFragmentLayout.setVisibility(View.VISIBLE);
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
                 } else {
-                    if (customRateFragment.isVisible()) {
-                        ft.hide(customRateFragment);
-                        Logger.logD("fragment was hidden");
-                    }
+                    customRateFragmentLayout.setVisibility(View.GONE);
 
                     if (position == 0) {
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
@@ -68,10 +56,6 @@ public class DataSourceActivity extends Activity {
                     }
                 }
                 saveRateUpdaterNameProperty();
-
-                ft.addToBackStack(rateUpdaterClassName); //todo - correct fragment BackStack
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                ft.commit();
             }
 
             @Override
