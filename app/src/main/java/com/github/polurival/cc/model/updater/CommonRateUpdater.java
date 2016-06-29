@@ -2,7 +2,6 @@ package com.github.polurival.cc.model.updater;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
@@ -10,6 +9,8 @@ import com.github.polurival.cc.RateUpdaterListener;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.db.DBUpdaterTask;
+import com.github.polurival.cc.util.Logger;
+import com.github.polurival.cc.util.Toaster;
 
 import java.util.EnumMap;
 
@@ -40,16 +41,18 @@ public abstract class CommonRateUpdater
 
     @Override
     protected void onPostExecute(Boolean result) {
+        Logger.logD(Logger.getTag(), "onPostExecute " + result.toString());
+
         if (result) {
+            rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
+
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
-            rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);
+            /*rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);*/
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();
         } else {
-            Toast.makeText(appContext, appContext.getString(R.string.update_error),
-                    Toast.LENGTH_SHORT)
-                    .show();
+            Toaster.showCenterToast(appContext.getString(R.string.update_error));
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);

@@ -27,8 +27,8 @@ public abstract class DBTask extends AsyncTask<String, Void, Boolean>
 
     @Override
     public void notifyBackPressed() {
-        if (getStatus() != AsyncTask.Status.PENDING) {
+        /*if (getStatus() != AsyncTask.Status.PENDING) {
             cancel(true);
-        }
+        }*/
     }
 }

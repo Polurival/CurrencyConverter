@@ -133,6 +133,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.logD(Logger.getTag(), "onCreate");
+
         setContentView(R.layout.activity_main);
 
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
@@ -149,15 +151,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 .listener(this)
                 .setup(mPullToRefreshLayout);
 
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initEditAmount();
-
-        loadProperties();
+        loadEditAmountProperties();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Logger.logD(Logger.getTag(), "onStart");
 
         loadRateUpdaterProperties();
         loadUpDateTimeProperties();
@@ -174,6 +175,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @Override
     protected void onResume() {
         super.onResume();
+        Logger.logD(Logger.getTag(), "onResume");
 
         readDataFromDB();
         checkAsyncTaskStatusAndSetNewInstance();
@@ -181,6 +183,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     protected void onPause() {
+        Logger.logD(Logger.getTag(), "onPause");
+
         cancelAsyncTask();
 
         super.onPause();
@@ -188,6 +192,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     protected void onStop() {
+        Logger.logD(Logger.getTag(), "onStop");
+
         saveProperties();
 
         if (null != taskCanceler && null != taskCancelerHandler) {
@@ -199,6 +205,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     protected void onDestroy() {
+        Logger.logD(Logger.getTag(), "onDestroy");
+
         if (null != fromCursor) fromCursor.close();
         if (null != toCursor) toCursor.close();
         if (null != cursor) cursor.close();
@@ -210,6 +218,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void onBackPressed() {
+        Logger.logD(Logger.getTag(), "onBackPressed");
+
         cancelAsyncTask();
 
         super.onBackPressed();
@@ -217,13 +227,18 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     protected void onUserLeaveHint() {
+        Logger.logD(Logger.getTag(), "onUserLeaveHint");
+
         cancelAsyncTask();
+        setMenuState(null);
 
         super.onUserLeaveHint();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Logger.logD(Logger.getTag(), "onCreateOptionsMenu");
+
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
         if (Constants.MENU_HIDE.equals(menuState) &&
@@ -263,6 +278,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Logger.logD(Logger.getTag(), "onOptionsItemSelected " + item.getTitle().toString());
+
         switch (item.getItemId()) {
 
             case R.id.data_source_action:
@@ -284,59 +301,64 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    private void checkAsyncTaskStatusAndSetNewInstance() {
-        if (rateUpdater instanceof AsyncTask) {
+    @Override
+    public void checkAsyncTaskStatusAndSetNewInstance() {
+        Logger.logD(Logger.getTag(), "checkAsyncTaskStatusAndSetNewInstance()");
+
+        /*if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
                 loadRateUpdaterProperties();
             }
-        }
+        }*/
+        loadRateUpdaterProperties();
     }
 
     @Override
     public void onRefreshStarted(View view) {
-        updateRates();
-    }
+        Logger.logD(Logger.getTag(), "onRefreshStarted");
 
-    @Override
-    public void stopRefresh() {
-        if (mPullToRefreshLayout.isRefreshing()) {
-            mPullToRefreshLayout.setRefreshComplete();
-        }
-    }
-
-    private void updateRates() {
         if (rateUpdater instanceof CustomRateUpdaterMock) {
             Toaster.showCenterToast(getString(R.string.custom_updating_info));
             stopRefresh();
         } else {
             loadRateUpdaterProperties();
-
             updateRatesFromSource();
+        }
+    }
 
-            saveProperties();
+    @Override
+    public void stopRefresh() {
+        Logger.logD(Logger.getTag(), "stopRefresh");
 
-            loadSpinnerProperties();
+        if (mPullToRefreshLayout.isRefreshing()) {
+            mPullToRefreshLayout.setRefreshComplete();
         }
     }
 
     private void updateRatesFromSource() {
+        Logger.logD(Logger.getTag(), "updateRatesFromSource");
+
         taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            ((CBRateUpdaterTask) rateUpdater).execute();
+            ((CBRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            ((YahooRateUpdaterTask) rateUpdater).execute();
+            ((YahooRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
         hideMenuWhileUpdating();
     }
 
     private void hideMenuWhileUpdating() {
+        Logger.logD(Logger.getTag(), "hideMenuWhileUpdating");
+
         menuState = Constants.MENU_HIDE;
         invalidateOptionsMenu();
     }
 
     @Override
     public void readDataFromDB() {
+        Logger.logD(Logger.getTag(), "readDataFromDB");
+
         DBReaderTask dbReaderTask = new DBReaderTask();
         setOnBackPressedListener(dbReaderTask);
         dbReaderTask.setRateUpdaterListener(this);
@@ -358,6 +380,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void initSpinners() {
+        Logger.logD(Logger.getTag(), "initSpinners");
+
         SpinnerCursorAdapter cursorAdapter =
                 new SpinnerCursorAdapter(getApplicationContext(), cursor);
 
@@ -375,6 +399,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 fromSpinnerSelectedPos = position;
 
                 editFromAmount.setText(editFromAmount.getText());
+
+                saveSpinnersProperties();
 
                 syncShareActionData();
             }
@@ -399,6 +425,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                 editFromAmount.setText(editFromAmount.getText());
 
+                saveSpinnersProperties();
+
                 syncShareActionData();
             }
 
@@ -413,6 +441,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void initEditAmount() {
+        Logger.logD(Logger.getTag(), "initEditAmount");
+
         editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
         editFromAmount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -470,6 +500,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void initTvDateTime() {
+        Logger.logD(Logger.getTag(), "initTvDateTime");
+
         tvDateTime = (TextView) findViewById(R.id.tv_date_time);
         tvDateTime.addTextChangedListener(new TextWatcher() {
             @Override
@@ -490,11 +522,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void tvDateTimeSetText() {
+        Logger.logD(Logger.getTag(), "tvDateTimeSetText");
+
         tvDateTime.setText(String.format("%s%s",
                 rateUpdater.getDescription(), DateUtil.getUpDateTimeStr(upDateTime)));
     }
 
     public void swapFromTo(View v) {
+        Logger.logD(Logger.getTag(), "swapFromTo");
+
         if (fromSpinner != null && toSpinner != null) {
             int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
             fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
@@ -508,6 +544,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void reswapEditAmountsValues() {
+        Logger.logD(Logger.getTag(), "reswapEditAmountsValues");
+
         double tempValFrom = currencyFromToXRate;
         currencyFromToXRate = currencyToToXRate;
         currencyToToXRate = tempValFrom;
@@ -518,6 +556,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void convertAndSetResult(View v) {
+        Logger.logD(Logger.getTag(), "convertAndSetResult " + v.toString());
+
         if (null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem()) {
             Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
             return;
@@ -563,6 +603,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private double getEnteredAmountOfMoney(View v) {
+        Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney " + v.toString());
+
         if (v.getId() == R.id.edit_from_amount) {
             if (TextUtils.isEmpty(editFromAmount.getText().toString())) {
                 return 0d;
@@ -577,6 +619,24 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void saveProperties() {
+        Logger.logD(Logger.getTag(), "saveProperties");
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putString(getString(R.string.saved_from_edit_amount_text),
+                editFromAmount.getText().toString());
+        editor.putString(getString(R.string.saved_to_edit_amount_text),
+                editToAmount.getText().toString());
+
+        editor.putString(getString(R.string.saved_rate_updater_class),
+                rateUpdater.getClass().getName());
+
+        editor.apply();
+
+        saveSpinnersProperties();
+    }
+
+    private void saveSpinnersProperties() {
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -596,19 +656,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     toSpinnerSelectedPos);
         }
 
-        editor.putString(getString(R.string.saved_from_edit_amount_text),
-                editFromAmount.getText().toString());
-        editor.putString(getString(R.string.saved_to_edit_amount_text),
-                editToAmount.getText().toString());
-
-        editor.putString(getString(R.string.saved_rate_updater_class),
-                rateUpdater.getClass().getName());
-
         editor.apply();
     }
 
     @Override
     public void saveDateProperties() {
+        Logger.logD(Logger.getTag(), "saveDateProperties");
+
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -622,7 +676,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         editor.apply();
     }
 
-    private void loadProperties() {
+    private void loadEditAmountProperties() {
+        Logger.logD(Logger.getTag(), "loadEditAmountProperties");
+
         String editFromAmountText =
                 preferences.getString(getString(R.string.saved_from_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
@@ -635,6 +691,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void loadUpDateTimeProperties() {
+        Logger.logD(Logger.getTag(), "loadUpDateTimeProperties");
+
         String savedUpDateTime;
         if (rateUpdater instanceof CBRateUpdaterTask) {
             savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);
@@ -649,6 +707,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void loadRateUpdaterProperties() {
+        Logger.logD(Logger.getTag(), "loadRateUpdaterProperties");
+
         String rateUpdaterName =
                 preferences.getString(getString(R.string.saved_rate_updater_class),
                         getString(R.string.saved_rate_updater_class_default));
@@ -667,6 +727,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     @Override
     public void loadSpinnerProperties() {
+        Logger.logD(Logger.getTag(), "loadSpinnerProperties");
+
         if (rateUpdater instanceof CBRateUpdaterTask) {
             fromSpinnerSelectedPos =
                     preferences.getInt(getString(R.string.saved_cb_rf_from_spinner_pos), 30);
@@ -689,12 +751,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void syncShareActionData() {
+        Logger.logD(Logger.getTag(), "syncShareActionData");
+
         if (isPropertiesLoaded) {
             setShareIntent(composeText());
         }
     }
 
     private void setShareIntent(String text) {
+        Logger.logD(Logger.getTag(), "setShareIntent " + text);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, text);
@@ -702,12 +767,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private String composeText() {
+        Logger.logD(Logger.getTag(), "composeText");
+
         return String.format("%s %s = %s %s",
                 editFromAmount.getText().toString(), currencyFromCharCode,
                 editToAmount.getText().toString(), currencyToCharCode);
     }
 
     private void cancelAsyncTask() {
+        Logger.logD(Logger.getTag(), "cancelAsyncTask");
+
         stopRefresh();
 
         AsyncTask task = (AsyncTask) rateUpdater;

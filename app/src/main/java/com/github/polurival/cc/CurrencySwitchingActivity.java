@@ -15,10 +15,11 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.polurival.cc.adapter.ListViewCursorAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.util.Constants;
+import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 public class CurrencySwitchingActivity extends Activity {
@@ -104,9 +105,9 @@ public class CurrencySwitchingActivity extends Activity {
                 CheckBox currencyCondition = (CheckBox) ((ViewGroup) rowLayout).getChildAt(3);
 
                 if (currencyCondition.isChecked()) {
-                    saveCurrencyOnOffCondition(currencyCharCode, 0);
+                    saveCurrencyOnOffCondition(currencyCharCode, 0, Constants.SINGLE);
                 } else {
-                    saveCurrencyOnOffCondition(currencyCharCode, 1);
+                    saveCurrencyOnOffCondition(currencyCharCode, 1, Constants.SINGLE);
                 }
             }
         });
@@ -139,9 +140,9 @@ public class CurrencySwitchingActivity extends Activity {
         lvSelectedPos = 0;
 
         if (cbTurnOnOffAllCurrencies.isChecked()) {
-            turnOnOffAllListItems(1);
+            saveCurrencyOnOffCondition(null, 1, Constants.MULTIPLE);
         } else {
-            turnOnOffAllListItems(0);
+            saveCurrencyOnOffCondition(null, 0, Constants.MULTIPLE);
         }
     }
 
@@ -155,22 +156,8 @@ public class CurrencySwitchingActivity extends Activity {
         return true;
     }
 
-    private void turnOnOffAllListItems(int selector) {
-        for (int i = 0; i < lvAllCurrencies.getCount(); i++) {
-
-            String currencyCharCode = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getString(1);
-            int currencyCondition = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getInt(4);
-
-            if ((selector == 1 && currencyCondition == 0) ||
-                    selector == 0 && currencyCondition == 1) {
-
-                saveCurrencyOnOffCondition(currencyCharCode, selector);
-            }
-        }
-    }
-
     private void saveCurrencyOnOffCondition(
-            final String currencyCharCode, int selector) {
+            final String currencyCharCode, int selector, final String mode) {
         final ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.COLUMN_NAME_SWITCHING, selector);
 
@@ -181,10 +168,20 @@ public class CurrencySwitchingActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    db.update(DBHelper.TABLE_NAME,
-                            contentValues,
-                            DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
-                            new String[]{currencyCharCode});
+                    if (Constants.SINGLE.equals(mode)) {
+                        if (null == currencyCharCode) {
+                            Logger.logD(Logger.getTag(), "SINGLE Error: currencyCharCode = null");
+                        }
+                        db.update(DBHelper.TABLE_NAME,
+                                contentValues,
+                                DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
+                                new String[]{currencyCharCode});
+                    } else {
+                        db.update(DBHelper.TABLE_NAME,
+                                contentValues,
+                                null,
+                                null);
+                    }
 
                     saveDefaultPositionProperties();
 

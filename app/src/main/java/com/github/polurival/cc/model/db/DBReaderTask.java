@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 /**
@@ -17,6 +18,9 @@ public class DBReaderTask extends DBTask {
 
     @Override
     protected Boolean doInBackground(String... params) {
+        Logger.logD(Logger.getTag(),
+                String.format("doInBackground %s %s %s", params[0], params[1], params[2]));
+
         String nominal = params[1];
         String rate = params[2];
 
@@ -45,6 +49,8 @@ public class DBReaderTask extends DBTask {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        Logger.logD(Logger.getTag(), "onPostExecute " + result.toString());
+
         if (result) {
             if (rateUpdaterListener != null) {
                 rateUpdaterListener.setCursor(cursor);

@@ -4,6 +4,7 @@ import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.util.Constants;
+import com.github.polurival.cc.util.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -21,6 +22,8 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     protected Boolean doInBackground(Void... params) {
+        Logger.logD(Logger.getTag(), "doInBackground");
+
         try {
             String jsonStr =
                     IOUtils.toString(new URL(Constants.YAHOO_URL), Charset.forName("UTF-8"));
@@ -36,6 +39,8 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     public <T> void fillCurrencyMapFromSource(T doc) throws JSONException {
+        Logger.logD(Logger.getTag(), "fillCurrencyMapFromSource");
+
         JSONObject yahooAllCurrencies = new JSONObject((String) doc);
         JSONObject list = yahooAllCurrencies.getJSONObject(Constants.LIST_OBJECT);
         JSONArray resources = list.getJSONArray(Constants.RESOURCES_ARRAY);

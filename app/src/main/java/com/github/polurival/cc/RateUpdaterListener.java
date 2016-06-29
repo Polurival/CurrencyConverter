@@ -73,4 +73,9 @@ public interface RateUpdaterListener {
      * For determining which columns of database should be updated
      */
     RateUpdater getRateUpdater();
+
+    /**
+     * Set new instance of RateUpdater after cancel old one
+     */
+    void checkAsyncTaskStatusAndSetNewInstance();
 }

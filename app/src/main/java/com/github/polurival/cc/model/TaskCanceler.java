@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 /**
@@ -25,10 +26,16 @@ public class TaskCanceler implements Runnable {
 
     @Override
     public void run() {
+        Logger.logD(Logger.getTag(), "run");
+
         if (task.getStatus() == AsyncTask.Status.RUNNING) {
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
+
             task.cancel(true);
+
+            rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
+            rateUpdaterListener.readDataFromDB();
 
             Toaster.showCenterToast(AppContext.getContext().getString(R.string.update_error));
         }

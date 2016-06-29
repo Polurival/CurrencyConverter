@@ -8,6 +8,8 @@ public interface Constants {
 
     String LOG = "com.github.polurival.cc";
 
+    String MENU_HIDE = "menuHide";
+
     /**
      * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
      */
@@ -29,6 +31,10 @@ public interface Constants {
     String SYMBOL_KEY = "symbol";
     String PRICE_KEY = "price";
 
-    String MENU_HIDE = "menuHide";
+    /**
+     * For enable or disable all or one currency
+     */
+    String MULTIPLE = "multiple";
+    String SINGLE = "single";
 
 }

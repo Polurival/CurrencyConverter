@@ -11,6 +11,7 @@ import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 import java.util.EnumMap;
@@ -29,6 +30,8 @@ public class DBUpdaterTask extends DBTask {
 
     @Override
     protected Boolean doInBackground(String... params) {
+        Logger.logD(Logger.getTag(), "doInBackground");
+
         try {
             RateUpdater rateUpdater = rateUpdaterListener.getRateUpdater();
             SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
@@ -60,6 +63,8 @@ public class DBUpdaterTask extends DBTask {
 
     @Override
     protected void onPostExecute(Boolean result) {
+        Logger.logD(Logger.getTag(), "onPostExecute " + result.toString());
+
         if (result) {
             Toaster.showCenterToast(appContext.getString(R.string.db_update_success));
 

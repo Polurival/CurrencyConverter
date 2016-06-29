@@ -4,6 +4,7 @@ import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.util.Constants;
+import com.github.polurival.cc.util.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
@@ -23,6 +24,8 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     protected Boolean doInBackground(Void... params) {
+        Logger.logD(Logger.getTag(), "doInBackground");
+
         try {
             URL url = new URL(Constants.CBR_URL);
             URLConnection connection = url.openConnection();
@@ -38,6 +41,8 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     public <T> void fillCurrencyMapFromSource(T doc) {
+        Logger.logD(Logger.getTag(), "fillCurrencyMapFromSource");
+
         NodeList descNodes = ((Document) doc).getElementsByTagName(Constants.CURRENCY_NODE_LIST);
 
         for (int i = 0; i < descNodes.getLength(); i++) {
@@ -68,6 +73,8 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
     }
 
     private Document parseXML(InputStream stream) throws Exception {
+        Logger.logD(Logger.getTag(), "parseXML");
+
         DocumentBuilderFactory objDocumentBuilderFactory;
         DocumentBuilder objDocumentBuilder;
         Document doc;
