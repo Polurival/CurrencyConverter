@@ -30,7 +30,6 @@ public enum CharCode {
     BTN,
     BWP,
     BYN,
-    BYR,
     BZD,
 
     CAD,

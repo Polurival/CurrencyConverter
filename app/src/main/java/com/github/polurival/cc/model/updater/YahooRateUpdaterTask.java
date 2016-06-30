@@ -65,10 +65,6 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
             CharCode charCode;
             try {
                 charCode = CharCode.valueOf(code);
-
-                if (CharCode.BYR.equals(charCode)) {
-                    continue;
-                }
             } catch (IllegalArgumentException e) {
                 continue;
             }
