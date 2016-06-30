@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
@@ -14,13 +15,19 @@ import com.github.polurival.cc.util.Logger;
 
 public class DataSourceActivity extends Activity {
 
+    private SharedPreferences preferences;
+
     private String rateUpdaterClassName;
     private LinearLayout customRateFragmentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.logD(Logger.getTag(), "onCreate");
+
         setContentView(R.layout.activity_data_source);
+
+        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -29,10 +36,21 @@ public class DataSourceActivity extends Activity {
 
         customRateFragmentLayout = (LinearLayout) findViewById(R.id.custom_rates_fragment);
 
+        CheckBox cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
+        cbAutoUpdate.setChecked(loadIsSetAutoUpdateProperty());
+
         initSourceSpinner();
     }
 
+    public void setAutoUpdate(View view) {
+        Logger.logD(Logger.getTag(), "setAutoUpdate");
+
+        saveIsSetAutoUpdateProperty(((CheckBox) view).isChecked());
+    }
+
     private void initSourceSpinner() {
+        Logger.logD(Logger.getTag(), "initSourceSpinner");
+
         Spinner sourceSpinner = (Spinner) findViewById(R.id.source_spinner);
         ArrayAdapter<String> sourceAdapter = new ArrayAdapter<>(this,
                 R.layout.mode_spinner_item,
@@ -72,9 +90,27 @@ public class DataSourceActivity extends Activity {
         }
     }
 
+    private boolean loadIsSetAutoUpdateProperty() {
+        Logger.logD(Logger.getTag(), "loadIsSetAutoUpdateProperty");
+
+        return preferences.getBoolean(getString(R.string.saved_is_set_auto_update),
+                Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
+    }
+
+    private void saveIsSetAutoUpdateProperty(boolean isSetAutoUpdate) {
+        Logger.logD(Logger.getTag(), "saveIsSetAutoUpdateProperty");
+
+        SharedPreferences.Editor editor = preferences.edit();
+
+        editor.putBoolean(getString(R.string.saved_is_set_auto_update),
+                isSetAutoUpdate);
+
+        editor.apply();
+    }
+
     private void saveRateUpdaterNameProperty() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Logger.logD(Logger.getTag(), "saveRateUpdaterNameProperty");
+
         SharedPreferences.Editor editor = preferences.edit();
 
         editor.putString(getString(R.string.saved_rate_updater_class),
@@ -85,8 +121,7 @@ public class DataSourceActivity extends Activity {
     }
 
     private String loadRateUpdaterNameProperty() {
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Logger.logD(Logger.getTag(), "loadRateUpdaterNameProperty");
 
         return preferences.getString(getString(R.string.saved_rate_updater_class),
                 getString(R.string.saved_rate_updater_class_default));

@@ -3,7 +3,6 @@ package com.github.polurival.cc;
 import android.database.Cursor;
 
 import com.github.polurival.cc.model.updater.RateUpdater;
-import com.github.polurival.cc.model.db.OnBackPressedListener;
 
 import org.joda.time.LocalDateTime;
 
@@ -12,11 +11,6 @@ import org.joda.time.LocalDateTime;
  * on 28.05.2016.
  */
 public interface RateUpdaterListener {
-
-    /**
-     * For cancel AsyncTask when Back pressed
-     */
-    void setOnBackPressedListener(OnBackPressedListener onBackPressedListener);
 
     /**
      * For hide menu when updating
@@ -52,12 +46,12 @@ public interface RateUpdaterListener {
     /**
      * Set selected positions for spinners
      */
-    void loadSpinnerProperties();
+    void loadSpinnersProperties();
 
     /**
      * Save Date and Time in SharedPreferences after successful updating
      */
-    void saveDateProperties();
+    void saveUpDateTimeProperty();
 
     /**
      * Read all necessary data
@@ -78,4 +72,5 @@ public interface RateUpdaterListener {
      * Set new instance of RateUpdater after cancel old one
      */
     void checkAsyncTaskStatusAndSetNewInstance();
+
 }

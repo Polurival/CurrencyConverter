@@ -31,7 +31,6 @@ import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.updater.RateUpdater;
-import com.github.polurival.cc.model.db.OnBackPressedListener;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
@@ -62,7 +61,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private ShareActionProvider shareActionProvider;
 
     private String menuState;
-    private OnBackPressedListener onBackPressedListener;
 
     private Handler taskCancelerHandler;
     private TaskCanceler taskCanceler;
@@ -93,11 +91,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     double currencyToToXRate;
 
     private TextView tvDateTime;
-
-    @Override
-    public void setOnBackPressedListener(OnBackPressedListener onBackPressedListener) {
-        this.onBackPressedListener = onBackPressedListener;
-    }
 
     @Override
     public void setMenuState(String menuState) {
@@ -161,14 +154,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onStart");
 
         loadRateUpdaterProperties();
-        loadUpDateTimeProperties();
+        loadUpDateTimeProperty();
 
-        if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
-            readDataFromDB();
-            if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
-                mPullToRefreshLayout.setRefreshing(true);
+        if (loadIsSetAutoUpdateProperty()) {
+            if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
+                readDataFromDB();
+                if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
+                    mPullToRefreshLayout.setRefreshing(true);
+                }
+                updateRatesFromSource();
             }
-            updateRatesFromSource();
         }
     }
 
@@ -305,12 +300,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void checkAsyncTaskStatusAndSetNewInstance() {
         Logger.logD(Logger.getTag(), "checkAsyncTaskStatusAndSetNewInstance()");
 
-        /*if (rateUpdater instanceof AsyncTask) {
+        if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
                 loadRateUpdaterProperties();
             }
-        }*/
-        loadRateUpdaterProperties();
+        }
     }
 
     @Override
@@ -321,7 +315,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             Toaster.showCenterToast(getString(R.string.custom_updating_info));
             stopRefresh();
         } else {
-            loadRateUpdaterProperties();
+            checkAsyncTaskStatusAndSetNewInstance();
             updateRatesFromSource();
         }
     }
@@ -335,10 +329,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
+    /**
+     * See <a href="http://stackoverflow.com/a/24788257/5349748">Source</a>
+     */
     private void updateRatesFromSource() {
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
         taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
+
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
@@ -360,7 +358,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "readDataFromDB");
 
         DBReaderTask dbReaderTask = new DBReaderTask();
-        setOnBackPressedListener(dbReaderTask);
         dbReaderTask.setRateUpdaterListener(this);
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -660,8 +657,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     @Override
-    public void saveDateProperties() {
-        Logger.logD(Logger.getTag(), "saveDateProperties");
+    public void saveUpDateTimeProperty() {
+        Logger.logD(Logger.getTag(), "saveUpDateTimeProperty");
 
         SharedPreferences.Editor editor = preferences.edit();
 
@@ -674,6 +671,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
 
         editor.apply();
+    }
+
+    private boolean loadIsSetAutoUpdateProperty() {
+        Logger.logD(Logger.getTag(), "loadIsSetAutoUpdateProperty");
+
+        return preferences.getBoolean(getString(R.string.saved_is_set_auto_update),
+                        Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
     }
 
     private void loadEditAmountProperties() {
@@ -690,8 +694,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     }
 
-    private void loadUpDateTimeProperties() {
-        Logger.logD(Logger.getTag(), "loadUpDateTimeProperties");
+    private void loadUpDateTimeProperty() {
+        Logger.logD(Logger.getTag(), "loadUpDateTimeProperty");
 
         String savedUpDateTime;
         if (rateUpdater instanceof CBRateUpdaterTask) {
@@ -726,8 +730,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     @Override
-    public void loadSpinnerProperties() {
-        Logger.logD(Logger.getTag(), "loadSpinnerProperties");
+    public void loadSpinnersProperties() {
+        Logger.logD(Logger.getTag(), "loadSpinnersProperties");
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             fromSpinnerSelectedPos =
@@ -736,9 +740,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     preferences.getInt(getString(R.string.saved_cb_rf_to_spinner_pos), 23);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 143);
+                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 142);
             toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 116);
+                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 115);
         } else {
             fromSpinnerSelectedPos =
                     preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 143);
@@ -782,10 +786,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         AsyncTask task = (AsyncTask) rateUpdater;
         if (task.getStatus() != AsyncTask.Status.PENDING) {
             task.cancel(true);
-
-            if (null != onBackPressedListener) {
-                onBackPressedListener.notifyBackPressed();
-            }
         }
     }
 }

@@ -56,7 +56,7 @@ public class DBReaderTask extends DBTask {
                 rateUpdaterListener.setCursor(cursor);
 
                 rateUpdaterListener.initSpinners();
-                rateUpdaterListener.loadSpinnerProperties();
+                rateUpdaterListener.loadSpinnersProperties();
                 rateUpdaterListener.initTvDateTime();
 
                 rateUpdaterListener.setPropertiesLoaded(true);
@@ -64,8 +64,5 @@ public class DBReaderTask extends DBTask {
         } else {
             Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
         }
-
-        assert rateUpdaterListener != null;
-        rateUpdaterListener.setOnBackPressedListener(null);
     }
 }

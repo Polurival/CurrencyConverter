@@ -10,13 +10,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".DataSourceActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/ll_auto_update">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="9"
+            android:layout_height="wrap_content"
+            android:text="@string/auto_update"
+            android:gravity="center_vertical|end"
+            android:textSize="@dimen/text_size_small" />
+
+        <CheckBox
+            android:id="@+id/cb_auto_update"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="@dimen/view_vertical_margin"
+            android:onClick="setAutoUpdate"
+            android:text="" />
+
+    </LinearLayout>
+
     <Spinner
         android:id="@+id/source_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/ll_auto_update"
         android:layout_marginBottom="@dimen/activity_vertical_margin" />
 
     <LinearLayout

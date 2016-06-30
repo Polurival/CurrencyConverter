@@ -36,6 +36,8 @@ public abstract class CommonRateUpdater
 
     @Override
     protected void onPreExecute() {
+        Logger.logD(Logger.getTag(), "onPreExecute");
+
         currencyMap = new EnumMap<>(CharCode.class);
     }
 
@@ -47,7 +49,6 @@ public abstract class CommonRateUpdater
             rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
 
             DBUpdaterTask dbUpdaterTask = new DBUpdaterTask();
-            /*rateUpdaterListener.setOnBackPressedListener(dbUpdaterTask);*/
             dbUpdaterTask.setRateUpdaterListener(rateUpdaterListener);
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();

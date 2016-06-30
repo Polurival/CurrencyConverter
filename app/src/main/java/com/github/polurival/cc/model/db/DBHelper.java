@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     private static final String DB_NAME = "converter";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_NAME = "currency";
 
@@ -107,7 +107,6 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.BSD, 0, 1, 1, 0, 1.002965, 1.002965, R.string.bsd, R.drawable.bsd, 0, 1, 1);
             insertCurrency(db, CharCode.BTN, 0, 1, 1, 0, 66.792503, 66.792503, R.string.btn, R.drawable.btn, 0, 1, 1);
             insertCurrency(db, CharCode.BWP, 0, 1, 1, 0, 10.888950, 10.888950, R.string.bwp, R.drawable.bwp, 0, 1, 1);
-            //insertCurrency(db, CharCode.BYN, 0, 0, 0, 0, 0, 0, R.string.byr, R.drawable.byr, 0, 0); c июля 2016
             insertCurrency(db, CharCode.BYR, 10000, 1, 1, 32.6600, 19800.000000, 19800.000000, R.string.byr, R.drawable.byr, 1, 1, 1); //cb_rf
             insertCurrency(db, CharCode.BZD, 0, 1, 1, 0, 1.995000, 1.995000, R.string.bzd, R.drawable.bzd, 0, 1, 1);
 
@@ -274,6 +273,10 @@ public class DBHelper extends SQLiteOpenHelper {
             insertCurrency(db, CharCode.ZMW, 0, 1, 1, 0, 10.732950, 10.732950, R.string.zmw, R.drawable.zmw, 0, 1, 1);
             insertCurrency(db, CharCode.ZWL, 0, 1, 1, 0, 322.355011, 322.355011, R.string.zwl, R.drawable.zwl, 0, 1, 1);
         }
+
+        if (oldVersion < 2) {
+            updateCurrency(db, CharCode.BYN, 1, 0, 1, 31.8884, 0, 2.002000, R.string.byn, R.drawable.byn, 1, 0, 1, CharCode.BYR.toString()); //cb_rf only
+        }
     }
 
     private static void insertCurrency(SQLiteDatabase db, Enum charCode,
@@ -302,5 +305,37 @@ public class DBHelper extends SQLiteOpenHelper {
         currencyValues.put(COLUMN_NAME_SWITCHING, switching);
 
         db.insert(TABLE_NAME, null, currencyValues);
+    }
+
+    private static void updateCurrency(SQLiteDatabase db, Enum charCode,
+                                       int cbRfNominal,int yahooNominal, int customNominal,
+                                       double cbRfRate, double yahooRate, double customRate,
+                                       int nameResourceId, int flagResourceId,
+                                       int cbRfProvides, int yahooProvides, int switching,
+                                       String clauseKey) {
+
+        ContentValues currencyValues = new ContentValues();
+        currencyValues.put(COLUMN_NAME_CHAR_CODE, charCode.toString());
+
+        currencyValues.put(COLUMN_NAME_CB_RF_NOMINAL, cbRfNominal);
+        currencyValues.put(COLUMN_NAME_YAHOO_NOMINAL, yahooNominal);
+        currencyValues.put(COLUMN_NAME_CUSTOM_NOMINAL, customNominal);
+
+        currencyValues.put(COLUMN_NAME_CB_RF_RATE, cbRfRate);
+        currencyValues.put(COLUMN_NAME_YAHOO_RATE, yahooRate);
+        currencyValues.put(COLUMN_NAME_CUSTOM_RATE, customRate);
+
+        currencyValues.put(COLUMN_NAME_NAME_RESOURCE_ID, nameResourceId);
+        currencyValues.put(COLUMN_NAME_FLAG_RESOURCE_ID, flagResourceId);
+
+        currencyValues.put(COLUMN_NAME_CB_RF_SOURCE, cbRfProvides);
+        currencyValues.put(COLUMN_NAME_YAHOO_SOURCE, yahooProvides);
+
+        currencyValues.put(COLUMN_NAME_SWITCHING, switching);
+
+        db.update(DBHelper.TABLE_NAME,
+                currencyValues,
+                DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
+                new String[]{clauseKey});
     }
 }

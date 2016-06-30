@@ -10,8 +10,7 @@ import com.github.polurival.cc.RateUpdaterListener;
  * Created by Polurival
  * on 21.06.2016.
  */
-public abstract class DBTask extends AsyncTask<String, Void, Boolean>
-        implements OnBackPressedListener {
+public abstract class DBTask extends AsyncTask<String, Void, Boolean> {
 
     protected Context appContext;
     protected RateUpdaterListener rateUpdaterListener;
@@ -23,12 +22,5 @@ public abstract class DBTask extends AsyncTask<String, Void, Boolean>
     @Override
     protected void onPreExecute() {
         appContext = AppContext.getContext();
-    }
-
-    @Override
-    public void notifyBackPressed() {
-        /*if (getStatus() != AsyncTask.Status.PENDING) {
-            cancel(true);
-        }*/
     }
 }

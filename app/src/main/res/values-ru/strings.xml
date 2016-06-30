@@ -23,6 +23,8 @@
         задай по очереди чему равен 1 USD в RUB и EUR</string>
     <string name="save_new_value">Сохранить</string>
 
+    <string name="auto_update">Автоматическое обновление</string>
+
     <string name="space"> </string>
     <string name="turn_all_on_off">Включить все/ничего</string>
 
@@ -74,6 +76,7 @@
     <string name="bsd">Багамский доллар $</string>
     <string name="btn">Бутанский нгултрум Nu</string>
     <string name="bwp">Ботсванская пула P</string>
+    <string name="byn">Белорусский рубль Brn</string>
     <string name="byr">Белорусский рубль Br</string>
     <string name="bzd">Белизский доллар $</string>
 

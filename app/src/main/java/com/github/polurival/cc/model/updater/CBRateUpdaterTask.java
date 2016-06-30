@@ -34,6 +34,8 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
 
             fillCurrencyMapFromSource(doc);
         } catch (Exception e) {
+            e.printStackTrace();
+            Logger.logD(Logger.getTag(), "changes in source! handle it");
             return false;
         }
         return true;

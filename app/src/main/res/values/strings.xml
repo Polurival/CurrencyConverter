@@ -24,6 +24,8 @@
         set equality of 1 USD to RUB and EUR</string>
     <string name="save_new_value">Save</string>
 
+    <string name="auto_update">Auto update</string>
+
     <string name="space"> </string>
     <string name="turn_all_on_off">Turn all On/Off</string>
 
@@ -79,6 +81,10 @@
         saved_yahoo_up_date_time</string>
     <string name="saved_custom_up_date_time" translatable="false">
         saved_custom_up_date_time</string>
+    <string name="saved_is_set_auto_update" translatable="false">
+        saved_is_set_auto_update</string>
+    <string name="saved_is_set_auto_update_default" translatable="false">
+        true</string>
 
     <!-- RateUpdater class names -->
     <string name="cb_rf_rate_updater_class" translatable="false">
@@ -113,6 +119,7 @@
     <string name="bsd">Bahamian Dollar $</string>
     <string name="btn">Bhutanese Ngultrum Nu</string>
     <string name="bwp">Botswana Pula P</string>
+    <string name="byn">Belarusian Ruble Brn</string>
     <string name="byr">Belarusian Ruble Br</string>
     <string name="bzd">Belizean Dollar $</string>
 

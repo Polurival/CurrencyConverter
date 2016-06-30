@@ -32,6 +32,8 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
                 fillCurrencyMapFromSource(jsonStr);
             }
         } catch (Exception e) {
+            e.printStackTrace();
+            Logger.logD(Logger.getTag(), "changes in source! handle it");
             return false;
         }
         return true;
@@ -50,12 +52,23 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
                     resources.getJSONObject(i).getJSONObject(Constants.RESOURCE_OBJECT);
             JSONObject fields = resource.getJSONObject(Constants.FIELDS_OBJECT);
 
-            String code = fields.getString(Constants.SYMBOL_KEY).substring(0, 3);
-            double rate = fields.getDouble(Constants.PRICE_KEY);
+            String code;
+            double rate;
+
+            if (fields.isNull(Constants.SYMBOL_KEY) || fields.isNull(Constants.PRICE_KEY)) {
+                continue;
+            } else {
+                code = fields.getString(Constants.SYMBOL_KEY).substring(0, 3);
+                rate = fields.getDouble(Constants.PRICE_KEY);
+            }
 
             CharCode charCode;
             try {
                 charCode = CharCode.valueOf(code);
+
+                if (CharCode.BYR.equals(charCode)) {
+                    continue;
+                }
             } catch (IllegalArgumentException e) {
                 continue;
             }

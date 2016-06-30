@@ -158,6 +158,8 @@ public class CurrencySwitchingActivity extends Activity {
 
     private void saveCurrencyOnOffCondition(
             final String currencyCharCode, int selector, final String mode) {
+        Logger.logD(Logger.getTag(), "saveCurrencyOnOffCondition");
+
         final ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.COLUMN_NAME_SWITCHING, selector);
 
