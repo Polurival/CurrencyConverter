@@ -23,6 +23,7 @@ import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 /**
@@ -47,6 +48,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Logger.logD(Logger.getTag(), "onCreateView");
+
         View fragmentView = inflater.inflate(R.layout.fragment_custom_rates, container, false);
 
         ImageButton btnHint = (ImageButton) fragmentView.findViewById(R.id.btn_custom_hint);
@@ -68,6 +71,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     @Override
     public void onResume() {
         super.onResume();
+        Logger.logD(Logger.getTag(), "onResume");
 
         appContext = AppContext.getContext();
         readSpinnerDataFromDB();
@@ -75,6 +79,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onStop() {
+        Logger.logD(Logger.getTag(), "onStop");
+
         spinnerCursor.close();
 
         super.onStop();
@@ -82,6 +88,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
+        Logger.logD(Logger.getTag(), "onClick");
 
         switch (v.getId()) {
             case R.id.btn_custom_hint:
@@ -95,6 +102,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void showHideHint() {
+        Logger.logD(Logger.getTag(), "showHideHint");
+
         if (tvCustomModeHelp.isShown()) {
             tvCustomModeHelp.setVisibility(View.INVISIBLE);
         } else {
@@ -103,6 +112,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void saveCurrencyCustomValueAndCustomNominal() {
+        Logger.logD(Logger.getTag(), "saveCurrencyCustomValueAndCustomNominal");
+
         if (null == customCurrencySpinner || customCurrencySpinner.getCount() == 0) {
             Toaster.showCenterToast(appContext.getString(R.string.all_currencies_disabled));
             return;
@@ -152,6 +163,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private Object[] getCustomNominalAndValue(String customRate) {
+        Logger.logD(Logger.getTag(), "getCustomNominalAndValue");
+
         int nominal = 1;
         double rate = Double.valueOf(customRate);
         if (rate < 1) {
@@ -169,6 +182,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void readSpinnerDataFromDB() {
+        Logger.logD(Logger.getTag(), "readSpinnerDataFromDB");
+
         final SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
         Handler handler = new Handler();
         handler.post(new Runnable() {
@@ -197,6 +212,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void initCustomSpinner() {
+        Logger.logD(Logger.getTag(), "initCustomSpinner");
+
         SpinnerCursorAdapter cursorAdapter =
                 new SpinnerCursorAdapter(appContext, spinnerCursor);
         customCurrencySpinner.setAdapter(cursorAdapter);
@@ -215,6 +232,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void initCurrencyDataFromCustomSpinnerCursor() {
+        Logger.logD(Logger.getTag(), "initCurrencyDataFromCustomSpinnerCursor");
+
         if (null != customCurrencySpinner && customCurrencySpinner.getCount() != 0) {
             double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
             setEditCustomCurrencyText(currencyRate);
@@ -231,10 +250,14 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void setEditCustomCurrencyText(double currencyRate) {
+        Logger.logD(Logger.getTag(), "setEditCustomCurrencyText");
+
         editCustomCurrency.setText(String.format("%.4f", currencyRate).replace(",", "."));
     }
 
     private void saveCustomDateProperties() {
+        Logger.logD(Logger.getTag(), "saveCustomDateProperties");
+
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(appContext);
         SharedPreferences.Editor editor = preferences.edit();
@@ -246,22 +269,26 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     private void saveCustomSpinnerSelectedPos() {
+        Logger.logD(Logger.getTag(), "saveCustomSpinnerSelectedPos");
+
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(appContext);
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putInt(getString(R.string.saved_custom_spinner_pos),
+        editor.putInt(getString(R.string.saved_custom_fragment_spinner_pos),
                 customCurrencySpinner.getSelectedItemPosition());
 
         editor.apply();
     }
 
     private void loadCustomSpinnerSelectedPos() {
+        Logger.logD(Logger.getTag(), "loadCustomSpinnerSelectedPos");
+
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(appContext);
 
         int customSpinnerSelectedPos =
-                preferences.getInt(getString(R.string.saved_custom_spinner_pos), 0);
+                preferences.getInt(getString(R.string.saved_custom_fragment_spinner_pos), 0);
         customCurrencySpinner.setSelection(customSpinnerSelectedPos);
     }
 }

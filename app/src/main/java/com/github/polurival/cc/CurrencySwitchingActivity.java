@@ -34,6 +34,8 @@ public class CurrencySwitchingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Logger.logD(Logger.getTag(), "onCreate");
+
         setContentView(R.layout.activity_currency_switching);
 
         assert getActionBar() != null;
@@ -52,18 +54,23 @@ public class CurrencySwitchingActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        Logger.logD(Logger.getTag(), "onResume");
 
         readListDataFromDB();
     }
 
     @Override
     public void onStop() {
+        Logger.logD(Logger.getTag(), "onStop");
+
         listCursor.close();
 
         super.onStop();
     }
 
     private void readListDataFromDB() {
+        Logger.logD(Logger.getTag(), "readListDataFromDB");
+
         final SQLiteDatabase db =
                 DBHelper.getInstance(getApplicationContext()).getWritableDatabase();
         Handler handler = new Handler();
@@ -89,6 +96,8 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     private void initLvAllCurrencies() {
+        Logger.logD(Logger.getTag(), "initLvAllCurrencies");
+
         ListViewCursorAdapter cursorAdapter =
                 new ListViewCursorAdapter(getApplicationContext(), listCursor);
         lvAllCurrencies.setAdapter(cursorAdapter);
@@ -125,6 +134,8 @@ public class CurrencySwitchingActivity extends Activity {
      * See  <a href="http://stackoverflow.com/questions/24811536/android-listview-get-item-view-by-position">source</a>
      */
     private View getViewByPosition(int pos, ListView listView) {
+        Logger.logD(Logger.getTag(), "getViewByPosition");
+
         final int firstListItemPosition = listView.getFirstVisiblePosition();
         final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
 
@@ -137,6 +148,8 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     public void turnOnOffAllCurrencies(View view) {
+        Logger.logD(Logger.getTag(), "turnOnOffAllCurrencies");
+
         lvSelectedPos = 0;
 
         if (cbTurnOnOffAllCurrencies.isChecked()) {
@@ -147,6 +160,8 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     private boolean isAllCurrenciesTurnOn() {
+        Logger.logD(Logger.getTag(), "isAllCurrenciesTurnOn");
+
         for (int i = 0; i < lvAllCurrencies.getCount(); i++) {
             int currencyCondition = ((Cursor) lvAllCurrencies.getItemAtPosition(i)).getInt(4);
             if (currencyCondition == 0) {
@@ -197,6 +212,8 @@ public class CurrencySwitchingActivity extends Activity {
     }
 
     private void saveDefaultPositionProperties() {
+        Logger.logD(Logger.getTag(), "saveDefaultPositionProperties");
+
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = preferences.edit();
@@ -209,6 +226,8 @@ public class CurrencySwitchingActivity extends Activity {
 
         editor.putInt(getString(R.string.saved_custom_from_spinner_pos), 0);
         editor.putInt(getString(R.string.saved_custom_to_spinner_pos), 0);
+
+        editor.putInt(getString(R.string.saved_custom_fragment_spinner_pos), 0);
 
         editor.apply();
     }

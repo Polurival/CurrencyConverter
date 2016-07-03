@@ -81,15 +81,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
     private String currencyFromCharCode;
-    double currencyFromNominal;
-    double currencyFromToXRate;
+    private double currencyFromNominal;
+    private double currencyFromToXRate;
 
     private Spinner toSpinner;
     private int toSpinnerSelectedPos;
     private String currencyToCharCode;
-    double currencyToNominal;
-    double currencyToToXRate;
+    private double currencyToNominal;
+    private double currencyToToXRate;
 
+    private TextView tvLabelForCurrentCurrencies;
     private TextView tvDateTime;
 
     @Override
@@ -129,6 +130,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onCreate");
 
         setContentView(R.layout.activity_main);
+        tvLabelForCurrentCurrencies = (TextView) findViewById(R.id.tv_label_for_current_currencies);
 
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -399,6 +401,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                 saveSpinnersProperties();
 
+                tvLabelForCurrentCurrencies.setText(composeTextForLabel());
                 syncShareActionData();
             }
 
@@ -424,6 +427,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                 saveSpinnersProperties();
 
+                tvLabelForCurrentCurrencies.setText(composeTextForLabel());
                 syncShareActionData();
             }
 
@@ -525,63 +529,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 rateUpdater.getDescription(), DateUtil.getUpDateTimeStr(upDateTime)));
     }
 
-    public void swapFromTo(View v) {
-        Logger.logD(Logger.getTag(), "swapFromTo");
-
-        if (fromSpinner != null && toSpinner != null) {
-            int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
-            fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
-            toSpinner.setSelection(fromSpinnerSelectedItemPos);
-
-            if (isNeedToReSwapValues) {
-                reswapEditAmountsValues();
-                isNeedToReSwapValues = false;
-            }
-        }
-    }
-
-    private void reswapEditAmountsValues() {
-        Logger.logD(Logger.getTag(), "reswapEditAmountsValues");
-
-        double tempValFrom = currencyFromToXRate;
-        currencyFromToXRate = currencyToToXRate;
-        currencyToToXRate = tempValFrom;
-
-        double tempNomFrom = currencyFromNominal;
-        currencyFromNominal = currencyToNominal;
-        currencyToNominal = tempNomFrom;
-    }
-
     private void convertAndSetResult(View v) {
         Logger.logD(Logger.getTag(), "convertAndSetResult " + v.toString());
 
-        if (null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem()) {
+        if (cancelConvertingIfNothingToConvert()) {
             Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
             return;
         }
 
-        if (isNeedToReSwapValues && (v.getId() != R.id.edit_to_amount)) {
-            reswapEditAmountsValues();
-            isNeedToReSwapValues = false;
-        }
-
-        if (!isNeedToReSwapValues && (v.getId() == R.id.edit_to_amount)) {
-            reswapEditAmountsValues();
-            isNeedToReSwapValues = true;
-        }
+        checkNeedToSwapValues(v);
 
         double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
 
         double result;
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            result = enteredAmountOfMoney *
-                    (currencyFromToXRate / currencyToToXRate) *
-                    (currencyToNominal / currencyFromNominal);
-        } else {
-            result = enteredAmountOfMoney *
-                    (currencyToToXRate / currencyFromToXRate) *
-                    (currencyFromNominal / currencyToNominal);
-        }
+        result = calculateResult(enteredAmountOfMoney);
 
 
         if (v.getId() == R.id.edit_from_amount) {
@@ -595,6 +556,64 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 editFromAmount.setText("");
             } else {
                 editFromAmount.setText(String.format("%.2f", result).replace(",", "."));
+            }
+        }
+    }
+
+    private String convertForLabel(View v) {
+        Logger.logD(Logger.getTag(), "convertForLabel");
+
+        if (cancelConvertingIfNothingToConvert()) return null;
+
+        checkNeedToSwapValues(v);
+
+        double enteredAmountOfMoney = 1;
+
+        double result;
+        result = calculateResult(enteredAmountOfMoney);
+
+        return String.format("%.4f", result).replace(",", ".");
+    }
+
+    private boolean cancelConvertingIfNothingToConvert() {
+        return null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem();
+    }
+
+    private void checkNeedToSwapValues(View v) {
+        if (isNeedToReSwapValues && (v.getId() != R.id.edit_to_amount)) {
+            reSwapEditAmountsValues();
+            isNeedToReSwapValues = false;
+        }
+
+        if (!isNeedToReSwapValues && (v.getId() == R.id.edit_to_amount)) {
+            reSwapEditAmountsValues();
+            isNeedToReSwapValues = true;
+        }
+    }
+
+    private void reSwapEditAmountsValues() {
+        Logger.logD(Logger.getTag(), "reSwapEditAmountsValues");
+
+        double tempValFrom = currencyFromToXRate;
+        currencyFromToXRate = currencyToToXRate;
+        currencyToToXRate = tempValFrom;
+
+        double tempNomFrom = currencyFromNominal;
+        currencyFromNominal = currencyToNominal;
+        currencyToNominal = tempNomFrom;
+    }
+
+    public void swapFromTo(View v) {
+        Logger.logD(Logger.getTag(), "swapFromTo");
+
+        if (fromSpinner != null && toSpinner != null) {
+            int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
+            fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
+            toSpinner.setSelection(fromSpinnerSelectedItemPos);
+
+            if (isNeedToReSwapValues) {
+                reSwapEditAmountsValues();
+                isNeedToReSwapValues = false;
             }
         }
     }
@@ -613,6 +632,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             }
             return (double) Float.parseFloat(editToAmount.getText().toString().replace(",", "."));
         }
+    }
+
+    private double calculateResult(double enteredAmountOfMoney) {
+        double result;
+        if (rateUpdater instanceof CBRateUpdaterTask) {
+            result = enteredAmountOfMoney *
+                    (currencyFromToXRate / currencyToToXRate) *
+                    (currencyToNominal / currencyFromNominal);
+        } else {
+            result = enteredAmountOfMoney *
+                    (currencyToToXRate / currencyFromToXRate) *
+                    (currencyFromNominal / currencyToNominal);
+        }
+        return result;
     }
 
     private void saveProperties() {
@@ -758,7 +791,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "syncShareActionData");
 
         if (isPropertiesLoaded) {
-            setShareIntent(composeText());
+            setShareIntent(composeTextForShare());
         }
     }
 
@@ -770,12 +803,35 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         shareActionProvider.setShareIntent(intent);
     }
 
-    private String composeText() {
-        Logger.logD(Logger.getTag(), "composeText");
+    private String composeTextForShare() {
+        Logger.logD(Logger.getTag(), "composeTextForShare");
 
+        String fromCurrencyValue = editFromAmount.getText().toString();
+        String toCurrencyValue;
+
+        if (fromCurrencyValue.length() == 0) {
+            fromCurrencyValue = "1";
+            toCurrencyValue = convertForLabel(editFromAmount);
+        } else {
+            toCurrencyValue = editToAmount.getText().toString();
+        }
+
+        return getFormattedText(fromCurrencyValue, toCurrencyValue);
+    }
+
+    private String composeTextForLabel() {
+        Logger.logD(Logger.getTag(), "composeTextForLabel");
+
+        String fromCurrencyValue = "1";
+        String toCurrencyValue = convertForLabel(editFromAmount);
+
+        return getFormattedText(fromCurrencyValue, toCurrencyValue);
+    }
+
+    private String getFormattedText(String fromCurrencyValue, String toCurrencyValue) {
         return String.format("%s %s = %s %s",
-                editFromAmount.getText().toString(), currencyFromCharCode,
-                editToAmount.getText().toString(), currencyToCharCode);
+                fromCurrencyValue, currencyFromCharCode,
+                toCurrencyValue, currencyToCharCode);
     }
 
     private void cancelAsyncTask() {

@@ -64,7 +64,7 @@
         saved_custom_from_spinner_pos</string>
     <string name="saved_custom_to_spinner_pos" translatable="false">
         saved_custom_to_spinner_pos</string>
-    <string name="saved_custom_spinner_pos" translatable="false">
+    <string name="saved_custom_fragment_spinner_pos" translatable="false">
         saved_custom_spinner_pos</string>
     <string name="saved_from_edit_amount_text" translatable="false">
         saved_from_edit_amount_text</string>

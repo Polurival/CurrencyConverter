@@ -19,13 +19,24 @@
             android:orientation="vertical"
             tools:context="com.github.polurival.cc.MainActivity">
 
-            <EditText
-                android:id="@+id/edit_from_amount"
+            <TextView
+                android:id="@+id/tv_label_for_current_currencies"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
-                android:layout_marginTop="@dimen/view_vertical_margin"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:alpha="0.8"
+                android:gravity="center_horizontal"
+                android:textSize="@dimen/text_size_small" />
+
+            <EditText
+                android:id="@+id/edit_from_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_label_for_current_currencies"
+                android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
+                android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:alpha="0.8"
                 android:background="@color/white"
                 android:hint="@string/enter_from_amount"
