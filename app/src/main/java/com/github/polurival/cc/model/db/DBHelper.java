@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     private static final String DB_NAME = "converter";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public static final String TABLE_NAME = "currency";
 
@@ -67,10 +67,23 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private void updateDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < newVersion) {
-            db.execSQL("DROP TABLE IF EXISTS currency");
+        if (oldVersion < 2) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             createAndFillDatabase(db);
         }
+
+        if (oldVersion < newVersion) {
+            updateOneCurrencyFieldWithOneCondition(db, TABLE_NAME,
+                    COLUMN_NAME_YAHOO_SOURCE, "1",
+                    COLUMN_NAME_CHAR_CODE, CharCode.BYN);
+        }
+    }
+
+    private void updateOneCurrencyFieldWithOneCondition(SQLiteDatabase db, String tableName,
+                                                        String columnName, String value,
+                                                        String condition, Enum arg) {
+        db.execSQL(String.format("UPDATE %s SET %s = %s WHERE %s = '%s'",
+                tableName, columnName, value, condition, arg));
     }
 
     private void createAndFillDatabase(SQLiteDatabase db) {
@@ -113,7 +126,7 @@ public class DBHelper extends SQLiteOpenHelper {
         insertCurrency(db, CharCode.BSD, 0, 1, 1, 0, 1.002965, 1.002965, R.string.bsd, R.drawable.bsd, 0, 1, 1);
         insertCurrency(db, CharCode.BTN, 0, 1, 1, 0, 66.792503, 66.792503, R.string.btn, R.drawable.btn, 0, 1, 1);
         insertCurrency(db, CharCode.BWP, 0, 1, 1, 0, 10.888950, 10.888950, R.string.bwp, R.drawable.bwp, 0, 1, 1);
-        insertCurrency(db, CharCode.BYN, 1, 0, 1, 31.8884, 0, 2.002000, R.string.byn, R.drawable.byn, 1, 0, 1); //cb_rf only
+        insertCurrency(db, CharCode.BYN, 1, 0, 1, 31.8884, 0, 2.002000, R.string.byn, R.drawable.byn, 1, 0, 1); //cb_rf
         insertCurrency(db, CharCode.BZD, 0, 1, 1, 0, 1.995000, 1.995000, R.string.bzd, R.drawable.bzd, 0, 1, 1);
 
         insertCurrency(db, CharCode.CAD, 1, 1, 1, 50.8069, 1.277900, 1.277900, R.string.cad, R.drawable.cad, 1, 1, 1); //cb_rf

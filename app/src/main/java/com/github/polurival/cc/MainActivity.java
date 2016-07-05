@@ -773,9 +773,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     preferences.getInt(getString(R.string.saved_cb_rf_to_spinner_pos), 23);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 142);
+                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 143);
             toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 115);
+                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 116);
         } else {
             fromSpinnerSelectedPos =
                     preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 143);
