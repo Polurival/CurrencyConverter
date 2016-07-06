@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
@@ -43,8 +44,6 @@ import org.joda.time.LocalDateTime;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -307,12 +306,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void checkScreenSizeAndSetSoftInputMode() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+
         int screenSize = getResources().getConfiguration().screenLayout &
                 Configuration.SCREENLAYOUT_SIZE_MASK;
-        if (screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL ||
-                screenSize == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-        } else {
+
+        if (screenSize == Configuration.SCREENLAYOUT_SIZE_LARGE ||
+                screenSize == Configuration.SCREENLAYOUT_SIZE_XLARGE) {
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
     }
@@ -353,6 +353,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     /**
      * See <a href="http://stackoverflow.com/a/24788257/5349748">Source</a>
      */
+
     private void updateRatesFromSource() {
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
@@ -740,7 +741,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "loadIsSetAutoUpdateProperty");
 
         return preferences.getBoolean(getString(R.string.saved_is_set_auto_update),
-                        Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
+                Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
     }
 
     private void loadEditAmountProperties() {
