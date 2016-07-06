@@ -19,8 +19,8 @@ android {
         applicationId "com.github.polurival.cc"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 7
-        versionName '1.2.3b'
+        versionCode 8
+        versionName '1.2.4b'
         setProperty("archivesBaseName", "currency-converter-$versionName")
     }
     buildTypes {

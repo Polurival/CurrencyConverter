@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
@@ -39,6 +41,10 @@ import com.github.polurival.cc.util.Toaster;
 import org.joda.time.LocalDateTime;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -148,6 +154,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         initEditAmount();
         loadEditAmountProperties();
+
+        checkScreenSizeAndSetSoftInputMode();
     }
 
     @Override
@@ -295,6 +303,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void checkScreenSizeAndSetSoftInputMode() {
+        int screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+        if (screenSize == Configuration.SCREENLAYOUT_SIZE_SMALL ||
+                screenSize == Configuration.SCREENLAYOUT_SIZE_NORMAL) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        } else {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         }
     }
 
@@ -539,23 +558,21 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         checkNeedToSwapValues(v);
 
-        double enteredAmountOfMoney = getEnteredAmountOfMoney(v);
+        BigDecimal result = calculateResult(getEnteredAmountOfMoney(v));
 
-        double result;
-        result = calculateResult(enteredAmountOfMoney);
-
+        String resultStr = result.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
 
         if (v.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmount.getText().toString())) {
                 editToAmount.setText("");
             } else {
-                editToAmount.setText(String.format("%.2f", result).replace(",", "."));
+                editToAmount.setText(resultStr);
             }
         } else if (v.getId() == R.id.edit_to_amount) {
             if ("".equals(editToAmount.getText().toString())) {
                 editFromAmount.setText("");
             } else {
-                editFromAmount.setText(String.format("%.2f", result).replace(",", "."));
+                editFromAmount.setText(resultStr);
             }
         }
     }
@@ -567,12 +584,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         checkNeedToSwapValues(v);
 
-        double enteredAmountOfMoney = 1;
+        BigDecimal result = calculateResult(BigDecimal.ONE);
 
-        double result;
-        result = calculateResult(enteredAmountOfMoney);
-
-        return String.format("%.4f", result).replace(",", ".");
+        return result.setScale(4, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private boolean cancelConvertingIfNothingToConvert() {
@@ -618,32 +632,48 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    private double getEnteredAmountOfMoney(View v) {
+    private BigDecimal getEnteredAmountOfMoney(View v) {
         Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney " + v.toString());
 
         if (v.getId() == R.id.edit_from_amount) {
             if (TextUtils.isEmpty(editFromAmount.getText().toString())) {
-                return 0d;
+                return BigDecimal.ZERO;
             }
-            return (double) Float.parseFloat(editFromAmount.getText().toString().replace(",", "."));
+            return new BigDecimal(editFromAmount.getText().toString());
         } else {
             if (TextUtils.isEmpty(editToAmount.getText().toString())) {
-                return 0d;
+                return BigDecimal.ZERO;
             }
-            return (double) Float.parseFloat(editToAmount.getText().toString().replace(",", "."));
+            return new BigDecimal(editToAmount.getText().toString());
         }
     }
 
-    private double calculateResult(double enteredAmountOfMoney) {
-        double result;
+    private BigDecimal calculateResult(BigDecimal enteredAmountOfMoney) {
+        if (enteredAmountOfMoney.equals(BigDecimal.ZERO)
+                || currencyFromToXRate == 0 || currencyToToXRate == 0
+                || currencyToNominal == 0 || currencyFromNominal == 0) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal fromXRate = BigDecimal.valueOf(currencyFromToXRate);
+        BigDecimal toXRate = BigDecimal.valueOf(currencyToToXRate);
+        BigDecimal toNominal = BigDecimal.valueOf(currencyToNominal);
+        BigDecimal fromNominal = BigDecimal.valueOf(currencyFromNominal);
+        BigDecimal result;
+
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            result = enteredAmountOfMoney *
-                    (currencyFromToXRate / currencyToToXRate) *
-                    (currencyToNominal / currencyFromNominal);
+            result = fromXRate
+                    .divide(toXRate, RoundingMode.HALF_EVEN)
+                    .multiply(toNominal)
+                    .divide(fromNominal, RoundingMode.HALF_EVEN)
+                    .multiply(enteredAmountOfMoney);
         } else {
-            result = enteredAmountOfMoney *
-                    (currencyToToXRate / currencyFromToXRate) *
-                    (currencyFromNominal / currencyToNominal);
+            result = toXRate
+                    .divide(fromXRate, RoundingMode.HALF_EVEN)
+                    .multiply(fromNominal)
+                    .divide(toNominal, RoundingMode.HALF_EVEN)
+                    .multiply(enteredAmountOfMoney);
+
         }
         return result;
     }

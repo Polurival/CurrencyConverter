@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     private static final String DB_NAME = "converter";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     public static final String TABLE_NAME = "currency";
 
@@ -73,17 +73,19 @@ public class DBHelper extends SQLiteOpenHelper {
         }
 
         if (oldVersion < newVersion) {
-            updateOneCurrencyFieldWithOneCondition(db, TABLE_NAME,
+            updateTwoCurrencyFieldsWithOneCondition(db, TABLE_NAME,
+                    COLUMN_NAME_YAHOO_NOMINAL, "1",
                     COLUMN_NAME_YAHOO_SOURCE, "1",
                     COLUMN_NAME_CHAR_CODE, CharCode.BYN);
         }
     }
 
-    private void updateOneCurrencyFieldWithOneCondition(SQLiteDatabase db, String tableName,
-                                                        String columnName, String value,
-                                                        String condition, Enum arg) {
-        db.execSQL(String.format("UPDATE %s SET %s = %s WHERE %s = '%s'",
-                tableName, columnName, value, condition, arg));
+    private void updateTwoCurrencyFieldsWithOneCondition(SQLiteDatabase db, String tableName,
+                                                         String columnName1, String value1,
+                                                         String columnName2, String value2,
+                                                         String condition, Enum arg) {
+        db.execSQL(String.format("UPDATE %s SET %s = '%s', %s = '%s' WHERE %s = '%s'",
+                tableName, columnName1, value1, columnName2, value2, condition, arg));
     }
 
     private void createAndFillDatabase(SQLiteDatabase db) {
@@ -155,7 +157,7 @@ public class DBHelper extends SQLiteOpenHelper {
         insertCurrency(db, CharCode.FJD, 0, 1, 1, 0, 2.081600, 2.081600, R.string.fjd, R.drawable.fjd, 0, 1, 1);
         insertCurrency(db, CharCode.FKP, 0, 10, 10, 0, 6.59800, 6.59800, R.string.fkp, R.drawable.fkp, 0, 1, 1);
 
-        insertCurrency(db, CharCode.GBP, 1, 10, 10, 93.4185, 7.01484, 7.01484, R.string.gbp, R.drawable.gbp, 1, 1 , 1); //cb_rf
+        insertCurrency(db, CharCode.GBP, 1, 10, 10, 93.4185, 7.01484, 7.01484, R.string.gbp, R.drawable.gbp, 1, 1, 1); //cb_rf
         insertCurrency(db, CharCode.GEL, 0, 1, 1, 0, 2.130000, 2.130000, R.string.gel, R.drawable.gel, 0, 1, 1);
         insertCurrency(db, CharCode.GHS, 0, 1, 1, 0, 3.860000, 3.860000, R.string.ghs, R.drawable.ghs, 0, 1, 1);
         insertCurrency(db, CharCode.GIP, 0, 10, 10, 0, 7.71000, 7.71000, R.string.gip, R.drawable.gip, 0, 1, 1);
@@ -294,7 +296,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private static void insertCurrency(SQLiteDatabase db, Enum charCode,
-                                       int cbRfNominal,int yahooNominal, int customNominal,
+                                       int cbRfNominal, int yahooNominal, int customNominal,
                                        double cbRfRate, double yahooRate, double customRate,
                                        int nameResourceId, int flagResourceId,
                                        int cbRfProvides, int yahooProvides, int switching) {
