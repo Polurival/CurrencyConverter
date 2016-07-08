@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
@@ -587,7 +586,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         BigDecimal result = calculateResult(BigDecimal.ONE);
 
-        return result.setScale(4, RoundingMode.HALF_EVEN).toPlainString();
+        int scale;
+        if (rateUpdater instanceof CBRateUpdaterTask) {
+            scale = 4;
+        } else {
+            scale = 6;
+        }
+
+        return result.setScale(scale, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private boolean cancelConvertingIfNothingToConvert() {

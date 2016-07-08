@@ -41,7 +41,7 @@
                 android:background="@color/white"
                 android:hint="@string/enter_from_amount"
                 android:inputType="numberDecimal"
-                android:maxLength="14"
+                android:maxLength="20"
                 android:textColor="@color/azure"
                 android:textSize="@dimen/text_size_medium" />
 
@@ -87,7 +87,7 @@
                 android:background="@color/white"
                 android:hint="@string/enter_from_amount"
                 android:inputType="numberDecimal"
-                android:maxLength="14"
+                android:maxLength="20"
                 android:textColor="@color/azure"
                 android:textSize="@dimen/text_size_medium" />
 

@@ -60,14 +60,14 @@
 
         <EditText
             android:id="@+id/edit_custom_currency"
-            android:layout_width="100dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/edit_text_custom_currency_horizontal_margin"
             android:layout_marginStart="@dimen/edit_text_custom_currency_horizontal_margin"
             android:alpha="0.8"
             android:background="@color/white"
             android:inputType="numberDecimal"
-            android:maxLength="8"
+            android:maxLength="11"
             android:textColor="@color/azure"
             android:textSize="@dimen/text_size_medium" />
 

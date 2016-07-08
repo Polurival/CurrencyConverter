@@ -26,6 +26,9 @@ import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Created by Polurival
  * on 07.06.2016.
@@ -176,9 +179,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             nominal = (int) Math.pow(10, i);
         }
 
-        String customRateStr = String.format("%.4f", rate).replace(",", ".");
-
-        return new Object[]{nominal, customRateStr};
+        return new Object[]{nominal, getEditCustomCurrencyText(rate)};
     }
 
     private void readSpinnerDataFromDB() {
@@ -236,7 +237,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
         if (null != customCurrencySpinner && customCurrencySpinner.getCount() != 0) {
             double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
-            setEditCustomCurrencyText(currencyRate);
+            editCustomCurrency.setText(getEditCustomCurrencyText(currencyRate));
 
             String charCode = ((Cursor) customCurrencySpinner.getSelectedItem()).getString(1);
             tvCharCode.setText(charCode);
@@ -249,10 +250,13 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void setEditCustomCurrencyText(double currencyRate) {
-        Logger.logD(Logger.getTag(), "setEditCustomCurrencyText");
+    private String getEditCustomCurrencyText(double currencyRate) {
+        Logger.logD(Logger.getTag(), "getEditCustomCurrencyText");
 
-        editCustomCurrency.setText(String.format("%.4f", currencyRate).replace(",", "."));
+        BigDecimal currencyRateIndependentOfLocale =
+                BigDecimal.valueOf(currencyRate).setScale(6, RoundingMode.HALF_EVEN);
+
+        return currencyRateIndependentOfLocale.toPlainString();
     }
 
     private void saveCustomDateProperties() {
