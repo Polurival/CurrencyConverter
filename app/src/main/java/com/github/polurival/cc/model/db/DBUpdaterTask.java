@@ -54,7 +54,6 @@ public class DBUpdaterTask extends DBTask {
                         DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
                         new String[]{entry.getKey().toString()});
             }
-            db.close();
         } catch (SQLiteException e) {
             return false;
         }

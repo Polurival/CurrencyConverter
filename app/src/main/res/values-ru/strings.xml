@@ -5,8 +5,7 @@
 
     <!-- MainActivity -->
     <string name="enter_from_amount">введите сумму…</string>
-    <string name="transfer_from">Конвертировать из:</string>
-    <string name="transfer_to">Конвертировать в:</string>
+    <string name="search_hint">Поиск по коду…</string>
     <string name="swap">Поменять местами выбранные валюты</string>
     <string name="issuer_flag">Флаг эмитента</string>
 
@@ -33,6 +32,11 @@
         <item>Яху!</item>
         <item>Настраиваемый источник</item>
     </string-array>
+
+    <!-- Dialogs -->
+    <string name="title_list_selection_dialog">Выбор списка</string>
+    <string name="convert_from">Конвертировать из</string>
+    <string name="convert_to">Конвертировать в</string>
 
     <!-- for Toasts -->
     <string name="db_writing_error">Ошибка записи в базу данных</string>

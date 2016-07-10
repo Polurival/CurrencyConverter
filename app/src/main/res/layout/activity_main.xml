@@ -10,7 +10,7 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="@dimen/activity_vertical_margin_top">
 
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -19,22 +19,38 @@
             android:orientation="vertical"
             tools:context="com.github.polurival.cc.MainActivity">
 
-            <TextView
-                android:id="@+id/tv_label_for_current_currencies"
+            <LinearLayout
+                android:id="@+id/header_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
-                android:layout_marginStart="@dimen/edit_text_horizontal_margin"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:alpha="0.8"
-                android:gravity="center_horizontal"
-                android:textSize="@dimen/text_size_small" />
+                android:layout_marginBottom="@dimen/view_vertical_margin"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_label_for_current_currencies"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:alpha="0.8"
+                    android:gravity="center_horizontal"
+                    android:textSize="@dimen/text_size_small" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/tv_auto_complete"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    android:hint="@string/search_hint"
+                    android:inputType="text"
+                    android:textSize="@dimen/text_size_small" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/edit_from_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_label_for_current_currencies"
+                android:layout_below="@id/header_layout"
                 android:layout_marginEnd="@dimen/edit_text_horizontal_margin"
                 android:layout_marginStart="@dimen/edit_text_horizontal_margin"
                 android:alpha="0.8"
@@ -52,7 +68,7 @@
                 android:layout_below="@id/edit_from_amount"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/view_vertical_margin"
-                android:prompt="@string/transfer_from" />
+                android:prompt="@string/convert_from" />
 
             <ImageButton
                 android:id="@+id/btn_swap_from_to"
@@ -73,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_swap_from_to"
                 android:layout_gravity="center_horizontal"
-                android:prompt="@string/transfer_to" />
+                android:prompt="@string/convert_to" />
 
             <EditText
                 android:id="@+id/edit_to_amount"

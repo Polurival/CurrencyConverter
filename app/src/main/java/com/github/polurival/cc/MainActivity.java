@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,11 +21,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.polurival.cc.adapter.AutoCompleteTVAdapter;
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
@@ -43,6 +46,10 @@ import org.joda.time.LocalDateTime;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
@@ -59,6 +66,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Cursor cursor;
     private Cursor fromCursor;
     private Cursor toCursor;
+    private Cursor searchCursor;
+    private AutoCompleteTVAdapter autoCompleteTvAdapter;
 
     private SharedPreferences preferences;
 
@@ -81,6 +90,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private boolean isNeedToReSwapValues;
     private boolean ignoreEditFromAmountChange;
     private boolean ignoreEditToAmountChange;
+    private boolean isEditTextFormatted;
 
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
@@ -144,6 +154,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         isNeedToReSwapValues = false;
         isPropertiesLoaded = false;
 
+        isEditTextFormatted = false;
+
         mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(this)
                 .allChildrenArePullable()
@@ -163,6 +175,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         loadRateUpdaterProperties();
         loadUpDateTimeProperty();
+
+        initSearchAdapter();
+        initSearchFilter();
 
         if (loadIsSetAutoUpdateProperty()) {
             if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
@@ -213,6 +228,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (null != fromCursor) fromCursor.close();
         if (null != toCursor) toCursor.close();
         if (null != cursor) cursor.close();
+        if (null != searchCursor) searchCursor.close();
 
         if (null != db) db.close();
 
@@ -396,6 +412,46 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
+    private void initSearchAdapter() {
+        searchCursor = DBHelper.getSearchCursor("", rateUpdater.getClass().getName());
+        autoCompleteTvAdapter = new AutoCompleteTVAdapter(
+                getApplicationContext(), searchCursor, rateUpdater.getClass().getName());
+    }
+
+    private void initSearchFilter() {
+        Logger.logD(Logger.getTag(), "initSearchFilter");
+
+        final AutoCompleteTextView currencySearcher =
+                (AutoCompleteTextView) findViewById(R.id.tv_auto_complete);
+        currencySearcher.setAdapter(autoCompleteTvAdapter);
+        currencySearcher.setThreshold(1);
+        currencySearcher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Logger.logD(Logger.getTag(), "currencySearcher.onItemClick");
+
+                currencySearcher.setText("");
+
+                Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
+                String searchedCharCode = searchedCurrency.getString(1);
+
+                int searchedCharCodeSpinnerPos = 0;
+                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                    String cursorCurrentCharCode = cursor.getString(1);
+                    if (searchedCharCode.equals(cursorCurrentCharCode)) {
+                        searchedCharCodeSpinnerPos = cursor.getPosition();
+                    }
+                }
+
+                SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
+                fragmentDialog.setFromSpinner(fromSpinner);
+                fragmentDialog.setToSpinner(toSpinner);
+                fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
+                fragmentDialog.show(getFragmentManager(), "list selection");
+            }
+        });
+    }
+
     @Override
     public void initSpinners() {
         Logger.logD(Logger.getTag(), "initSpinners");
@@ -472,9 +528,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0 && isPropertiesLoaded) {
-                    if (!ignoreEditFromAmountChange) {
-                        ignoreEditToAmountChange = true;
-                        convertAndSetResult(editFromAmount);
+                    if (!isEditTextFormatted) {
+                        editFromAmount.setText(formatBigDecimal(prepareBigDecimal(s), 2));
+                    } else {
+                        if (!ignoreEditFromAmountChange) {
+                            ignoreEditToAmountChange = true;
+                            convertAndSetResult(editFromAmount);
+                        }
                     }
                 }
             }
@@ -485,8 +545,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if ("".equals(s.toString())) {
                     editToAmount.getText().clear();
                 }
-
                 syncShareActionData();
+
+                editFromAmount.setSelection(editFromAmount.length());
+                isEditTextFormatted = false;
             }
         });
 
@@ -499,9 +561,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0 && isPropertiesLoaded) {
-                    if (!ignoreEditToAmountChange) {
-                        ignoreEditFromAmountChange = true;
-                        convertAndSetResult(editToAmount);
+                    if (!isEditTextFormatted) {
+                        editToAmount.setText(formatBigDecimal(prepareBigDecimal(s), 2));
+                    } else {
+                        if (!ignoreEditToAmountChange) {
+                            ignoreEditFromAmountChange = true;
+                            convertAndSetResult(editToAmount);
+                        }
                     }
                 }
             }
@@ -512,10 +578,19 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if ("".equals(s.toString())) {
                     editFromAmount.getText().clear();
                 }
-
                 syncShareActionData();
+
+                editToAmount.setSelection(editToAmount.length());
+                isEditTextFormatted = false;
             }
         });
+    }
+
+    @NonNull
+    private BigDecimal prepareBigDecimal(CharSequence s) {
+        String plainEditAmountText = s.toString().replaceAll(" ", "");
+        isEditTextFormatted = true;
+        return new BigDecimal(plainEditAmountText);
     }
 
     @Override
@@ -558,9 +633,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         checkNeedToSwapValues(v);
 
-        BigDecimal result = calculateResult(getEnteredAmountOfMoney(v));
+        BigDecimal amount = getEnteredAmountOfMoney(v);
+        BigDecimal result = calculateResult(amount);
 
-        String resultStr = result.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
+        String resultStr = formatBigDecimal(result, 2);
+        //String resultStr = result.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
 
         if (v.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmount.getText().toString())) {
@@ -593,11 +670,25 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             scale = 6;
         }
 
-        return result.setScale(scale, RoundingMode.HALF_EVEN).toPlainString();
+        return formatBigDecimal(result, scale);
+        //return result.setScale(scale, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private boolean cancelConvertingIfNothingToConvert() {
         return null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem();
+    }
+
+    /**
+     * See <a href='http://stackoverflow.com/a/5323787/5349748'>source</a>
+     */
+    private String formatBigDecimal(BigDecimal result, int scale) {
+        DecimalFormat formatter = (DecimalFormat) NumberFormat.getInstance(Locale.US);
+        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
+
+        symbols.setGroupingSeparator(' ');
+        formatter.setDecimalFormatSymbols(symbols);
+
+        return formatter.format(result.setScale(scale, RoundingMode.HALF_EVEN).doubleValue());
     }
 
     private void checkNeedToSwapValues(View v) {
@@ -643,15 +734,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney " + v.toString());
 
         if (v.getId() == R.id.edit_from_amount) {
-            if (TextUtils.isEmpty(editFromAmount.getText().toString())) {
+            String editFromText = editFromAmount.getText().toString().replaceAll(" ", "");
+            if (TextUtils.isEmpty(editFromText)) {
                 return BigDecimal.ZERO;
             }
-            return new BigDecimal(editFromAmount.getText().toString());
+            return new BigDecimal(editFromText);
         } else {
-            if (TextUtils.isEmpty(editToAmount.getText().toString())) {
+            String editToText = editToAmount.getText().toString().replaceAll(" ", "");
+            if (TextUtils.isEmpty(editToText)) {
                 return BigDecimal.ZERO;
             }
-            return new BigDecimal(editToAmount.getText().toString());
+            return new BigDecimal(editToText);
         }
     }
 
@@ -670,15 +763,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             result = fromXRate
-                    .divide(toXRate, RoundingMode.HALF_EVEN)
+                    .divide(toXRate, 10, RoundingMode.HALF_EVEN)
                     .multiply(toNominal)
-                    .divide(fromNominal, RoundingMode.HALF_EVEN)
+                    .divide(fromNominal, 10, RoundingMode.HALF_EVEN)
                     .multiply(enteredAmountOfMoney);
         } else {
             result = toXRate
-                    .divide(fromXRate, RoundingMode.HALF_EVEN)
+                    .divide(fromXRate, 10, RoundingMode.HALF_EVEN)
                     .multiply(fromNominal)
-                    .divide(toNominal, RoundingMode.HALF_EVEN)
+                    .divide(toNominal, 10, RoundingMode.HALF_EVEN)
                     .multiply(enteredAmountOfMoney);
 
         }

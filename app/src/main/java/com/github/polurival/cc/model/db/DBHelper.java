@@ -2,11 +2,14 @@ package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
+import com.github.polurival.cc.util.Toaster;
 
 /**
  * Created by Polurival
@@ -14,6 +17,7 @@ import com.github.polurival.cc.model.CharCode;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
+    private static Context appContext;
     private static DBHelper instance;
 
     private static final String DB_NAME = "converter";
@@ -48,6 +52,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static synchronized DBHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DBHelper(context);
+            appContext = context;
         }
         return instance;
     }
@@ -86,6 +91,30 @@ public class DBHelper extends SQLiteOpenHelper {
                                                          String condition, Enum arg) {
         db.execSQL(String.format("UPDATE %s SET %s = '%s', %s = '%s' WHERE %s = '%s'",
                 tableName, columnName1, value1, columnName2, value2, condition, arg));
+    }
+
+    public static Cursor getSearchCursor(String charCode, String rateUpdaterClassName) {
+        Cursor searchCursor = null;
+
+        String sourceColumnName;
+        if (appContext.getString(R.string.cb_rf_rate_updater_class).equals(rateUpdaterClassName)) {
+            sourceColumnName = COLUMN_NAME_CB_RF_SOURCE;
+        } else {
+            sourceColumnName = COLUMN_NAME_YAHOO_SOURCE;
+        }
+
+        try {
+            String sqlQuery = String.format(
+                    "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s LIKE ",
+                    COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_NAME_RESOURCE_ID,
+                    TABLE_NAME, sourceColumnName, COLUMN_NAME_CHAR_CODE)
+                    + "'%" + charCode + "%';";
+
+            searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);
+        } catch (SQLiteException e) {
+            Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
+        }
+        return searchCursor;
     }
 
     private void createAndFillDatabase(SQLiteDatabase db) {
