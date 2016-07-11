@@ -2,6 +2,7 @@ package com.github.polurival.cc;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,12 +26,14 @@ import com.github.polurival.cc.util.Toaster;
 
 public class CurrencySwitchingActivity extends Activity {
 
+    private String rateUpdaterClassName;
+
     private Cursor listCursor;
     private ListView lvAllCurrencies;
+    private int lvSelectedPos;
 
     private CheckBox cbTurnOnOffAllCurrencies;
 
-    private int lvSelectedPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,9 @@ public class CurrencySwitchingActivity extends Activity {
         if (isAllCurrenciesTurnOn()) {
             cbTurnOnOffAllCurrencies.setChecked(true);
         }
+
+        Intent intent = getIntent();
+        rateUpdaterClassName = intent.getStringExtra(Constants.RATE_UPDATER_CLASS_NAME);
     }
 
     @Override
@@ -81,10 +88,10 @@ public class CurrencySwitchingActivity extends Activity {
                     listCursor = db.query(DBHelper.TABLE_NAME,
                             new String[]{DBHelper.COLUMN_NAME_ID,
                                     DBHelper.COLUMN_NAME_CHAR_CODE,
-                                    DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
-                                    DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID,
+                                    DBHelper.COLUMN_NAME_CURRENCY_NAME,
+                                    DBHelper.COLUMN_NAME_FLAG_ID,
                                     DBHelper.COLUMN_NAME_SWITCHING},
-                            null, null, null, null, null);
+                            getWhereClause(), null, null, null, null);
 
                     initLvAllCurrencies();
 
@@ -196,7 +203,7 @@ public class CurrencySwitchingActivity extends Activity {
                     } else {
                         db.update(DBHelper.TABLE_NAME,
                                 contentValues,
-                                null,
+                                getWhereClause(),
                                 null);
                     }
 
@@ -209,6 +216,18 @@ public class CurrencySwitchingActivity extends Activity {
                 }
             }
         });
+    }
+
+    private String getWhereClause() {
+        String where;
+        if (rateUpdaterClassName.equals(getString(R.string.cb_rf_rate_updater_class))) {
+            where = DBHelper.COLUMN_NAME_CB_RF_SOURCE + " = 1";
+        } else if(rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
+            where = DBHelper.COLUMN_NAME_YAHOO_SOURCE + " = 1";
+        } else{
+            where = null;
+        }
+        return where;
     }
 
     private void saveDefaultPositionProperties() {

@@ -25,22 +25,9 @@ public class DateUtil {
         return LocalDate.now();
     }
 
-    public static String getCurrentDateTimeStr() {
-        return getCurrentDateTime().toString(formatter);
-    }
-
-    public static String getDefaultDateTimeStr() {
-        LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
-        return localDate.toString(formatter);
-    }
-
     public static long getDefaultDateTimeInSeconds() {
         LocalDateTime localDate = new LocalDateTime(2016, 6, 11, 0, 0, 0);
         return localDate.toDate().getTime();
-    }
-
-    public static LocalDateTime getUpDateTime(String upDateTime) {
-        return formatter.parseLocalDateTime(upDateTime);
     }
 
     public static LocalDateTime getUpDateTime(long upDateTimeInSeconds) {
@@ -48,11 +35,6 @@ public class DateUtil {
     }
 
     public static String getUpDateTimeStr(LocalDateTime upDateTime) {
-        return upDateTime.toString(formatter);
-    }
-
-    public static String getUpDateTimeStr(long upDateTimeInSeconds) {
-        LocalDateTime upDateTime = new LocalDateTime(upDateTimeInSeconds);
         return upDateTime.toString(formatter);
     }
 

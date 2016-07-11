@@ -17,11 +17,8 @@ import com.github.polurival.cc.R;
  */
 public class SpinnerCursorAdapter extends CursorAdapter {
 
-    private Context appContext;
-
     public SpinnerCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
-        this.appContext = context;
     }
 
     @Override
@@ -36,11 +33,13 @@ public class SpinnerCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        int flagIconId = cursor.getInt(5);
+        //int flagIconId = cursor.getInt(5);
+        int flagIconId = Integer.valueOf(cursor.getString(5));
         viewHolder.flagIcon.setImageResource(flagIconId);
 
-        int currencyNameId = cursor.getInt(4);
-        viewHolder.currencyName.setText(appContext.getString(currencyNameId));
+        //int currencyNameId = cursor.getInt(4);
+        String currencyName = cursor.getString(4);
+        viewHolder.currencyName.setText(currencyName);
 
         viewHolder.currencyCharCode.setText(cursor.getString(1));
     }

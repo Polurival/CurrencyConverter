@@ -8,6 +8,11 @@ public interface Constants {
 
     String LOG = "com.github.polurival.cc";
 
+    String RATE_UPDATER_CLASS_NAME = "rateUpdaterName";
+
+    /**
+     * Hide menu while updating from source
+     */
     String MENU_HIDE = "menuHide";
 
     /**

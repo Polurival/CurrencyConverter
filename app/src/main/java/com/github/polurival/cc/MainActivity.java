@@ -312,6 +312,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 cancelAsyncTask();
 
                 Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
+                currencySwitchingIntent.putExtra(
+                        Constants.RATE_UPDATER_CLASS_NAME, rateUpdater.getClass().getName());
                 startActivity(currencySwitchingIntent);
                 return true;
 
@@ -903,14 +905,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     preferences.getInt(getString(R.string.saved_cb_rf_to_spinner_pos), 23);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 143);
+                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 144);
             toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 116);
+                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 117);
         } else {
             fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 143);
+                    preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 144);
             toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_custom_to_spinner_pos), 116);
+                    preferences.getInt(getString(R.string.saved_custom_to_spinner_pos), 117);
         }
 
         fromSpinner.setSelection(fromSpinnerSelectedPos);

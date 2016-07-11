@@ -41,6 +41,7 @@ public enum CharCode {
     CNY,
     COP,
     CRC,
+    CUC,
     CUP,
     CVE,
     CZK,

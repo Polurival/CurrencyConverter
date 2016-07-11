@@ -37,8 +37,8 @@ public class DBReaderTask extends DBTask {
                             DBHelper.COLUMN_NAME_CHAR_CODE,
                             nominal,
                             rate,
-                            DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
-                            DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
+                            DBHelper.COLUMN_NAME_CURRENCY_NAME,
+                            DBHelper.COLUMN_NAME_FLAG_ID},
                     where,
                     null, null, null, null);
         } catch (SQLiteException e) {

@@ -13,6 +13,8 @@
     <dimen name="view_vertical_margin">5dp</dimen>
     <dimen name="view_horizontal_margin">5dp</dimen>
 
+    <dimen name="auto_complete_tv_min_height">60dp</dimen>
+
     <dimen name="spinner_margin_end">10dp</dimen>
 
     <dimen name="btn_swap_width">40dp</dimen>

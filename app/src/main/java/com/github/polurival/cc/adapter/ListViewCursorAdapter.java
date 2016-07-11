@@ -20,11 +20,8 @@ import com.github.polurival.cc.R;
  */
 public class ListViewCursorAdapter extends CursorAdapter {
 
-    private Context appContext;
-
     public ListViewCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
-        this.appContext = context;
     }
 
     @Override
@@ -44,11 +41,13 @@ public class ListViewCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        int flagIconId = cursor.getInt(3);
+        //int flagIconId = cursor.getInt(3);
+        int flagIconId = Integer.valueOf(cursor.getString(3));
         viewHolder.flagIcon.setImageResource(flagIconId);
 
-        int currencyNameId = cursor.getInt(2);
-        viewHolder.currencyName.setText(appContext.getString(currencyNameId));
+        //int currencyNameId = cursor.getInt(2);
+        String currencyName = cursor.getString(2);
+        viewHolder.currencyName.setText(currencyName);
 
         viewHolder.currencyCharCode.setText(cursor.getString(1));
 

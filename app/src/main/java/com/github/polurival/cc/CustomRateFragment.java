@@ -122,23 +122,23 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             return;
         }
 
-        Cursor currencyNameCursor = (Cursor) customCurrencySpinner.getSelectedItem();
-        final int currencyNameId = currencyNameCursor.getInt(4);
+        Cursor currencyCharCodeCursor = (Cursor) customCurrencySpinner.getSelectedItem();
+        final String currencyCharCode = currencyCharCodeCursor.getString(1);
 
-        String customValue = editCustomCurrency.getText().toString();
-        customValue = customValue.replace(",", ".");
-        if ("".equals(customValue) || (Double.valueOf(customValue) == 0)) {
+        String customRate = editCustomCurrency.getText().toString();
+        customRate = customRate.replace(",", ".");
+        if ("".equals(customRate) || (Double.valueOf(customRate) == 0)) {
             Toaster.showCenterToast(appContext.getString(R.string.db_custom_update_invalid_value));
             return;
         }
 
-        Object[] customNominalAndValue = getCustomNominalAndValue(customValue);
-        final int preparedCustomNominal = (int) customNominalAndValue[0];
-        String preparedCustomValue = (String) customNominalAndValue[1];
+        Object[] customNominalAndRate = getCustomNominalAndRate(customRate);
+        final int preparedCustomNominal = (int) customNominalAndRate[0];
+        String preparedCustomRate = (String) customNominalAndRate[1];
 
         final ContentValues contentValues = new ContentValues();
         contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_NOMINAL, preparedCustomNominal);
-        contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_RATE, preparedCustomValue);
+        contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_RATE, preparedCustomRate);
 
         final SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
         Handler handler = new Handler();
@@ -148,8 +148,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                 try {
                     db.update(DBHelper.TABLE_NAME,
                             contentValues,
-                            DBHelper.COLUMN_NAME_NAME_RESOURCE_ID + " = ?",
-                            new String[]{String.valueOf(currencyNameId)});
+                            DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
+                            new String[]{currencyCharCode});
 
                     Toaster.showCenterToast(appContext.getString(
                             R.string.db_custom_update_success) + preparedCustomNominal);
@@ -165,8 +165,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         });
     }
 
-    private Object[] getCustomNominalAndValue(String customRate) {
-        Logger.logD(Logger.getTag(), "getCustomNominalAndValue");
+    private Object[] getCustomNominalAndRate(String customRate) {
+        Logger.logD(Logger.getTag(), "getCustomNominalAndRate");
 
         int nominal = 1;
         double rate = Double.valueOf(customRate);
@@ -179,7 +179,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             nominal = (int) Math.pow(10, i);
         }
 
-        return new Object[]{nominal, getEditCustomCurrencyText(rate)};
+        return new Object[]{nominal, getFormattedCustomCurrencyText(rate)};
     }
 
     private void readSpinnerDataFromDB() {
@@ -196,8 +196,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                                     DBHelper.COLUMN_NAME_CHAR_CODE,
                                     DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
                                     DBHelper.COLUMN_NAME_CUSTOM_RATE,
-                                    DBHelper.COLUMN_NAME_NAME_RESOURCE_ID,
-                                    DBHelper.COLUMN_NAME_FLAG_RESOURCE_ID},
+                                    DBHelper.COLUMN_NAME_CURRENCY_NAME,
+                                    DBHelper.COLUMN_NAME_FLAG_ID},
                             DBHelper.COLUMN_NAME_SWITCHING + " = 1 AND " +
                                     DBHelper.COLUMN_NAME_CHAR_CODE + " != ?",
                             new String[]{CharCode.USD.toString()}, null, null, null);
@@ -236,13 +236,15 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         Logger.logD(Logger.getTag(), "initCurrencyDataFromCustomSpinnerCursor");
 
         if (null != customCurrencySpinner && customCurrencySpinner.getCount() != 0) {
-            double currencyRate = ((Cursor) customCurrencySpinner.getSelectedItem()).getDouble(3);
-            editCustomCurrency.setText(getEditCustomCurrencyText(currencyRate));
+            Cursor currencyCursor = (Cursor) customCurrencySpinner.getSelectedItem();
 
-            String charCode = ((Cursor) customCurrencySpinner.getSelectedItem()).getString(1);
+            double currencyRate = currencyCursor.getDouble(3);
+            editCustomCurrency.setText(getFormattedCustomCurrencyText(currencyRate));
+
+            String charCode = currencyCursor.getString(1);
             tvCharCode.setText(charCode);
 
-            int currencyNominal = ((Cursor) customCurrencySpinner.getSelectedItem()).getInt(2);
+            int currencyNominal = currencyCursor.getInt(2);
             tvCustomCurrencyNominal.setText(String.format("%s%s",
                     appContext.getString(R.string.custom_currency_nominal), currencyNominal));
         } else {
@@ -250,8 +252,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private String getEditCustomCurrencyText(double currencyRate) {
-        Logger.logD(Logger.getTag(), "getEditCustomCurrencyText");
+    private String getFormattedCustomCurrencyText(double currencyRate) {
+        Logger.logD(Logger.getTag(), "getFormattedCustomCurrencyText");
 
         BigDecimal currencyRateIndependentOfLocale =
                 BigDecimal.valueOf(currencyRate).setScale(6, RoundingMode.HALF_EVEN);

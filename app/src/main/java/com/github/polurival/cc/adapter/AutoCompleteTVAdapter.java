@@ -19,12 +19,10 @@ import com.github.polurival.cc.model.db.DBHelper;
  */
 public class AutoCompleteTVAdapter extends CursorAdapter {
 
-    private Context appContext;
     private String rateUpdaterClassName;
 
     public AutoCompleteTVAdapter(Context context, Cursor c) {
         super(context, c, 0);
-        this.appContext = context;
     }
 
     public AutoCompleteTVAdapter(Context context, Cursor c, String rateUpdaterClassName) {
@@ -47,8 +45,9 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
 
         viewHolder.currencyCharCode.setText(cursor.getString(1));
 
-        int currencyNameId = cursor.getInt(2);
-        viewHolder.currencyName.setText(appContext.getString(currencyNameId));
+        //int currencyNameId = cursor.getInt(2);
+        //viewHolder.currencyName.setText(appContext.getString(currencyNameId));
+        viewHolder.currencyName.setText(cursor.getString(2));
     }
 
     @Override
