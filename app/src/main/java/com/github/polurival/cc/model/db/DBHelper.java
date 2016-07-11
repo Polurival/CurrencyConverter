@@ -2,6 +2,7 @@ package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -21,7 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static DBHelper instance;
 
     private static final String DB_NAME = "converter";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     public static final String TABLE_NAME = "currency";
 
@@ -77,11 +78,18 @@ public class DBHelper extends SQLiteOpenHelper {
             createAndFillDatabase(db);
         }
 
-        if (oldVersion < newVersion) {
+        if (oldVersion < 4) {
             updateTwoCurrencyFieldsWithOneCondition(db, TABLE_NAME,
                     COLUMN_NAME_YAHOO_NOMINAL, "1",
                     COLUMN_NAME_YAHOO_SOURCE, "1",
                     COLUMN_NAME_CHAR_CODE, CharCode.BYN);
+        }
+        if (oldVersion < 5) {
+            Resources res = appContext.getResources();
+            updateTwoCurrencyFieldsWithOneCondition(db, TABLE_NAME,
+                    COLUMN_NAME_NAME_RESOURCE_ID, res.getString(R.string.aed),
+                    COLUMN_NAME_FLAG_RESOURCE_ID, String.valueOf(R.drawable.aed),
+                    COLUMN_NAME_CHAR_CODE, CharCode.AED);
         }
     }
 
@@ -105,9 +113,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             String sqlQuery = String.format(
-                    "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s LIKE ",
+                    "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s = 1 AND %s LIKE ",
                     COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_NAME_RESOURCE_ID,
-                    TABLE_NAME, sourceColumnName, COLUMN_NAME_CHAR_CODE)
+                    TABLE_NAME, sourceColumnName, COLUMN_NAME_SWITCHING, COLUMN_NAME_CHAR_CODE)
                     + "'%" + charCode + "%';";
 
             searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);
