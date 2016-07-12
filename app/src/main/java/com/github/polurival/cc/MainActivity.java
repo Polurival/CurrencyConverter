@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -370,7 +371,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     /**
      * See <a href="http://stackoverflow.com/a/24788257/5349748">Source</a>
      */
-
     private void updateRatesFromSource() {
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
@@ -530,27 +530,35 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0 && isPropertiesLoaded) {
-                    if (!isEditTextFormatted) {
-                        editFromAmount.setText(formatBigDecimal(prepareBigDecimal(s), 2));
-                    } else {
-                        if (!ignoreEditFromAmountChange) {
-                            ignoreEditToAmountChange = true;
-                            convertAndSetResult(editFromAmount);
-                        }
+                    if (!ignoreEditFromAmountChange) {
+                        ignoreEditToAmountChange = true;
+                        convertAndSetResult(editFromAmount);
                     }
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
                 ignoreEditToAmountChange = false;
-                if ("".equals(s.toString())) {
+
+                String s = editable.toString();
+                if ("".equals(s)) {
                     editToAmount.getText().clear();
                 }
+
                 syncShareActionData();
 
-                editFromAmount.setSelection(editFromAmount.length());
-                isEditTextFormatted = false;
+                if (null == editFromAmount) return;
+                if (s.isEmpty()) return;
+
+                String[] sParts = getPartsOfEditAmountText(s);
+
+                editFromAmount.removeTextChangedListener(this);
+
+                String formatted = formatAndSetEditAmountText(editFromAmount, s, sParts);
+                editFromAmount.setSelection(formatted.length());
+
+                editFromAmount.addTextChangedListener(this);
             }
         });
 
@@ -563,29 +571,58 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0 && isPropertiesLoaded) {
-                    if (!isEditTextFormatted) {
-                        editToAmount.setText(formatBigDecimal(prepareBigDecimal(s), 2));
-                    } else {
-                        if (!ignoreEditToAmountChange) {
-                            ignoreEditFromAmountChange = true;
-                            convertAndSetResult(editToAmount);
-                        }
+                    if (!ignoreEditToAmountChange) {
+                        ignoreEditFromAmountChange = true;
+                        convertAndSetResult(editToAmount);
                     }
                 }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable editable) {
                 ignoreEditFromAmountChange = false;
-                if ("".equals(s.toString())) {
+
+                String s = editable.toString();
+                if ("".equals(s)) {
                     editFromAmount.getText().clear();
                 }
+
                 syncShareActionData();
 
-                editToAmount.setSelection(editToAmount.length());
-                isEditTextFormatted = false;
+                if (null == editToAmount) return;
+                if (s.isEmpty()) return;
+
+                String[] sParts = getPartsOfEditAmountText(s);
+
+                editToAmount.removeTextChangedListener(this);
+
+                String formatted = formatAndSetEditAmountText(editToAmount, s, sParts);
+                editToAmount.setSelection(formatted.length());
+
+                editToAmount.addTextChangedListener(this);
             }
         });
+    }
+
+    private String[] getPartsOfEditAmountText(String s) {
+        String[] sParts = null;
+        if (s.contains(".")) {
+            sParts = new String[2];
+            sParts[0] = s.substring(0, s.indexOf('.'));
+            sParts[1] = s.substring(s.indexOf('.'));
+        }
+        return sParts;
+    }
+
+    private String formatAndSetEditAmountText(EditText editText, String s, String[] sParts) {
+        String formatted;
+        if (null == sParts) {
+            formatted = formatBigDecimal(prepareBigDecimal(s), 2);
+        } else {
+            formatted = formatBigDecimal(prepareBigDecimal(sParts[0]), 2) + sParts[1];
+        }
+        editText.setText(formatted);
+        return formatted;
     }
 
     @NonNull
@@ -639,7 +676,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         BigDecimal result = calculateResult(amount);
 
         String resultStr = formatBigDecimal(result, 2);
-        //String resultStr = result.setScale(2, RoundingMode.HALF_EVEN).toPlainString();
 
         if (v.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmount.getText().toString())) {
@@ -673,7 +709,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
 
         return formatBigDecimal(result, scale);
-        //return result.setScale(scale, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private boolean cancelConvertingIfNothingToConvert() {
@@ -961,6 +996,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private String getFormattedText(String fromCurrencyValue, String toCurrencyValue) {
+        if (null == currencyFromCharCode || null == currencyToCharCode) {
+            return "";
+        }
         return String.format("%s %s = %s %s",
                 fromCurrencyValue, currencyFromCharCode,
                 toCurrencyValue, currencyToCharCode);

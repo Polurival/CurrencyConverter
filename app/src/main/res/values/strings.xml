@@ -108,7 +108,7 @@
     <string name="ars">Argentine Peso $</string>
     <string name="aud">Australian Dollar $</string>
     <string name="awg">Aruban Florin ƒ</string>
-    <string name="azn">Azerbaijani New Manat ₼</string>
+    <string name="azn">Azerbaijanian Manat ₼</string>
 
     <string name="bam">Bosnian Convertible Marka KM</string>
     <string name="bbd">Barbados Dollar $</string>
@@ -169,7 +169,7 @@
     <string name="huf">Hungarian Forint ƒ</string>
 
     <string name="idr">Indonesian Rupiah Rp</string>
-    <string name="ils">Israeli Shekel ₪</string>
+    <string name="ils">New Israeli Shekel ₪</string>
     <string name="inr">Indian Rupee ₹</string>
     <string name="iqd">Iraqi Dinar ID</string>
     <string name="irr">Iranian Rial IR</string>
@@ -222,7 +222,7 @@
     <string name="omr">Omani Rial RO</string>
 
     <string name="pab">Panamanian Balboa B</string>
-    <string name="pen">Peruvian Sol S</string>
+    <string name="pen">Peruvian nuevo Sol S</string>
     <string name="pgk">Papua New Guinean Kina K</string>
     <string name="php">Philippine Peso ₱</string>
     <string name="pkr">Pakistani Rupee ₹</string>
@@ -258,7 +258,7 @@
     <string name="top">Tongan Pa\'anga $</string>
     <string name="try_">Turkish Lira ₺</string>
     <string name="ttd">Trinidadian Dollar $</string>
-    <string name="twd">Taiwan New Dollar $</string>
+    <string name="twd">New Taiwan Dollar $</string>
     <string name="tzs">Tanzanian Shilling TSh</string>
 
     <string name="uah">Ukrainian Hryvnia ₴</string>
