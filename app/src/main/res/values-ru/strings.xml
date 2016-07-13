@@ -4,7 +4,7 @@
     <string name="app_name">Конвертер валют</string>
 
     <!-- MainActivity -->
-    <string name="enter_from_amount">введите сумму…</string>
+    <string name="enter_amount_hint">Введите сумму…</string>
     <string name="search_hint">Поиск по коду…</string>
     <string name="swap">Поменять местами выбранные валюты</string>
     <string name="issuer_flag">Флаг эмитента</string>

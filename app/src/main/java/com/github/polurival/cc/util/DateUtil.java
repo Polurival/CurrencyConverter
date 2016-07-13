@@ -1,5 +1,7 @@
 package com.github.polurival.cc.util;
 
+import android.support.annotation.NonNull;
+
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -17,10 +19,12 @@ public class DateUtil {
             DateTimeFormat.forPattern("EEE, d MMM yyyy, HH:mm")
                     .withLocale(Locale.getDefault());
 
+    @NonNull
     public static LocalDateTime getCurrentDateTime() {
         return LocalDateTime.now();
     }
 
+    @NonNull
     public static LocalDate getCurrentDate() {
         return LocalDate.now();
     }
@@ -30,6 +34,7 @@ public class DateUtil {
         return localDate.toDate().getTime();
     }
 
+    @NonNull
     public static LocalDateTime getUpDateTime(long upDateTimeInSeconds) {
         return new LocalDateTime(upDateTimeInSeconds);
     }

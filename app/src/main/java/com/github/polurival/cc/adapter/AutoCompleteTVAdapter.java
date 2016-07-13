@@ -10,11 +10,12 @@ import android.widget.TextView;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.util.ResourcesLoader;
 
 /**
  * Created by Polurival
  * on 10.07.2016.
- *
+ * <p/>
  * <p>See <a href='http://hello-android.blogspot.ru/2011/06/using-autocompletetextview-with-sqlite.html'>source</a></p>
  */
 public class AutoCompleteTVAdapter extends CursorAdapter {
@@ -45,22 +46,18 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
 
         viewHolder.currencyCharCode.setText(cursor.getString(1));
 
-        //int currencyNameId = cursor.getInt(2);
-        //viewHolder.currencyName.setText(appContext.getString(currencyNameId));
-        viewHolder.currencyName.setText(cursor.getString(2));
+        int currencyNameId = ResourcesLoader.getResId(cursor.getString(2), R.string.class);
+        viewHolder.currencyName.setText(currencyNameId);
     }
 
     @Override
     public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        if (getFilterQueryProvider() != null)
-        {
+        if (getFilterQueryProvider() != null) {
             return getFilterQueryProvider().runQuery(constraint);
         }
 
         String args = "";
-
-        if (constraint != null)
-        {
+        if (constraint != null) {
             args = constraint.toString();
         }
 

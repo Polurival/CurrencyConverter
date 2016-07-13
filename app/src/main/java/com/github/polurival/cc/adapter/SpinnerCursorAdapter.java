@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.github.polurival.cc.R;
+import com.github.polurival.cc.util.ResourcesLoader;
 
 /**
  * Created by Polurival
@@ -33,13 +34,11 @@ public class SpinnerCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        //int flagIconId = cursor.getInt(5);
-        int flagIconId = Integer.valueOf(cursor.getString(5));
+        int flagIconId = ResourcesLoader.getResId(cursor.getString(5), R.drawable.class);
         viewHolder.flagIcon.setImageResource(flagIconId);
 
-        //int currencyNameId = cursor.getInt(4);
-        String currencyName = cursor.getString(4);
-        viewHolder.currencyName.setText(currencyName);
+        int currencyNameId = ResourcesLoader.getResId(cursor.getString(4), R.string.class);
+        viewHolder.currencyName.setText(currencyNameId);
 
         viewHolder.currencyCharCode.setText(cursor.getString(1));
     }

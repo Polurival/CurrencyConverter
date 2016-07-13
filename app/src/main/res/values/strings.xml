@@ -4,7 +4,7 @@
     <string name="app_name">Currency converter</string>
 
     <!-- MainActivity -->
-    <string name="enter_from_amount">Enter amount…</string>
+    <string name="enter_amount_hint">Enter amount…</string>
     <string name="search_hint">Search on code…</string>
     <string name="swap">Swap selected currencies</string>
     <string name="issuer_flag">Issuer\'s flag</string>

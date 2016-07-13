@@ -10,7 +10,6 @@ import com.github.polurival.cc.AppContext;
  * on 29.06.2016.
  */
 public class Toaster {
-
     public static void showCenterToast(String text) {
         Toast toast = Toast.makeText(AppContext.getContext(),
                 text,

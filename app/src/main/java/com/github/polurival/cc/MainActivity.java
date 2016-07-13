@@ -14,8 +14,11 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -91,7 +94,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private boolean isNeedToReSwapValues;
     private boolean ignoreEditFromAmountChange;
     private boolean ignoreEditToAmountChange;
-    private boolean isEditTextFormatted;
 
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
@@ -154,8 +156,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         ignoreEditToAmountChange = false;
         isNeedToReSwapValues = false;
         isPropertiesLoaded = false;
-
-        isEditTextFormatted = false;
 
         mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(this)
@@ -415,9 +415,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void initSearchAdapter() {
-        searchCursor = DBHelper.getSearchCursor("", rateUpdater.getClass().getName());
+        String rateUpdaterClassName = rateUpdater.getClass().getName();
+        searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName);
         autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                getApplicationContext(), searchCursor, rateUpdater.getClass().getName());
+                getApplicationContext(), searchCursor, rateUpdaterClassName);
     }
 
     private void initSearchFilter() {
@@ -521,7 +522,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void initEditAmount() {
         Logger.logD(Logger.getTag(), "initEditAmount");
 
+        /**
+        See <a href="http://stackoverflow.com/a/19925406/5349748">Source</a>
+         */
+        String hint = getString(R.string.enter_amount_hint);
+        SpannableString span = new SpannableString(hint);
+        span.setSpan(
+                new RelativeSizeSpan(0.8f), 0, hint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
+        editFromAmount.setHint(span);
         editFromAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -537,6 +547,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 }
             }
 
+            /**
+             * See <a href="http://stackoverflow.com/a/24621325/5349748">Source</a>
+             */
             @Override
             public void afterTextChanged(Editable editable) {
                 ignoreEditToAmountChange = false;
@@ -563,6 +576,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         });
 
         editToAmount = (EditText) findViewById(R.id.edit_to_amount);
+        editToAmount.setHint(span);
         editToAmount.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -628,7 +642,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @NonNull
     private BigDecimal prepareBigDecimal(CharSequence s) {
         String plainEditAmountText = s.toString().replaceAll(" ", "");
-        isEditTextFormatted = true;
         return new BigDecimal(plainEditAmountText);
     }
 
@@ -692,6 +705,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
+    @Nullable
     private String convertForLabel(View v) {
         Logger.logD(Logger.getTag(), "convertForLabel");
 
