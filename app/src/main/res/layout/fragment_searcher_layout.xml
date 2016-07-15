@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/header_layout"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="horizontal">
-
-<AutoCompleteTextView
-    android:id="@+id/tv_auto_complete"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/searcher_height"
-    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    android:hint="@string/search_hint"
-    android:inputType="text"
-    android:textSize="@dimen/text_size_small" />
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:context=".SearcherFragment">
+
+    <AutoCompleteTextView
+        android:id="@+id/tv_auto_complete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/searcher_height"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        android:hint="@string/search_hint"
+        android:inputType="text"
+        android:textSize="@dimen/text_size_small" />
+
 </LinearLayout>

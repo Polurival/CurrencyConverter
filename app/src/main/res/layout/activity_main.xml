@@ -16,7 +16,6 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             tools:context="com.github.polurival.cc.MainActivity">
 
             <LinearLayout
@@ -42,23 +41,6 @@
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/text_size_small" />
 
-                <!--<fragment
-                    android:id="@+id/searcher_fragment_container"
-                    android:name="com.github.polurival.cc.SearcherFragment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    tools:layout="@layout/fragment_searcher_layout" />-->
-
-                <!--<AutoCompleteTextView
-                    android:id="@+id/tv_auto_complete"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                    android:hint="@string/search_hint"
-                    android:inputType="text"
-                    android:textSize="@dimen/text_size_small" />-->
             </LinearLayout>
 
             <EditText
@@ -129,6 +111,7 @@
                 android:alpha="0.8"
                 android:gravity="center_horizontal"
                 android:textSize="@dimen/text_size_small" />
+
         </RelativeLayout>
 
     </ScrollView>

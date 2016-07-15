@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -160,12 +159,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         Logger.logD(Logger.getTag(), "setNewSearcherFragment");
 
         SearcherFragment searcherFragment = new SearcherFragment();
-        //searcherFragment.setCursor(cursor);
         searcherFragment.setSwitchingListView(lvAllCurrencies);
-
-        /*Bundle args = new Bundle();
-        args.putString(Constants.RATE_UPDATER_CLASS_NAME, rateUpdaterClassName);
-        searcherFragment.setArguments(args);*/
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.switching_searcher_fragment_container, searcherFragment);

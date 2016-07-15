@@ -182,9 +182,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         loadUpDateTimeProperty();
 
-        /*initSearchAdapter();
-        initSearchFilter();*/
-
         if (loadIsSetAutoUpdateProperty()) {
             if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
                 readDataFromDB();
@@ -343,13 +340,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "setNewSearcherFragment");
 
         SearcherFragment searcherFragment = new SearcherFragment();
-        //searcherFragment.setCursor(cursor);
         searcherFragment.setFromSpinner(fromSpinner);
         searcherFragment.setToSpinner(toSpinner);
-
-        /*Bundle args = new Bundle();
-        args.putString(Constants.RATE_UPDATER_CLASS_NAME, rateUpdaterClassName);
-        searcherFragment.setArguments(args);*/
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.searcher_fragment_container, searcherFragment);
@@ -435,51 +427,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     DBHelper.COLUMN_NAME_CUSTOM_RATE);
         }
     }
-
-    /*private void initSearchAdapter() {
-        Logger.logD(Logger.getTag(), "initSearchAdapter");
-
-        String rateUpdaterClassName = rateUpdater.getClass().getName();
-        searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName);
-        autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                getApplicationContext(), searchCursor, rateUpdaterClassName);
-    }
-
-    private void initSearchFilter() {
-        Logger.logD(Logger.getTag(), "initSearchFilter");
-
-        currencySearcher = (AutoCompleteTextView) findViewById(R.id.tv_auto_complete);
-        currencySearcher.setAdapter(autoCompleteTvAdapter);
-        currencySearcher.setThreshold(1);
-        currencySearcher.setOnItemClickListener(searcherClickListener);
-    }*/
-
-    /*public final AdapterView.OnItemClickListener searcherClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Logger.logD(Logger.getTag(), "currencySearcher.onItemClick");
-
-            ((AutoCompleteTextView) view).setText("");
-
-            Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
-            String searchedCharCode = searchedCurrency.getString(1);
-
-            int searchedCharCodeSpinnerPos = 0;
-            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                String cursorCurrentCharCode = cursor.getString(1);
-                if (searchedCharCode.equals(cursorCurrentCharCode)) {
-                    searchedCharCodeSpinnerPos = cursor.getPosition();
-                }
-            }
-
-            SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
-            fragmentDialog.setFromSpinner(fromSpinner);
-            fragmentDialog.setToSpinner(toSpinner);
-            fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
-            fragmentDialog.show(getFragmentManager(), "list selection");
-        }
-    };*/
 
     @Override
     public void initSpinners() {

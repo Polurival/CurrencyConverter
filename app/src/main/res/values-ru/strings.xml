@@ -15,7 +15,7 @@
     <string name="share_action">Поделиться</string>
 
     <!-- CustomRateFragment -->
-    <string name="custom_currency_nominal">\t*Номинал = </string>
+    <string name="custom_currency_nominal">\t*Номинал =</string>
     <string name="custom_mode_help">Как этим пользоваться?</string>
     <string name="view_custom_mode_help">\t**Чтобы конвертировать валюты между собой,
         необходимо задать их курсы по отношению к USD. Пример: Если хочешь конвертировать RUB и EUR,

@@ -1,7 +1,9 @@
 package com.github.polurival.cc;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -13,12 +15,15 @@ import android.widget.Spinner;
 
 import com.github.polurival.cc.util.Logger;
 
-public class DataSourceActivity extends Activity {
+public class DataSourceActivity extends Activity implements SearcherFragment.Listener {
 
     private SharedPreferences preferences;
 
     private String rateUpdaterClassName;
+
+    private CustomRateFragment customRateFragment;
     private LinearLayout customRateFragmentLayout;
+    private LinearLayout searcherFragmentLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,8 @@ public class DataSourceActivity extends Activity {
         rateUpdaterClassName = loadRateUpdaterNameProperty();
 
         customRateFragmentLayout = (LinearLayout) findViewById(R.id.custom_rates_fragment);
+        searcherFragmentLayout =
+                (LinearLayout) findViewById(R.id.searcher_custom_rates_fragment_layout);
 
         CheckBox cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
         cbAutoUpdate.setChecked(loadIsSetAutoUpdateProperty());
@@ -62,10 +69,13 @@ public class DataSourceActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
                 if (position == 2) {
-                    customRateFragmentLayout.setVisibility(View.VISIBLE);
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
+
+                    searcherFragmentLayout.setVisibility(View.VISIBLE);
+                    customRateFragmentLayout.setVisibility(View.VISIBLE);
                 } else {
                     customRateFragmentLayout.setVisibility(View.GONE);
+                    searcherFragmentLayout.setVisibility(View.GONE);
 
                     if (position == 0) {
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
@@ -88,6 +98,8 @@ public class DataSourceActivity extends Activity {
         } else if (rateUpdaterClassName.equals(getString(R.string.custom_rate_updater_class))) {
             sourceSpinner.setSelection(2);
         }
+
+        setNewSearcherFragment();
     }
 
     private boolean loadIsSetAutoUpdateProperty() {
@@ -102,8 +114,7 @@ public class DataSourceActivity extends Activity {
 
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putBoolean(getString(R.string.saved_is_set_auto_update),
-                isSetAutoUpdate);
+        editor.putBoolean(getString(R.string.saved_is_set_auto_update), isSetAutoUpdate);
 
         editor.apply();
     }
@@ -113,8 +124,7 @@ public class DataSourceActivity extends Activity {
 
         SharedPreferences.Editor editor = preferences.edit();
 
-        editor.putString(getString(R.string.saved_rate_updater_class),
-                rateUpdaterClassName);
+        editor.putString(getString(R.string.saved_rate_updater_class), rateUpdaterClassName);
 
         editor.apply();
         Logger.logD("Successful saving rateUpdaterClassName = " + rateUpdaterClassName);
@@ -125,5 +135,31 @@ public class DataSourceActivity extends Activity {
 
         return preferences.getString(getString(R.string.saved_rate_updater_class),
                 getString(R.string.saved_rate_updater_class_default));
+    }
+
+    private void setNewSearcherFragment() {
+        Logger.logD(Logger.getTag(), "setNewSearcherFragment");
+
+        customRateFragment = (CustomRateFragment)
+                getFragmentManager().findFragmentById(R.id.custom_rates_fragment);
+        Spinner customCurrencySpinner = customRateFragment.getCustomCurrencySpinner();
+
+        SearcherFragment searcherFragment = new SearcherFragment();
+        searcherFragment.setCustomSpinner(customCurrencySpinner);
+
+        FragmentTransaction transaction
+                = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.custom_searcher_fragment_container, searcherFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return customRateFragment.getSpinnerCursor();
+    }
+
+    @Override
+    public String getRateUpdaterClassName() {
+        return rateUpdaterClassName;
     }
 }

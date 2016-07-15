@@ -25,23 +25,19 @@ import com.github.polurival.cc.util.Logger;
  */
 public class SearcherFragment extends Fragment {
 
+    private Context appContext;
     private Cursor searchCursor;
     private SearcherFragment.Listener listener;
 
     private Spinner fromSpinner;
     private Spinner toSpinner;
+    private Spinner customSpinner;
     private ListView switchingListView;
 
     private AutoCompleteTextView currencySearcher;
 
-    //private String rateUpdaterClassName;
-
     public SearcherFragment() {
     }
-
-    /*public void setCursor(Cursor cursor) {
-        this.cursor = cursor;
-    }*/
 
     public void setFromSpinner(Spinner fromSpinner) {
         this.fromSpinner = fromSpinner;
@@ -49,6 +45,10 @@ public class SearcherFragment extends Fragment {
 
     public void setToSpinner(Spinner toSpinner) {
         this.toSpinner = toSpinner;
+    }
+
+    public void setCustomSpinner(Spinner customSpinner) {
+        this.customSpinner = customSpinner;
     }
 
     public void setSwitchingListView(ListView switchingListView) {
@@ -71,11 +71,13 @@ public class SearcherFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Logger.logD(Logger.getTag(), "onAttach");
 
+        appContext = AppContext.getContext();
         if (activity instanceof SearcherFragment.Listener) {
             listener = (SearcherFragment.Listener) activity;
         }
@@ -91,17 +93,6 @@ public class SearcherFragment extends Fragment {
 
         return fragmentView;
     }
-
-    /*@Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Logger.logD(Logger.getTag(), "onActivityCreated");
-
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            rateUpdaterClassName = bundle.getString(Constants.RATE_UPDATER_CLASS_NAME);
-        }
-    }*/
 
     @Override
     public void onStart() {
@@ -127,11 +118,11 @@ public class SearcherFragment extends Fragment {
         if (listener instanceof CurrencySwitchingActivity) {
             searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, false);
             autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                    AppContext.getContext(), searchCursor, rateUpdaterClassName, false);
+                    appContext, searchCursor, rateUpdaterClassName, false);
         } else {
             searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, true);
             autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                    AppContext.getContext(), searchCursor, rateUpdaterClassName, true);
+                    appContext, searchCursor, rateUpdaterClassName, true);
         }
 
         currencySearcher.setAdapter(autoCompleteTvAdapter);
@@ -169,6 +160,8 @@ public class SearcherFragment extends Fragment {
             } else if (listener instanceof CurrencySwitchingActivity) {
                 switchingListView.setSelection(searchedCharCodePos);
 
+            } else if (listener instanceof DataSourceActivity) {
+                customSpinner.setSelection(searchedCharCodePos);
             }
         }
     };

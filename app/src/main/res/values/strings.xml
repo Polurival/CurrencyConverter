@@ -15,7 +15,7 @@
     <string name="share_action">Share</string>
 
     <!-- CustomRateFragment -->
-    <string name="custom_currency_nominal">\t*Nominal = </string>
+    <string name="custom_currency_nominal">\t*Nominal =</string>
     <string name="one_usd_equals_char_code" translatable="false">1 USD = </string>
     <string name="custom_mode_help">How to use it?</string>
     <string name="view_custom_mode_help">\t**For converting currencies to each other,

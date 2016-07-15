@@ -48,6 +48,14 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     public CustomRateFragment() {
     }
 
+    public Cursor getSpinnerCursor() {
+        return spinnerCursor;
+    }
+
+    public Spinner getCustomCurrencySpinner() {
+        return customCurrencySpinner;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,9 +80,9 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        Logger.logD(Logger.getTag(), "onResume");
+    public void onStart() {
+        super.onStart();
+        Logger.logD(Logger.getTag(), "onStart");
 
         appContext = AppContext.getContext();
         readSpinnerDataFromDB();
@@ -108,7 +116,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         Logger.logD(Logger.getTag(), "showHideHint");
 
         if (tvCustomModeHelp.isShown()) {
-            tvCustomModeHelp.setVisibility(View.INVISIBLE);
+            tvCustomModeHelp.setVisibility(View.GONE);
         } else {
             tvCustomModeHelp.setVisibility(View.VISIBLE);
         }
@@ -245,7 +253,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             tvCharCode.setText(charCode);
 
             int currencyNominal = currencyCursor.getInt(2);
-            tvCustomCurrencyNominal.setText(String.format("%s%s",
+            tvCustomCurrencyNominal.setText(String.format("%s %s",
                     appContext.getString(R.string.custom_currency_nominal), currencyNominal));
         } else {
             Toaster.showCenterToast(appContext.getString(R.string.all_currencies_disabled));
