@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/view_vertical_margin"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
@@ -35,7 +36,21 @@
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/text_size_small" />
 
-                <AutoCompleteTextView
+                <FrameLayout
+                    android:id="@+id/searcher_fragment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5" />
+
+                <!--<fragment
+                    android:id="@+id/searcher_fragment"
+                    android:name="com.github.polurival.cc.SearcherFragment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5"
+                    tools:layout="@layout/fragment_searcher_layout" />-->
+
+                <!--<AutoCompleteTextView
                     android:id="@+id/tv_auto_complete"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -43,7 +58,7 @@
                     android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     android:hint="@string/search_hint"
                     android:inputType="text"
-                    android:textSize="@dimen/text_size_small" />
+                    android:textSize="@dimen/text_size_small" />-->
             </LinearLayout>
 
             <EditText

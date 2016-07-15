@@ -1,6 +1,7 @@
 package com.github.polurival.cc;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +32,6 @@ import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.github.polurival.cc.adapter.AutoCompleteTVAdapter;
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
@@ -64,14 +64,13 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  * Created by Polurival
  * on 24.03.2016.
  */
-public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener {
+public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener,
+SearcherFragment.Listener {
 
     private SQLiteDatabase db;
     private Cursor cursor;
     private Cursor fromCursor;
     private Cursor toCursor;
-    private Cursor searchCursor;
-    private AutoCompleteTVAdapter autoCompleteTvAdapter;
 
     private SharedPreferences preferences;
 
@@ -82,6 +81,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Handler taskCancelerHandler;
     private TaskCanceler taskCanceler;
 
+    private String rateUpdaterClassName;
     private RateUpdater rateUpdater;
     private LocalDateTime upDateTime;
 
@@ -147,6 +147,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onCreate");
 
         setContentView(R.layout.activity_main);
+        fromSpinner = (Spinner) findViewById(R.id.from_spinner);
+        toSpinner = (Spinner) findViewById(R.id.to_spinner);
         tvLabelForCurrentCurrencies = (TextView) findViewById(R.id.tv_label_for_current_currencies);
 
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
@@ -167,6 +169,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         loadEditAmountProperties();
 
         checkScreenSizeAndSetSoftInputMode();
+
+        setNewSearcherFragment();
     }
 
     @Override
@@ -175,10 +179,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onStart");
 
         loadRateUpdaterProperties();
+        setRateUpdaterAndTaskCanceler();
+
         loadUpDateTimeProperty();
 
-        initSearchAdapter();
-        initSearchFilter();
+        /*initSearchAdapter();
+        initSearchFilter();*/
 
         if (loadIsSetAutoUpdateProperty()) {
             if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
@@ -229,7 +235,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (null != fromCursor) fromCursor.close();
         if (null != toCursor) toCursor.close();
         if (null != cursor) cursor.close();
-        if (null != searchCursor) searchCursor.close();
 
         if (null != db) db.close();
 
@@ -335,6 +340,25 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
+    private void setNewSearcherFragment() {
+        Logger.logD(Logger.getTag(), "setNewSearcherFragment");
+
+        loadRateUpdaterProperties();
+
+        SearcherFragment searcherFragment = new SearcherFragment();
+        //searcherFragment.setCursor(cursor);
+        searcherFragment.setFromSpinner(fromSpinner);
+        searcherFragment.setToSpinner(toSpinner);
+
+        Bundle args = new Bundle();
+        args.putString(Constants.RATE_UPDATER_CLASS_NAME, rateUpdaterClassName);
+        searcherFragment.setArguments(args);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.searcher_fragment, searcherFragment);
+        transaction.commit();
+    }
+
     @Override
     public void checkAsyncTaskStatusAndSetNewInstance() {
         Logger.logD(Logger.getTag(), "checkAsyncTaskStatusAndSetNewInstance()");
@@ -342,6 +366,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
                 loadRateUpdaterProperties();
+                setRateUpdaterAndTaskCanceler();
             }
         }
     }
@@ -398,6 +423,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         DBReaderTask dbReaderTask = new DBReaderTask();
         dbReaderTask.setRateUpdaterListener(this);
+        //dbReaderTask.setSearcherFragment(searcherFragment);
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
@@ -414,7 +440,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    private void initSearchAdapter() {
+    /*private void initSearchAdapter() {
+        Logger.logD(Logger.getTag(), "initSearchAdapter");
+
         String rateUpdaterClassName = rateUpdater.getClass().getName();
         searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName);
         autoCompleteTvAdapter = new AutoCompleteTVAdapter(
@@ -424,36 +452,38 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void initSearchFilter() {
         Logger.logD(Logger.getTag(), "initSearchFilter");
 
-        final AutoCompleteTextView currencySearcher =
-                (AutoCompleteTextView) findViewById(R.id.tv_auto_complete);
+        currencySearcher = (AutoCompleteTextView) findViewById(R.id.tv_auto_complete);
         currencySearcher.setAdapter(autoCompleteTvAdapter);
         currencySearcher.setThreshold(1);
-        currencySearcher.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Logger.logD(Logger.getTag(), "currencySearcher.onItemClick");
+        currencySearcher.setOnItemClickListener(searcherClickListener);
+    }*/
 
-                currencySearcher.setText("");
+    public final AdapterView.OnItemClickListener searcherClickListener
+            = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Logger.logD(Logger.getTag(), "currencySearcher.onItemClick");
 
-                Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
-                String searchedCharCode = searchedCurrency.getString(1);
+            ((AutoCompleteTextView) view).setText("");
 
-                int searchedCharCodeSpinnerPos = 0;
-                for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
-                    String cursorCurrentCharCode = cursor.getString(1);
-                    if (searchedCharCode.equals(cursorCurrentCharCode)) {
-                        searchedCharCodeSpinnerPos = cursor.getPosition();
-                    }
+            Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
+            String searchedCharCode = searchedCurrency.getString(1);
+
+            int searchedCharCodeSpinnerPos = 0;
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                String cursorCurrentCharCode = cursor.getString(1);
+                if (searchedCharCode.equals(cursorCurrentCharCode)) {
+                    searchedCharCodeSpinnerPos = cursor.getPosition();
                 }
-
-                SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
-                fragmentDialog.setFromSpinner(fromSpinner);
-                fragmentDialog.setToSpinner(toSpinner);
-                fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
-                fragmentDialog.show(getFragmentManager(), "list selection");
             }
-        });
-    }
+
+            SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
+            fragmentDialog.setFromSpinner(fromSpinner);
+            fragmentDialog.setToSpinner(toSpinner);
+            fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
+            fragmentDialog.show(getFragmentManager(), "list selection");
+        }
+    };
 
     @Override
     public void initSpinners() {
@@ -462,7 +492,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         SpinnerCursorAdapter cursorAdapter =
                 new SpinnerCursorAdapter(getApplicationContext(), cursor);
 
-        fromSpinner = (Spinner) findViewById(R.id.from_spinner);
         fromSpinner.setAdapter(cursorAdapter);
         fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -488,7 +517,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             }
         });
 
-        toSpinner = (Spinner) findViewById(R.id.to_spinner);
         toSpinner.setAdapter(cursorAdapter);
         toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -924,25 +952,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         upDateTime = DateUtil.getUpDateTime(upDateTimeInSeconds);
     }
 
-    private void loadRateUpdaterProperties() {
-        Logger.logD(Logger.getTag(), "loadRateUpdaterProperties");
-
-        String rateUpdaterName =
-                preferences.getString(getString(R.string.saved_rate_updater_class),
-                        getString(R.string.saved_rate_updater_class_default));
-        Logger.logD("rateUpdater className = " + rateUpdaterName);
-        try {
-            rateUpdater
-                    = (RateUpdater) Class.forName(rateUpdaterName).getConstructor().newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        rateUpdater.setRateUpdaterListener(this);
-
-        taskCancelerHandler = new Handler();
-        taskCanceler = new TaskCanceler((AsyncTask) rateUpdater, this);
-    }
-
     @Override
     public void loadSpinnersProperties() {
         Logger.logD(Logger.getTag(), "loadSpinnersProperties");
@@ -966,6 +975,27 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         fromSpinner.setSelection(fromSpinnerSelectedPos);
         toSpinner.setSelection(toSpinnerSelectedPos);
+    }
+
+    private void loadRateUpdaterProperties() {
+        Logger.logD(Logger.getTag(), "loadRateUpdaterProperties");
+
+        rateUpdaterClassName =
+                preferences.getString(getString(R.string.saved_rate_updater_class),
+                        getString(R.string.saved_rate_updater_class_default));
+    }
+
+    private void setRateUpdaterAndTaskCanceler() {
+        try {
+            rateUpdater
+                    = (RateUpdater) Class.forName(rateUpdaterClassName).getConstructor().newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        rateUpdater.setRateUpdaterListener(this);
+
+        taskCancelerHandler = new Handler();
+        taskCanceler = new TaskCanceler((AsyncTask) rateUpdater, this);
     }
 
     private void syncShareActionData() {
@@ -1027,5 +1057,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (task.getStatus() != AsyncTask.Status.PENDING) {
             task.cancel(true);
         }
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return cursor;
     }
 }

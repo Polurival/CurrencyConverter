@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
  * <p>See <a href="http://stackoverflow.com/a/4428288/5349748">Source</a></p>
  */
 public class ResourcesLoader {
+
     public static int getResId(String resName, Class<?> c) {
 
         try {
