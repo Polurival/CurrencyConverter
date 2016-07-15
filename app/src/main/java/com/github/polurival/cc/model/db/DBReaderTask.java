@@ -15,11 +15,6 @@ import com.github.polurival.cc.util.Toaster;
 public class DBReaderTask extends DBTask {
 
     private Cursor cursor;
-    /*private SearcherFragment searcherFragment;
-
-    public void setSearcherFragment(SearcherFragment searcherFragment) {
-        this.searcherFragment = searcherFragment;
-    }*/
 
     @Override
     protected Boolean doInBackground(String... params) {
@@ -59,7 +54,6 @@ public class DBReaderTask extends DBTask {
         if (result) {
             if (rateUpdaterListener != null) {
                 rateUpdaterListener.setCursor(cursor);
-                //searcherFragment.setCursor(cursor);
 
                 rateUpdaterListener.initSpinners();
                 rateUpdaterListener.loadSpinnersProperties();

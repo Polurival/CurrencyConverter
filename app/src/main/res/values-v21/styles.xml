@@ -3,4 +3,9 @@
 
     <style name="app" parent="android:Theme.Material.Light" />
 
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
 </resources>

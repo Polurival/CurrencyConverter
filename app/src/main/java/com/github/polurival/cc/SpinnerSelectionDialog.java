@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Spinner;
 
+import com.github.polurival.cc.util.Logger;
+
 /**
  * Created by Polurival
  * on 10.07.2016.
@@ -30,7 +32,17 @@ public class SpinnerSelectionDialog extends DialogFragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Logger.logD(Logger.getTag(), "onActivityCreated");
+
+        getDialog().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Logger.logD(Logger.getTag(), "onCreateDialog");
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(R.string.title_list_selection_dialog);
 

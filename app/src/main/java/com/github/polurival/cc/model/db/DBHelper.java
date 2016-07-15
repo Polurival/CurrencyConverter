@@ -127,7 +127,11 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public static Cursor getSearchCursor(String charCode, String rateUpdaterClassName) {
+    /**
+     * @param withSwitching provides search for off currencies
+     */
+    public static Cursor getSearchCursor(String charCode, String rateUpdaterClassName,
+                                         boolean withSwitching) {
         Cursor searchCursor = null;
 
         boolean custom = false;
@@ -146,18 +150,34 @@ public class DBHelper extends SQLiteOpenHelper {
 
         try {
             String sqlQuery;
-            if (custom) {
-                sqlQuery = String.format(
-                        "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s LIKE ",
-                        COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
-                        TABLE_NAME, COLUMN_NAME_SWITCHING, COLUMN_NAME_CHAR_CODE)
-                        + "'%" + charCode + "%';";
+            if (withSwitching) {
+                if (custom) {
+                    sqlQuery = String.format(
+                            "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s LIKE ",
+                            COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
+                            TABLE_NAME, COLUMN_NAME_SWITCHING, COLUMN_NAME_CHAR_CODE)
+                            + "'%" + charCode + "%';";
+                } else {
+                    sqlQuery = String.format(
+                            "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s = 1 AND %s LIKE ",
+                            COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
+                            TABLE_NAME, sourceColumnName, COLUMN_NAME_SWITCHING,
+                            COLUMN_NAME_CHAR_CODE) + "'%" + charCode + "%';";
+                }
             } else {
-                sqlQuery = String.format(
-                        "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s = 1 AND %s LIKE ",
-                        COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
-                        TABLE_NAME, sourceColumnName, COLUMN_NAME_SWITCHING, COLUMN_NAME_CHAR_CODE)
-                        + "'%" + charCode + "%';";
+                if (custom) {
+                    sqlQuery = String.format(
+                            "SELECT %s, %s, %s FROM %s WHERE %s LIKE ",
+                            COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
+                            TABLE_NAME, COLUMN_NAME_CHAR_CODE)
+                            + "'%" + charCode + "%';";
+                } else {
+                    sqlQuery = String.format(
+                            "SELECT %s, %s, %s FROM %s WHERE %s = 1 AND %s LIKE ",
+                            COLUMN_NAME_ID, COLUMN_NAME_CHAR_CODE, COLUMN_NAME_CURRENCY_NAME,
+                            TABLE_NAME, sourceColumnName, COLUMN_NAME_CHAR_CODE)
+                            + "'%" + charCode + "%';";
+                }
             }
 
             searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);

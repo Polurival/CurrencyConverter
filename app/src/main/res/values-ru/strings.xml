@@ -25,7 +25,7 @@
     <string name="auto_update">Автоматическое обновление</string>
 
     <string name="space"> </string>
-    <string name="turn_all_on_off">Включить все/ничего</string>
+    <string name="turn_all_on_off">Вкл/Выкл</string>
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>

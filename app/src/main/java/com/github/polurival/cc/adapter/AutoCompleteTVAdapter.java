@@ -21,14 +21,17 @@ import com.github.polurival.cc.util.ResourcesLoader;
 public class AutoCompleteTVAdapter extends CursorAdapter {
 
     private String rateUpdaterClassName;
+    private boolean withSwitching;
 
     public AutoCompleteTVAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }
 
-    public AutoCompleteTVAdapter(Context context, Cursor c, String rateUpdaterClassName) {
+    public AutoCompleteTVAdapter(Context context, Cursor c, String rateUpdaterClassName,
+                                 boolean withSwitching) {
         this(context, c);
         this.rateUpdaterClassName = rateUpdaterClassName;
+        this.withSwitching = withSwitching;
     }
 
     @Override
@@ -61,7 +64,7 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
             args = constraint.toString();
         }
 
-        return DBHelper.getSearchCursor(args, rateUpdaterClassName);
+        return DBHelper.getSearchCursor(args, rateUpdaterClassName, withSwitching);
     }
 
     private static class ViewHolder {

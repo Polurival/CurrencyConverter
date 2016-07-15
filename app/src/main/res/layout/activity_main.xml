@@ -27,6 +27,12 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
+                <FrameLayout
+                    android:id="@+id/searcher_fragment_container"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="5" />
+
                 <TextView
                     android:id="@+id/tv_label_for_current_currencies"
                     android:layout_width="0dp"
@@ -36,14 +42,8 @@
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/text_size_small" />
 
-                <FrameLayout
-                    android:id="@+id/searcher_fragment"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5" />
-
                 <!--<fragment
-                    android:id="@+id/searcher_fragment"
+                    android:id="@+id/searcher_fragment_container"
                     android:name="com.github.polurival.cc.SearcherFragment"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -90,8 +90,6 @@
                 android:layout_height="@dimen/btn_swap_height"
                 android:layout_below="@+id/from_spinner"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="@dimen/view_vertical_margin"
-                android:layout_marginTop="@dimen/view_vertical_margin"
                 android:alpha="0.8"
                 android:background="@drawable/ic_swap_vert_circle_40dp"
                 android:contentDescription="@string/swap"

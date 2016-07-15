@@ -26,7 +26,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ShareActionProvider;
 import android.widget.Spinner;
@@ -65,7 +64,7 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
  * on 24.03.2016.
  */
 public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener,
-SearcherFragment.Listener {
+        SearcherFragment.Listener {
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -169,8 +168,6 @@ SearcherFragment.Listener {
         loadEditAmountProperties();
 
         checkScreenSizeAndSetSoftInputMode();
-
-        setNewSearcherFragment();
     }
 
     @Override
@@ -180,6 +177,8 @@ SearcherFragment.Listener {
 
         loadRateUpdaterProperties();
         setRateUpdaterAndTaskCanceler();
+
+        setNewSearcherFragment();
 
         loadUpDateTimeProperty();
 
@@ -343,19 +342,17 @@ SearcherFragment.Listener {
     private void setNewSearcherFragment() {
         Logger.logD(Logger.getTag(), "setNewSearcherFragment");
 
-        loadRateUpdaterProperties();
-
         SearcherFragment searcherFragment = new SearcherFragment();
         //searcherFragment.setCursor(cursor);
         searcherFragment.setFromSpinner(fromSpinner);
         searcherFragment.setToSpinner(toSpinner);
 
-        Bundle args = new Bundle();
+        /*Bundle args = new Bundle();
         args.putString(Constants.RATE_UPDATER_CLASS_NAME, rateUpdaterClassName);
-        searcherFragment.setArguments(args);
+        searcherFragment.setArguments(args);*/
 
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.searcher_fragment, searcherFragment);
+        transaction.replace(R.id.searcher_fragment_container, searcherFragment);
         transaction.commit();
     }
 
@@ -423,7 +420,6 @@ SearcherFragment.Listener {
 
         DBReaderTask dbReaderTask = new DBReaderTask();
         dbReaderTask.setRateUpdaterListener(this);
-        //dbReaderTask.setSearcherFragment(searcherFragment);
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
@@ -458,7 +454,7 @@ SearcherFragment.Listener {
         currencySearcher.setOnItemClickListener(searcherClickListener);
     }*/
 
-    public final AdapterView.OnItemClickListener searcherClickListener
+    /*public final AdapterView.OnItemClickListener searcherClickListener
             = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -483,7 +479,7 @@ SearcherFragment.Listener {
             fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
             fragmentDialog.show(getFragmentManager(), "list selection");
         }
-    };
+    };*/
 
     @Override
     public void initSpinners() {
@@ -551,7 +547,7 @@ SearcherFragment.Listener {
         Logger.logD(Logger.getTag(), "initEditAmount");
 
         /**
-        See <a href="http://stackoverflow.com/a/19925406/5349748">Source</a>
+         See <a href="http://stackoverflow.com/a/19925406/5349748">Source</a>
          */
         String hint = getString(R.string.enter_amount_hint);
         SpannableString span = new SpannableString(hint);
@@ -559,6 +555,7 @@ SearcherFragment.Listener {
                 new RelativeSizeSpan(0.8f), 0, hint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
+        editFromAmount.requestFocus();
         editFromAmount.setHint(span);
         editFromAmount.addTextChangedListener(new TextWatcher() {
             @Override
@@ -1062,5 +1059,10 @@ SearcherFragment.Listener {
     @Override
     public Cursor getCursor() {
         return cursor;
+    }
+
+    @Override
+    public String getRateUpdaterClassName() {
+        return rateUpdaterClassName;
     }
 }

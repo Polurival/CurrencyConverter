@@ -23,6 +23,8 @@
     <dimen name="flag_icon_width">32dp</dimen>
     <dimen name="flag_icon_height">32dp</dimen>
 
+    <dimen name="searcher_height">42dp</dimen>
+
     <dimen name="text_size_search_name_small">16sp</dimen>
     <dimen name="text_size_small">24sp</dimen>
     <dimen name="text_size_medium">30sp</dimen>

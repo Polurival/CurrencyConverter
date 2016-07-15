@@ -10,11 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.github.polurival.cc.adapter.AutoCompleteTVAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
-import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 
 /**
@@ -26,14 +26,15 @@ import com.github.polurival.cc.util.Logger;
 public class SearcherFragment extends Fragment {
 
     private Cursor searchCursor;
-    private Cursor cursor;
     private SearcherFragment.Listener listener;
+
     private Spinner fromSpinner;
     private Spinner toSpinner;
+    private ListView switchingListView;
 
     private AutoCompleteTextView currencySearcher;
 
-    private String rateUpdaterClassName;
+    //private String rateUpdaterClassName;
 
     public SearcherFragment() {
     }
@@ -50,8 +51,14 @@ public class SearcherFragment extends Fragment {
         this.toSpinner = toSpinner;
     }
 
+    public void setSwitchingListView(ListView switchingListView) {
+        this.switchingListView = switchingListView;
+    }
+
     public interface Listener {
         Cursor getCursor();
+
+        String getRateUpdaterClassName();
     }
 
     @Override
@@ -85,7 +92,7 @@ public class SearcherFragment extends Fragment {
         return fragmentView;
     }
 
-    @Override
+    /*@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Logger.logD(Logger.getTag(), "onActivityCreated");
@@ -94,7 +101,7 @@ public class SearcherFragment extends Fragment {
         if (bundle != null) {
             rateUpdaterClassName = bundle.getString(Constants.RATE_UPDATER_CLASS_NAME);
         }
-    }
+    }*/
 
     @Override
     public void onStart() {
@@ -104,23 +111,32 @@ public class SearcherFragment extends Fragment {
         initCurrencySearcher();
     }
 
-    private void initCurrencySearcher() {
-        Logger.logD(Logger.getTag(), "initSearchAdapter");
-
-        searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName);
-        AutoCompleteTVAdapter autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                AppContext.getContext(), searchCursor, rateUpdaterClassName);
-
-        currencySearcher.setAdapter(autoCompleteTvAdapter);
-        currencySearcher.setThreshold(1);
-        currencySearcher.setOnItemClickListener(searcherClickListener);
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
 
         if (null != searchCursor) searchCursor.close();
+    }
+
+    private void initCurrencySearcher() {
+        Logger.logD(Logger.getTag(), "initSearchAdapter");
+
+        String rateUpdaterClassName = listener.getRateUpdaterClassName();
+
+        AutoCompleteTVAdapter autoCompleteTvAdapter;
+        if (listener instanceof CurrencySwitchingActivity) {
+            searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, false);
+            autoCompleteTvAdapter = new AutoCompleteTVAdapter(
+                    AppContext.getContext(), searchCursor, rateUpdaterClassName, false);
+        } else {
+            searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, true);
+            autoCompleteTvAdapter = new AutoCompleteTVAdapter(
+                    AppContext.getContext(), searchCursor, rateUpdaterClassName, true);
+        }
+
+        currencySearcher.setAdapter(autoCompleteTvAdapter);
+        currencySearcher.setThreshold(1);
+        currencySearcher.setOnItemClickListener(searcherClickListener);
     }
 
     private final AdapterView.OnItemClickListener searcherClickListener
@@ -134,20 +150,26 @@ public class SearcherFragment extends Fragment {
             Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
             String searchedCharCode = searchedCurrency.getString(1);
 
-            cursor = listener.getCursor();
-            int searchedCharCodeSpinnerPos = 0;
+            Cursor cursor = listener.getCursor();
+            int searchedCharCodePos = 0;
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 String cursorCurrentCharCode = cursor.getString(1);
                 if (searchedCharCode.equals(cursorCurrentCharCode)) {
-                    searchedCharCodeSpinnerPos = cursor.getPosition();
+                    searchedCharCodePos = cursor.getPosition();
                 }
             }
 
-            SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
-            fragmentDialog.setFromSpinner(fromSpinner);
-            fragmentDialog.setToSpinner(toSpinner);
-            fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodeSpinnerPos);
-            fragmentDialog.show(getFragmentManager(), "list selection");
+            if (listener instanceof MainActivity) {
+                SpinnerSelectionDialog fragmentDialog = new SpinnerSelectionDialog();
+                fragmentDialog.setFromSpinner(fromSpinner);
+                fragmentDialog.setToSpinner(toSpinner);
+                fragmentDialog.setSearchedCharCodeSpinnerPos(searchedCharCodePos);
+                fragmentDialog.show(getFragmentManager(), "list selection");
+
+            } else if (listener instanceof CurrencySwitchingActivity) {
+                switchingListView.setSelection(searchedCharCodePos);
+
+            }
         }
     };
 }

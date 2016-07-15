@@ -1,6 +1,7 @@
 package com.github.polurival.cc;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +13,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -23,7 +25,7 @@ import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
-public class CurrencySwitchingActivity extends Activity {
+public class CurrencySwitchingActivity extends Activity implements SearcherFragment.Listener {
 
     private String rateUpdaterClassName;
 
@@ -63,6 +65,7 @@ public class CurrencySwitchingActivity extends Activity {
         Logger.logD(Logger.getTag(), "onResume");
 
         readListDataFromDB();
+        setNewSearcherFragment();
     }
 
     @Override
@@ -151,6 +154,22 @@ public class CurrencySwitchingActivity extends Activity {
             final int childIndex = pos - firstListItemPosition;
             return listView.getChildAt(childIndex);
         }
+    }
+
+    private void setNewSearcherFragment() {
+        Logger.logD(Logger.getTag(), "setNewSearcherFragment");
+
+        SearcherFragment searcherFragment = new SearcherFragment();
+        //searcherFragment.setCursor(cursor);
+        searcherFragment.setSwitchingListView(lvAllCurrencies);
+
+        /*Bundle args = new Bundle();
+        args.putString(Constants.RATE_UPDATER_CLASS_NAME, rateUpdaterClassName);
+        searcherFragment.setArguments(args);*/
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.switching_searcher_fragment_container, searcherFragment);
+        transaction.commit();
     }
 
     public void turnOnOffAllCurrencies(View view) {
@@ -248,5 +267,15 @@ public class CurrencySwitchingActivity extends Activity {
         editor.putInt(getString(R.string.saved_custom_fragment_spinner_pos), 0);
 
         editor.apply();
+    }
+
+    @Override
+    public Cursor getCursor() {
+        return listCursor;
+    }
+
+    @Override
+    public String getRateUpdaterClassName() {
+        return rateUpdaterClassName;
     }
 }
