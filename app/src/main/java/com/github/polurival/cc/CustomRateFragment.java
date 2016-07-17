@@ -13,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -103,7 +104,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
         switch (v.getId()) {
             case R.id.btn_custom_hint:
-                showHideHint();
+                showHideHint(v);
                 break;
 
             case R.id.btn_custom_save:
@@ -112,13 +113,15 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    private void showHideHint() {
+    private void showHideHint(View view) {
         Logger.logD(Logger.getTag(), "showHideHint");
 
         if (tvCustomModeHelp.isShown()) {
             tvCustomModeHelp.setVisibility(View.GONE);
         } else {
             tvCustomModeHelp.setVisibility(View.VISIBLE);
+            ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 

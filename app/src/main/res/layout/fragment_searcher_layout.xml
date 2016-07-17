@@ -13,6 +13,7 @@
         android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         android:hint="@string/search_hint"
         android:inputType="text"
+        android:maxLength="3"
         android:textSize="@dimen/text_size_small" />
 
 </LinearLayout>

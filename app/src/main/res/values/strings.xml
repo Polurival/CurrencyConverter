@@ -13,6 +13,7 @@
     <string name="data_source">Data source</string>
     <string name="currencies_list">Currency list</string>
     <string name="share_action">Share</string>
+    <string name="share_subject">Conversion of currencies</string>
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Nominal =</string>

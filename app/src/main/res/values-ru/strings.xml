@@ -13,6 +13,7 @@
     <string name="data_source">Источник данных</string>
     <string name="currencies_list">Список валют</string>
     <string name="share_action">Поделиться</string>
+    <string name="share_subject">Конвертация валют</string>
 
     <!-- CustomRateFragment -->
     <string name="custom_currency_nominal">\t*Номинал =</string>
