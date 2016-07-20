@@ -711,7 +711,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         symbols.setGroupingSeparator(' ');
         formatter.setDecimalFormatSymbols(symbols);
 
-        return formatter.format(result.setScale(scale, RoundingMode.HALF_EVEN).doubleValue());
+        if (scale == 2) {
+            return formatter.format(result.setScale(scale, RoundingMode.HALF_EVEN).doubleValue());
+        }
+        return result.setScale(scale, RoundingMode.HALF_EVEN).toPlainString();
     }
 
     private void checkNeedToSwapValues(View v) {
