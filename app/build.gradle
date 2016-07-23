@@ -13,15 +13,19 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+
     defaultConfig {
         applicationId "com.github.polurival.cc"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 13
         versionName '2.1'
         setProperty("archivesBaseName", "currency-converter-$versionName")
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -34,6 +38,17 @@ android {
 
         repositories {
             mavenCentral()
+        }
+
+        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
+            // Necessary if your app targets Marshmallow (since Espresso
+            // hasn't moved to Marshmallow yet)
+            exclude group: 'com.android.support', module: 'support-annotations'
+        }
+        androidTestCompile('com.android.support.test:runner:0.3') {
+            // Necessary if your app targets Marshmallow (since the test runner
+            // hasn't moved to Marshmallow yet)
+            exclude group: 'com.android.support', module: 'support-annotations'
         }
 
         //https://github.com/chrisjenx/Calligraphy#inject-into-context
