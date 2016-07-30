@@ -8,7 +8,6 @@
     <string name="search_hint">Search on code…</string>
     <string name="swap">Swap selected currencies</string>
     <string name="issuer_flag">Issuer\'s flag</string>
-    <string name="cancel_updater_task">Cancel Updater task</string>
 
     <!-- Menu -->
     <string name="data_source">Data source</string>

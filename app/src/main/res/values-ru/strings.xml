@@ -8,7 +8,6 @@
     <string name="search_hint">Поиск по коду…</string>
     <string name="swap">Поменять местами выбранные валюты</string>
     <string name="issuer_flag">Флаг эмитента</string>
-    <string name="cancel_updater_task">Отменить обновление</string>
 
     <!-- Menu -->
     <string name="data_source">Источник данных</string>

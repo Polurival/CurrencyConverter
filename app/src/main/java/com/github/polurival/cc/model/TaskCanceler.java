@@ -26,17 +26,13 @@ public class TaskCanceler implements Runnable {
 
     @Override
     public void run() {
-        Logger.logD(Logger.getTag(), "taskCanceler.run()");
-
-        AsyncTask.Status taskStatus = task.getStatus();
-        boolean isCanceled = rateUpdaterListener.isCanceledByUser();
-
-        if (!taskStatus.equals(AsyncTask.Status.FINISHED) && !isCanceled) {
+        Logger.logD(Logger.getTag(),
+                "taskCanceler.run(). taskStatus = " + task.getStatus().toString());
+        if (task.getStatus() == AsyncTask.Status.RUNNING && AppContext.isActivityVisible()) {
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
 
             task.cancel(true);
-            rateUpdaterListener.hideCancelBtn();
 
             rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
             rateUpdaterListener.readDataFromDB();

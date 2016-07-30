@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CharCode;
@@ -69,7 +70,6 @@ public class DBUpdaterTask extends DBTask {
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
-            //rateUpdaterListener.removeHandlersCallbacks();
 
             rateUpdaterListener.setUpDateTime(DateUtil.getCurrentDateTime());
             rateUpdaterListener.saveUpDateTimeProperty();

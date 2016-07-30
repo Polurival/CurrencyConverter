@@ -14,6 +14,7 @@ public interface RateUpdaterListener {
 
     /**
      * For hide menu when updating
+     *
      * @param menuState - Constants.MENU_HIDE or NULL
      */
     void setMenuState(String menuState);
@@ -72,15 +73,5 @@ public interface RateUpdaterListener {
      * Set new instance of RateUpdater after cancel old one
      */
     void checkAsyncTaskStatusAndSetNewInstance();
-
-    /**
-     * Don't make TaskCanceler work if it's done by user
-     */
-    boolean isCanceledByUser();
-
-    /**
-     * For hiding after cancel by TaskCanceler
-     */
-    void hideCancelBtn();
 
 }

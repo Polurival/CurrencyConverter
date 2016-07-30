@@ -27,7 +27,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -79,9 +78,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private String menuState;
 
     private Handler taskCancelerHandler;
-    private Handler btnCancelHandler;
     private TaskCanceler taskCanceler;
-    private boolean isCanceledByUser;
 
     private String rateUpdaterClassName;
     private RateUpdater rateUpdater;
@@ -111,8 +108,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private TextView tvLabelForCurrentCurrencies;
     private TextView tvDateTime;
-
-    private ImageButton cancelUpdaterTaskBtn;
 
     @Override
     public void setMenuState(String menuState) {
@@ -154,8 +149,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         fromSpinner = (Spinner) findViewById(R.id.from_spinner);
         toSpinner = (Spinner) findViewById(R.id.to_spinner);
         tvLabelForCurrentCurrencies = (TextView) findViewById(R.id.tv_label_for_current_currencies);
-
-        initCancelUpdaterBtn();
 
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
         preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -205,6 +198,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         super.onResume();
         Logger.logD(Logger.getTag(), "onResume");
 
+        AppContext.activityResumed();
+
         readDataFromDB();
         checkAsyncTaskStatusAndSetNewInstance();
     }
@@ -213,8 +208,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onPause() {
         Logger.logD(Logger.getTag(), "onPause");
 
-        cancelAsyncTask(null);
-        hideCancelBtn();
+        AppContext.activityPaused();
+
+        cancelAsyncTask();
 
         super.onPause();
     }
@@ -245,8 +241,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void onBackPressed() {
         Logger.logD(Logger.getTag(), "onBackPressed");
 
-        cancelAsyncTask(null);
-        hideCancelBtn();
+        cancelAsyncTask();
 
         super.onBackPressed();
     }
@@ -255,9 +250,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onUserLeaveHint() {
         Logger.logD(Logger.getTag(), "onUserLeaveHint");
 
-        cancelAsyncTask(null);
+        cancelAsyncTask();
         setMenuState(null);
-        hideCancelBtn();
 
         super.onUserLeaveHint();
     }
@@ -310,14 +304,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         switch (item.getItemId()) {
 
             case R.id.data_source_action:
-                cancelAsyncTask(null);
+                cancelAsyncTask();
 
                 Intent dataSourceIntent = new Intent(this, DataSourceActivity.class);
                 startActivity(dataSourceIntent);
                 return true;
 
             case R.id.currency_switching_action:
-                cancelAsyncTask(null);
+                cancelAsyncTask();
 
                 Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
                 currencySwitchingIntent.putExtra(
@@ -374,7 +368,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             Toaster.showCenterToast(getString(R.string.custom_updating_info));
             stopRefresh();
         } else {
-            isCanceledByUser = false;
             checkAsyncTaskStatusAndSetNewInstance();
             updateRatesFromSource();
         }
@@ -396,7 +389,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
         taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
-        btnCancelHandler.postDelayed(new CancelUpdaterTaskBtnShower(), 3 * 1000);
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             ((CBRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -952,7 +944,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         rateUpdater.setRateUpdaterListener(this);
 
         taskCancelerHandler = new Handler();
-        btnCancelHandler = new Handler();
         taskCanceler = new TaskCanceler((AsyncTask) rateUpdater, this);
     }
 
@@ -1007,49 +998,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 toCurrencyValue, currencyToCharCode);
     }
 
-    public void cancelAsyncTask(View view) {
+    private void cancelAsyncTask() {
         Logger.logD(Logger.getTag(), "cancelAsyncTask");
 
+        stopRefresh();
+
         AsyncTask task = (AsyncTask) rateUpdater;
-        if (mPullToRefreshLayout.isRefreshing() || task.getStatus() == AsyncTask.Status.RUNNING) {
-            stopRefresh();
-            setMenuState(null);
-
+        if (task.getStatus() != AsyncTask.Status.PENDING) {
             task.cancel(true);
-        }
-
-        if (null != view && view.getId() == R.id.btn_cancel_updater_task) {
-            isCanceledByUser = true;
-            hideCancelBtn();
-        }
-    }
-
-    @Override
-    public void hideCancelBtn() {
-        cancelUpdaterTaskBtn.setVisibility(View.GONE);
-        tvLabelForCurrentCurrencies.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public boolean isCanceledByUser() {
-        return isCanceledByUser;
-    }
-
-    private void initCancelUpdaterBtn() {
-        cancelUpdaterTaskBtn = (ImageButton) findViewById(R.id.btn_cancel_updater_task);
-        //add animation
-    }
-
-    private class CancelUpdaterTaskBtnShower implements Runnable {
-        @Override
-        public void run() {
-            Logger.logD(Logger.getTag(), "cancelButtonShower.run()");
-            AsyncTask.Status taskStatus = ((AsyncTask) rateUpdater).getStatus();
-            if (mPullToRefreshLayout.isRefreshing()
-                    && taskStatus.equals(AsyncTask.Status.RUNNING)) {
-                cancelUpdaterTaskBtn.setVisibility(View.VISIBLE);
-                tvLabelForCurrentCurrencies.setVisibility(View.INVISIBLE);
-            }
         }
     }
 
