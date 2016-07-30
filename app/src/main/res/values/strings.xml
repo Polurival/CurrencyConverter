@@ -8,6 +8,7 @@
     <string name="search_hint">Search on code…</string>
     <string name="swap">Swap selected currencies</string>
     <string name="issuer_flag">Issuer\'s flag</string>
+    <string name="cancel_updater_task">Cancel Updater task</string>
 
     <!-- Menu -->
     <string name="data_source">Data source</string>
@@ -50,6 +51,9 @@
     <string name="db_custom_update_invalid_value">Invalid rate</string>
     <string name="custom_updating_info">Update rates in \'Data source\' menu</string>
     <string name="all_currencies_disabled">Turn on currencies in \'Currencies list\' menu</string>
+    <string name="number_limit">
+        You have exceeded the maximum number for the current currency pair.\n
+        Invalid result</string>
 
     <!-- Description -->
     <string name="cb_rf">CB RF rate on\n</string>

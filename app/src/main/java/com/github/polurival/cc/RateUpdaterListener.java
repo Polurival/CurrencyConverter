@@ -73,4 +73,14 @@ public interface RateUpdaterListener {
      */
     void checkAsyncTaskStatusAndSetNewInstance();
 
+    /**
+     * Don't make TaskCanceler work if it's done by user
+     */
+    boolean isCanceledByUser();
+
+    /**
+     * For hiding after cancel by TaskCanceler
+     */
+    void hideCancelBtn();
+
 }

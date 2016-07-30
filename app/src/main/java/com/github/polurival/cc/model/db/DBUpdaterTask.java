@@ -69,6 +69,7 @@ public class DBUpdaterTask extends DBTask {
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
+            //rateUpdaterListener.removeHandlersCallbacks();
 
             rateUpdaterListener.setUpDateTime(DateUtil.getCurrentDateTime());
             rateUpdaterListener.saveUpDateTimeProperty();

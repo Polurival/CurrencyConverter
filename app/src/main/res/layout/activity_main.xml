@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ptr_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -53,7 +54,7 @@
                 android:alpha="0.8"
                 android:background="@color/white"
                 android:inputType="numberDecimal"
-                android:maxLength="20"
+                android:maxLength="19"
                 android:textColor="@color/azure"
                 android:textSize="@dimen/text_size_medium" />
 
@@ -96,7 +97,7 @@
                 android:alpha="0.8"
                 android:background="@color/white"
                 android:inputType="numberDecimal"
-                android:maxLength="20"
+                android:maxLength="19"
                 android:textColor="@color/azure"
                 android:textSize="@dimen/text_size_medium" />
 
@@ -115,5 +116,19 @@
         </RelativeLayout>
 
     </ScrollView>
+
+    <ImageButton
+        android:id="@+id/btn_cancel_updater_task"
+        android:layout_width="@dimen/btn_swap_width"
+        android:layout_height="@dimen/btn_swap_height"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:alpha="0.8"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/cancel_updater_task"
+        android:onClick="cancelAsyncTask"
+        android:src="@drawable/ic_cancel_40dp"
+        android:visibility="gone" />
 
 </uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout>

@@ -2,7 +2,6 @@ package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -202,8 +201,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_NAME_CB_RF_SOURCE + " INTEGER, " +
                 COLUMN_NAME_YAHOO_SOURCE + " INTEGER, " +
                 COLUMN_NAME_SWITCHING + " INTEGER);");
-
-        Resources res = appContext.getResources();
 
         insertCurrency(db, CharCode.AED, 0, 1, 1, 0, 3.672950, 3.672950, "aed", "aed", 0, 1, 1);
         insertCurrency(db, CharCode.AFN, 0, 1, 1, 0, 69.279999, 69.279999, "afn", "afn", 0, 1, 1);

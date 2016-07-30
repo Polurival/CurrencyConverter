@@ -8,6 +8,7 @@
     <string name="search_hint">Поиск по коду…</string>
     <string name="swap">Поменять местами выбранные валюты</string>
     <string name="issuer_flag">Флаг эмитента</string>
+    <string name="cancel_updater_task">Отменить обновление</string>
 
     <!-- Menu -->
     <string name="data_source">Источник данных</string>
@@ -50,6 +51,9 @@
     <string name="db_custom_update_invalid_value">Недопустимое значение</string>
     <string name="custom_updating_info">Обновите курсы в меню \'Источник данных\'</string>
     <string name="all_currencies_disabled">Включи валюты в меню \'Список валют\'</string>
+    <string name="number_limit">
+        Превышено максимально допустимое число для текущей валютной пары.\n
+        Неверный результат</string>
 
     <!-- Description -->
     <string name="cb_rf">Курс ЦБ РФ на\n</string>
