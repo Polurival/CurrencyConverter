@@ -27,7 +27,7 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
         Logger.logD(Logger.getTag(), "doInBackground");
 
         try {
-            URL url = new URL(Constants.CBR_URL);
+            URL url = new URL(Constants.CBRF_URL);
             URLConnection connection = url.openConnection();
 
             Document doc = parseXML(connection.getInputStream());

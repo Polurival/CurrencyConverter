@@ -606,7 +606,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             formatted = formatBigDecimal(prepareBigDecimal(sParts[0]), 2) + sParts[1];
         }
         editText.setText(formatted);
-        editText.setSelection(formatted.length());
+        if (formatted.length() > 19) {
+            editText.setSelection(formatted.length() - 1);
+            Toaster.showCenterToast(getString(R.string.number_limit));
+        } else {
+            editText.setSelection(formatted.length());
+        }
     }
 
     @NonNull
@@ -761,19 +766,16 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private BigDecimal getEnteredAmountOfMoney(View v) {
         Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney " + v.toString());
 
+        String editText;
         if (v.getId() == R.id.edit_from_amount) {
-            String editFromText = editFromAmount.getText().toString().replaceAll(" ", "");
-            if (TextUtils.isEmpty(editFromText)) {
-                return BigDecimal.ZERO;
-            }
-            return new BigDecimal(editFromText);
+            editText = editFromAmount.getText().toString().replaceAll(" ", "");
         } else {
-            String editToText = editToAmount.getText().toString().replaceAll(" ", "");
-            if (TextUtils.isEmpty(editToText)) {
-                return BigDecimal.ZERO;
-            }
-            return new BigDecimal(editToText);
+            editText = editToAmount.getText().toString().replaceAll(" ", "");
         }
+        if (TextUtils.isEmpty(editText)) {
+            return BigDecimal.ZERO;
+        }
+        return new BigDecimal(editText);
     }
 
     private BigDecimal calculateResult(BigDecimal enteredAmountOfMoney) {
@@ -882,7 +884,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 preferences.getString(getString(R.string.saved_to_edit_amount_text),
                         getString(R.string.saved_edit_amount_text_default));
         editToAmount.setText(editToAmountText);
-
     }
 
     private void loadUpDateTimeProperty() {
@@ -906,20 +907,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "loadSpinnersProperties");
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_cb_rf_from_spinner_pos), 30);
-            toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_cb_rf_to_spinner_pos), 23);
+            fromSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_cb_rf_from_spinner_pos), Constants.DEFAULT_CBRF_USD_POS);
+            toSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_cb_rf_to_spinner_pos), Constants.DEFAULT_CBRF_RUB_POS);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_from_spinner_pos), 144);
-            toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_yahoo_to_spinner_pos), 117);
+            fromSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_yahoo_from_spinner_pos), Constants.DEFAULT_YAHOO_USD_POS);
+            toSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_yahoo_to_spinner_pos), Constants.DEFAULT_YAHOO_RUB_POS);
         } else {
-            fromSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_custom_from_spinner_pos), 144);
-            toSpinnerSelectedPos =
-                    preferences.getInt(getString(R.string.saved_custom_to_spinner_pos), 117);
+            fromSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_custom_from_spinner_pos), Constants.DEFAULT_CUSTOM_USD_POS);
+            toSpinnerSelectedPos = preferences.getInt(getString(
+                    R.string.saved_custom_to_spinner_pos), Constants.DEFAULT_CUSTOM_RUB_POS);
         }
 
         fromSpinner.setSelection(fromSpinnerSelectedPos);

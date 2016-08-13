@@ -82,7 +82,7 @@
     <string name="saved_rate_updater_class" translatable="false">
         saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default" translatable="false">
-        com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
+        com.github.polurival.cc.model.updater.YahooRateUpdaterTask</string>
     <string name="saved_cb_rf_up_date_time" translatable="false">
         saved_cb_rf_up_date_time</string>
     <string name="saved_yahoo_up_date_time" translatable="false">

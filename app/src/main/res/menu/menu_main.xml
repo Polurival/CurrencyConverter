@@ -1,5 +1,4 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
@@ -8,19 +7,22 @@
         android:icon="@drawable/ic_storage_24dp"
         android:orderInCategory="10"
         android:title="@string/data_source"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource" />
     <item
         android:id="@+id/currency_switching_action"
         android:icon="@drawable/ic_assignment_turned_in_24dp"
         android:orderInCategory="20"
         android:title="@string/currencies_list"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource"/>
     <item
         android:id="@+id/share_action"
         android:actionProviderClass="android.widget.ShareActionProvider"
         android:icon="@drawable/ic_send_24dp"
         android:orderInCategory="30"
         android:title="@string/share_action"
-        app:showAsAction="ifRoom" />
+        android:showAsAction="ifRoom"
+        tools:ignore="AppCompatResource"/>
 
 </menu>

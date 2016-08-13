@@ -10,6 +10,13 @@ public interface Constants {
 
     String RATE_UPDATER_CLASS_NAME = "rateUpdaterName";
 
+    int DEFAULT_CBRF_USD_POS = 30;
+    int DEFAULT_CBRF_RUB_POS = 23;
+    int DEFAULT_YAHOO_USD_POS = 144;
+    int DEFAULT_YAHOO_RUB_POS = 117;
+    int DEFAULT_CUSTOM_USD_POS = 144;
+    int DEFAULT_CUSTOM_RUB_POS = 117;
+
     /**
      * Hide menu while updating from source
      */
@@ -18,7 +25,7 @@ public interface Constants {
     /**
      * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
      */
-    String CBR_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
+    String CBRF_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
     String CURRENCY_NODE_LIST = "Valute";
     String CHAR_CODE_NODE = "CharCode";
     String NOMINAL_NODE = "Nominal";
