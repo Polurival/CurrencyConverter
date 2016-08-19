@@ -29,9 +29,9 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
     private String rateUpdaterClassName;
 
     private Cursor listCursor;
-    private ListView lvAllCurrencies;
-    private int lvSelectedPos;
+    private ListViewCursorAdapter cursorAdapter;
 
+    private ListView lvAllCurrencies;
     private CheckBox cbTurnOnOffAllCurrencies;
 
 
@@ -44,8 +44,6 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
 
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        lvSelectedPos = 0;
 
         lvAllCurrencies = (ListView) findViewById(R.id.lv_turn_on_off);
         cbTurnOnOffAllCurrencies = (CheckBox) findViewById(R.id.cb_turn_all_on_off);
@@ -106,36 +104,38 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
     private void initLvAllCurrencies() {
         Logger.logD(Logger.getTag(), "initLvAllCurrencies");
 
-        ListViewCursorAdapter cursorAdapter =
-                new ListViewCursorAdapter(getApplicationContext(), listCursor);
-        lvAllCurrencies.setAdapter(cursorAdapter);
+        if (cursorAdapter == null) {
 
-        lvAllCurrencies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                View rowLayout = getViewByPosition(position, lvAllCurrencies);
+            cursorAdapter = new ListViewCursorAdapter(getApplicationContext(), listCursor);
+            lvAllCurrencies.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    View rowLayout = getViewByPosition(position, lvAllCurrencies);
 
-                lvSelectedPos = lvAllCurrencies.getFirstVisiblePosition();
+                    TextView tvCharCode = (TextView) ((ViewGroup) rowLayout).getChildAt(2);
+                    String currencyCharCode = tvCharCode.getText().toString();
+                    CheckBox currencyCondition = (CheckBox) ((ViewGroup) rowLayout).getChildAt(3);
 
-                TextView tvCharCode = (TextView) ((ViewGroup) rowLayout).getChildAt(2);
-                String currencyCharCode = tvCharCode.getText().toString();
-                CheckBox currencyCondition = (CheckBox) ((ViewGroup) rowLayout).getChildAt(3);
-
-                if (currencyCondition.isChecked()) {
-                    saveCurrencyOnOffCondition(currencyCharCode, 0, Constants.SINGLE);
-                } else {
-                    saveCurrencyOnOffCondition(currencyCharCode, 1, Constants.SINGLE);
+                    if (currencyCondition.isChecked()) {
+                        saveCurrencyOnOffCondition(currencyCharCode, 0, Constants.SINGLE);
+                    } else {
+                        saveCurrencyOnOffCondition(currencyCharCode, 1, Constants.SINGLE);
+                    }
                 }
-            }
-        });
+            });
+
+            lvAllCurrencies.setAdapter(cursorAdapter);
+        } else {
+            cursorAdapter.changeCursor(listCursor);
+            cursorAdapter.notifyDataSetChanged();
+        }
+
 
         if (isAllCurrenciesTurnOn()) {
             cbTurnOnOffAllCurrencies.setChecked(true);
         } else {
             cbTurnOnOffAllCurrencies.setChecked(false);
         }
-
-        lvAllCurrencies.setSelection(lvSelectedPos);
     }
 
     /**
@@ -168,8 +168,6 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
 
     public void turnOnOffAllCurrencies(View view) {
         Logger.logD(Logger.getTag(), "turnOnOffAllCurrencies");
-
-        lvSelectedPos = 0;
 
         if (cbTurnOnOffAllCurrencies.isChecked()) {
             saveCurrencyOnOffCondition(null, 1, Constants.MULTIPLE);

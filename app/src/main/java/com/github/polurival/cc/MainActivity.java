@@ -68,6 +68,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private SQLiteDatabase db;
     private Cursor cursor;
+    private SpinnerCursorAdapter cursorAdapter;
     private Cursor fromCursor;
     private Cursor toCursor;
 
@@ -432,58 +433,62 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void initSpinners() {
         Logger.logD(Logger.getTag(), "initSpinners");
 
-        SpinnerCursorAdapter cursorAdapter =
-                new SpinnerCursorAdapter(getApplicationContext(), cursor);
+        if (cursorAdapter == null) {
+            cursorAdapter = new SpinnerCursorAdapter(getApplicationContext(), cursor);
+
+            fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    fromCursor = (Cursor) parent.getItemAtPosition(position);
+
+                    currencyFromCharCode = fromCursor.getString(1);
+                    currencyFromNominal = (double) fromCursor.getInt(2);
+                    currencyFromToXRate = fromCursor.getDouble(3);
+
+                    fromSpinnerSelectedPos = position;
+
+                    editFromAmount.setText(editFromAmount.getText());
+
+                    saveSpinnersProperties();
+
+                    tvLabelForCurrentCurrencies.setText(composeTextForLabel());
+                    syncShareActionData();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+            toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    toCursor = (Cursor) parent.getItemAtPosition(position);
+
+                    currencyToCharCode = toCursor.getString(1);
+                    currencyToNominal = (double) toCursor.getInt(2);
+                    currencyToToXRate = toCursor.getDouble(3);
+
+                    toSpinnerSelectedPos = position;
+
+                    editFromAmount.setText(editFromAmount.getText());
+
+                    saveSpinnersProperties();
+
+                    tvLabelForCurrentCurrencies.setText(composeTextForLabel());
+                    syncShareActionData();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        } else {
+            cursorAdapter.changeCursor(cursor);
+            cursorAdapter.notifyDataSetChanged();
+        }
 
         fromSpinner.setAdapter(cursorAdapter);
-        fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                fromCursor = (Cursor) parent.getItemAtPosition(position);
-
-                currencyFromCharCode = fromCursor.getString(1);
-                currencyFromNominal = (double) fromCursor.getInt(2);
-                currencyFromToXRate = fromCursor.getDouble(3);
-
-                fromSpinnerSelectedPos = position;
-
-                editFromAmount.setText(editFromAmount.getText());
-
-                saveSpinnersProperties();
-
-                tvLabelForCurrentCurrencies.setText(composeTextForLabel());
-                syncShareActionData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
         toSpinner.setAdapter(cursorAdapter);
-        toSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                toCursor = (Cursor) parent.getItemAtPosition(position);
-
-                currencyToCharCode = toCursor.getString(1);
-                currencyToNominal = (double) toCursor.getInt(2);
-                currencyToToXRate = toCursor.getDouble(3);
-
-                toSpinnerSelectedPos = position;
-
-                editFromAmount.setText(editFromAmount.getText());
-
-                saveSpinnersProperties();
-
-                tvLabelForCurrentCurrencies.setText(composeTextForLabel());
-                syncShareActionData();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
 
         if (fromSpinner.getCount() == 0) {
             Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
@@ -624,22 +629,24 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void initTvDateTime() {
         Logger.logD(Logger.getTag(), "initTvDateTime");
 
-        tvDateTime = (TextView) findViewById(R.id.tv_date_time);
-        tvDateTime.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        if (tvDateTime == null) {
+            tvDateTime = (TextView) findViewById(R.id.tv_date_time);
+            tvDateTime.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                fromSpinner.setSelection(fromSpinner.getSelectedItemPosition());
-                toSpinner.setSelection(toSpinner.getSelectedItemPosition());
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                    fromSpinner.setSelection(fromSpinner.getSelectedItemPosition());
+                    toSpinner.setSelection(toSpinner.getSelectedItemPosition());
+                }
+            });
+        }
         tvDateTimeSetText();
     }
 
@@ -957,6 +964,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void setShareIntent(String text) {
+        if (text == null || shareActionProvider == null) {
+            return;
+        }
         Logger.logD(Logger.getTag(), "setShareIntent " + text);
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

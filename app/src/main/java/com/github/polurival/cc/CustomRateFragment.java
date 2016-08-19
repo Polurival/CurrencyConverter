@@ -39,6 +39,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     private Context appContext;
 
     private Cursor spinnerCursor;
+    private SpinnerCursorAdapter cursorAdapter;
 
     private EditText editCustomCurrency;
     private Spinner customCurrencySpinner;
@@ -226,21 +227,24 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     private void initCustomSpinner() {
         Logger.logD(Logger.getTag(), "initCustomSpinner");
 
-        SpinnerCursorAdapter cursorAdapter =
-                new SpinnerCursorAdapter(appContext, spinnerCursor);
-        customCurrencySpinner.setAdapter(cursorAdapter);
+        if (cursorAdapter == null) {
+            cursorAdapter = new SpinnerCursorAdapter(appContext, spinnerCursor);
+            customCurrencySpinner.setAdapter(cursorAdapter);
+            customCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    initCurrencyDataFromCustomSpinnerCursor();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+        } else {
+            cursorAdapter.changeCursor(spinnerCursor);
+            cursorAdapter.notifyDataSetChanged();
+        }
         loadCustomSpinnerSelectedPos();
-
-        customCurrencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                initCurrencyDataFromCustomSpinnerCursor();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
     }
 
     private void initCurrencyDataFromCustomSpinnerCursor() {
