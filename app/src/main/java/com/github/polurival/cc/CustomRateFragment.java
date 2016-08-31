@@ -157,11 +157,13 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         handler.post(new Runnable() {
             @Override
             public void run() {
+                db.beginTransaction();
                 try {
                     db.update(DBHelper.TABLE_NAME,
                             contentValues,
                             DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
                             new String[]{currencyCharCode});
+                    db.setTransactionSuccessful();
 
                     Toaster.showCenterToast(appContext.getString(
                             R.string.db_custom_update_success) + preparedCustomNominal);
@@ -172,6 +174,8 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
                 } catch (SQLiteException e) {
                     Toaster.showCenterToast(appContext.getString(R.string.db_writing_error));
+                } finally {
+                    db.endTransaction();
                 }
             }
         });

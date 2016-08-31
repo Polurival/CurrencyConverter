@@ -915,19 +915,25 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         if (rateUpdater instanceof CBRateUpdaterTask) {
             fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_cb_rf_from_spinner_pos), Constants.DEFAULT_CBRF_USD_POS);
+                    R.string.saved_cb_rf_from_spinner_pos),
+                    Constants.DEFAULT_CBRF_USD_POS);
             toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_cb_rf_to_spinner_pos), Constants.DEFAULT_CBRF_RUB_POS);
+                    R.string.saved_cb_rf_to_spinner_pos),
+                    Constants.DEFAULT_CBRF_RUB_POS);
         } else if (rateUpdater instanceof YahooRateUpdaterTask) {
             fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_yahoo_from_spinner_pos), Constants.DEFAULT_YAHOO_USD_POS);
+                    R.string.saved_yahoo_from_spinner_pos),
+                    Constants.DEFAULT_YAHOO_USD_POS);
             toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_yahoo_to_spinner_pos), Constants.DEFAULT_YAHOO_RUB_POS);
+                    R.string.saved_yahoo_to_spinner_pos),
+                    Constants.DEFAULT_YAHOO_RUB_POS);
         } else {
             fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_custom_from_spinner_pos), Constants.DEFAULT_CUSTOM_USD_POS);
+                    R.string.saved_custom_from_spinner_pos),
+                    Constants.DEFAULT_CUSTOM_USD_POS);
             toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_custom_to_spinner_pos), Constants.DEFAULT_CUSTOM_RUB_POS);
+                    R.string.saved_custom_to_spinner_pos),
+                    Constants.DEFAULT_CUSTOM_RUB_POS);
         }
 
         fromSpinner.setSelection(fromSpinnerSelectedPos);
@@ -944,8 +950,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private void setRateUpdaterAndTaskCanceler() {
         try {
-            rateUpdater
-                    = (RateUpdater) Class.forName(rateUpdaterClassName).getConstructor().newInstance();
+            rateUpdater = (RateUpdater)
+                    Class.forName(rateUpdaterClassName).getConstructor().newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }

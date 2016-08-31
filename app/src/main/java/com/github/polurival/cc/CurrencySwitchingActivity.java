@@ -201,6 +201,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         handler.post(new Runnable() {
             @Override
             public void run() {
+                db.beginTransaction();
                 try {
                     if (Constants.SINGLE.equals(mode)) {
                         if (null == currencyCharCode) {
@@ -217,12 +218,16 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
                                 null);
                     }
 
+                    db.setTransactionSuccessful();
+
                     saveDefaultPositionProperties();
 
                     readListDataFromDB();
 
                 } catch (SQLiteException e) {
                     Toaster.showCenterToast(getString(R.string.db_writing_error));
+                } finally {
+                    db.endTransaction();
                 }
             }
         });

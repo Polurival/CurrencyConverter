@@ -38,22 +38,28 @@ public class DBUpdaterTask extends DBTask {
             SQLiteDatabase db = DBHelper.getInstance(appContext).getWritableDatabase();
             ContentValues contentValues = new ContentValues();
 
-            for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
-                int nominal = entry.getValue().getNominal();
-                double rate = entry.getValue().getRate();
+            db.beginTransaction();
+            try {
+                for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
+                    int nominal = entry.getValue().getNominal();
+                    double rate = entry.getValue().getRate();
 
-                if (rateUpdater instanceof CBRateUpdaterTask) {
-                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, nominal);
-                    contentValues.put(DBHelper.COLUMN_NAME_CB_RF_RATE, rate);
-                } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-                    contentValues.put(DBHelper.COLUMN_NAME_YAHOO_NOMINAL, nominal);
-                    contentValues.put(DBHelper.COLUMN_NAME_YAHOO_RATE, rate);
+                    if (rateUpdater instanceof CBRateUpdaterTask) {
+                        contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, nominal);
+                        contentValues.put(DBHelper.COLUMN_NAME_CB_RF_RATE, rate);
+                    } else if (rateUpdater instanceof YahooRateUpdaterTask) {
+                        contentValues.put(DBHelper.COLUMN_NAME_YAHOO_NOMINAL, nominal);
+                        contentValues.put(DBHelper.COLUMN_NAME_YAHOO_RATE, rate);
+                    }
+
+                    db.update(DBHelper.TABLE_NAME,
+                            contentValues,
+                            DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
+                            new String[]{entry.getKey().toString()});
                 }
-
-                db.update(DBHelper.TABLE_NAME,
-                        contentValues,
-                        DBHelper.COLUMN_NAME_CHAR_CODE + " = ?",
-                        new String[]{entry.getKey().toString()});
+                db.setTransactionSuccessful();
+            } finally {
+                db.endTransaction();
             }
         } catch (SQLiteException e) {
             return false;
