@@ -970,17 +970,19 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private void setShareIntent(String text) {
+        Logger.logD(Logger.getTag(), "setShareIntent " + text);
         if (text == null || shareActionProvider == null) {
             return;
         }
-        Logger.logD(Logger.getTag(), "setShareIntent " + text);
+
         Intent intent = new Intent(Intent.ACTION_SEND);
-        if (intent.resolveActivity(getPackageManager()) != null) {
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject));
         intent.putExtra(Intent.EXTRA_TEXT, text);
-        shareActionProvider.setShareIntent(intent);
-        }
+
+        shareActionProvider.setShareIntent(
+                Intent.createChooser(intent, getResources().getString(R.string.send_to)));
+
     }
 
     private String composeTextForShare() {
