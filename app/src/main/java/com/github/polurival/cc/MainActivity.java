@@ -17,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
@@ -32,13 +31,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
-import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
-import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.TaskCanceler;
-import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
+import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
+import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.updater.RateUpdater;
+import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
@@ -221,6 +220,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onStop");
 
         saveProperties();
+        saveSpinnersProperties();
 
         super.onStop();
     }
@@ -779,7 +779,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         } else {
             editText = editToAmount.getText().toString().replaceAll(" ", "");
         }
-        if (TextUtils.isEmpty(editText)) {
+        if (editText == null || editText.length() == 0 || editText.equals("")) {
             return BigDecimal.ZERO;
         }
         return new BigDecimal(editText);
@@ -829,11 +829,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 rateUpdater.getClass().getName());
 
         editor.apply();
-
-        saveSpinnersProperties();
     }
 
     private void saveSpinnersProperties() {
+        Logger.logD(Logger.getTag(), "saveSpinnersProperties");
+
         SharedPreferences.Editor editor = preferences.edit();
 
         if (rateUpdater instanceof CBRateUpdaterTask) {

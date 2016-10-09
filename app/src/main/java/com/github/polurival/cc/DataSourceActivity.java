@@ -24,6 +24,8 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     private CustomRateFragment customRateFragment;
     private LinearLayout customRateFragmentLayout;
     private LinearLayout searcherFragmentLayout;
+    private CheckBox cbAutoUpdate;
+    private View divider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +45,10 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
         searcherFragmentLayout =
                 (LinearLayout) findViewById(R.id.searcher_custom_rates_fragment_layout);
 
-        CheckBox cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
+        cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
         cbAutoUpdate.setChecked(loadIsSetAutoUpdateProperty());
+
+        divider = findViewById(R.id.divider);
 
         initSourceSpinner();
     }
@@ -71,11 +75,15 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
                 if (position == 2) {
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
 
+                    divider.setVisibility(View.VISIBLE);
                     searcherFragmentLayout.setVisibility(View.VISIBLE);
                     customRateFragmentLayout.setVisibility(View.VISIBLE);
+                    cbAutoUpdate.setEnabled(false);
                 } else {
+                    divider.setVisibility(View.GONE);
                     customRateFragmentLayout.setVisibility(View.GONE);
                     searcherFragmentLayout.setVisibility(View.GONE);
+                    cbAutoUpdate.setEnabled(true);
 
                     if (position == 0) {
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
