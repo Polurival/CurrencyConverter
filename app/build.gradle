@@ -15,14 +15,14 @@ android {
     }
 
     compileSdkVersion 24
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "com.github.polurival.cc"
         minSdkVersion 15
         targetSdkVersion 24
-        versionCode 20
-        versionName '2.3.2'
+        versionCode 21
+        versionName '2.3.3'
         setProperty("archivesBaseName", "currency-converter-$versionName")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

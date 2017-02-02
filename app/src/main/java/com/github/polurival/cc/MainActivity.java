@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.RelativeSizeSpan;
 import android.view.Menu;
@@ -779,7 +780,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         } else {
             editText = editToAmount.getText().toString().replaceAll(" ", "");
         }
-        if (editText == null || editText.length() == 0 || editText.equals("")) {
+        if (TextUtils.isEmpty(editText)) {
             return BigDecimal.ZERO;
         }
         return new BigDecimal(editText);

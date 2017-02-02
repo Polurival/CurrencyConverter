@@ -1,11 +1,13 @@
 package com.github.polurival.cc;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -22,6 +24,9 @@ public class AppContext extends Application {
     public void onCreate() {
         super.onCreate();
         appContext = this;
+
+        //http://stackoverflow.com/a/11036882/5349748 - for avoid java.net.ProtocolException: Server redirected too many times Error
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("font/Roboto-Regular.ttf")

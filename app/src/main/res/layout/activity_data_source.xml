@@ -48,20 +48,11 @@
             android:layout_below="@id/ll_auto_update"
             android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/source_spinner"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:alpha="0.8"
-            android:background="@color/gray"/>
-
         <LinearLayout
             android:id="@+id/searcher_custom_rates_fragment_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/divider"
+            android:layout_below="@id/source_spinner"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
