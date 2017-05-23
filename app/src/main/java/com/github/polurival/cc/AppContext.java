@@ -25,8 +25,7 @@ public class AppContext extends Application {
         super.onCreate();
         appContext = this;
 
-        //http://stackoverflow.com/a/11036882/5349748 - for avoid java.net.ProtocolException: Server redirected too many times Error
-        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
+        maintainUserSession();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("font/Roboto-Regular.ttf")
@@ -35,6 +34,11 @@ public class AppContext extends Application {
         );
 
         JodaTimeAndroid.init(this);
+    }
+
+    private void maintainUserSession() {
+        //http://stackoverflow.com/a/11036882/5349748 - for avoid java.net.ProtocolException: Server redirected too many times Error
+        CookieHandler.setDefault(new CookieManager(null, CookiePolicy.ACCEPT_ALL));
     }
 
     public static Context getContext() {

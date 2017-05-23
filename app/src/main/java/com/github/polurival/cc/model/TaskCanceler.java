@@ -14,6 +14,7 @@ import com.github.polurival.cc.util.Toaster;
  * <p/>
  * <p>See <a href="http://stackoverflow.com/questions/17315372/cancel-asynctask-after-some-time">source</a></p>
  */
+//todo удалить этот ужас
 public class TaskCanceler implements Runnable {
 
     private AsyncTask task;
