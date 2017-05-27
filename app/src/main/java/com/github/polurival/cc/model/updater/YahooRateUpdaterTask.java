@@ -1,12 +1,20 @@
 package com.github.polurival.cc.model.updater;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.model.db.DBReaderTask;
+import com.github.polurival.cc.model.dto.SpinnersPositions;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 
 import org.apache.commons.io.IOUtils;
+import org.joda.time.LocalDateTime;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -14,10 +22,6 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.nio.charset.Charset;
 
-/**
- * Created by Polurival
- * on 11.06.2016.
- */
 public class YahooRateUpdaterTask extends CommonRateUpdater {
 
     @Override
@@ -37,6 +41,11 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void execute() {
+        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -87,5 +96,37 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
     @Override
     public String getDescription() {
         return appContext.getString(R.string.yahoo);
+    }
+
+    @Override
+    public void saveSelectedCurrencySpinnersPositions(Context context, int fromSpinnerSelectedPos, int toSpinnerSelectedPos) {
+        AppPreferences.saveMainActivityYahooRateUpdaterSpinnersPositions(context, fromSpinnerSelectedPos, toSpinnerSelectedPos);
+    }
+
+    @Override
+    public void saveUpDateTime(Context context, LocalDateTime upDateTime) {
+        AppPreferences.saveYahooRateUpdaterUpDateTime(context, upDateTime);
+    }
+
+    @Override
+    public void readDataFromDB(DBReaderTask dbReaderTask) {
+        dbReaderTask.execute(DBHelper.COLUMN_NAME_YAHOO_SOURCE,
+                DBHelper.COLUMN_NAME_YAHOO_NOMINAL,
+                DBHelper.COLUMN_NAME_YAHOO_RATE);
+    }
+
+    @Override
+    public LocalDateTime loadUpDateTime(Context context) {
+        return AppPreferences.loadYahooRateUpdaterUpDateTime(context);
+    }
+
+    @Override
+    public int getDecimalScale() {
+        return 6;
+    }
+
+    @Override
+    public SpinnersPositions loadSpinnersPositions(Context context) {
+        return AppPreferences.loadMainActivityYahooRateUpdaterSpinnersPositions(context);
     }
 }

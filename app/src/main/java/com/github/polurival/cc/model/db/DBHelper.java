@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
@@ -15,13 +16,8 @@ import com.github.polurival.cc.util.Toaster;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Polurival
- * on 28.05.2016.
- */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static Context appContext;
     private static DBHelper instance;
 
     private boolean isUpgrade;
@@ -58,7 +54,6 @@ public class DBHelper extends SQLiteOpenHelper {
     public static synchronized DBHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DBHelper(context);
-            appContext = context;
         }
         return instance;
     }
@@ -141,11 +136,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         boolean custom = false;
         String sourceColumnName = null;
-        if (appContext.getString(R.string.cb_rf_rate_updater_class)
+        if (AppContext.getContext().getString(R.string.cb_rf_rate_updater_class)
                 .equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_CB_RF_SOURCE;
 
-        } else if (appContext.getString(R.string.yahoo_rate_updater_class)
+        } else if (AppContext.getContext().getString(R.string.yahoo_rate_updater_class)
                 .equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_YAHOO_SOURCE;
 
@@ -187,7 +182,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);
         } catch (SQLiteException e) {
-            Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
+            Toaster.showBottomToast(AppContext.getContext().getString(R.string.db_reading_error));
         }
         return searchCursor;
     }

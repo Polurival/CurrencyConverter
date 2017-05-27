@@ -1,11 +1,19 @@
 package com.github.polurival.cc.model.updater;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.model.db.DBReaderTask;
+import com.github.polurival.cc.model.dto.SpinnersPositions;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 
+import org.joda.time.LocalDateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -16,10 +24,6 @@ import java.net.URLConnection;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-/**
- * Created by Polurival
- * on 26.03.2016.
- */
 public class CBRateUpdaterTask extends CommonRateUpdater {
 
     @Override
@@ -39,6 +43,11 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void execute() {
+        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override
@@ -91,5 +100,37 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
     @Override
     public String getDescription() {
         return appContext.getString(R.string.cb_rf);
+    }
+
+    @Override
+    public void saveSelectedCurrencySpinnersPositions(Context context, int fromSpinnerSelectedPos, int toSpinnerSelectedPos) {
+        AppPreferences.saveMainActivityCBRateUpdaterSpinnersPositions(context, fromSpinnerSelectedPos, toSpinnerSelectedPos);
+    }
+
+    @Override
+    public void saveUpDateTime(Context context, LocalDateTime upDateTime) {
+        AppPreferences.saveCBRateUpdaterUpDateTime(context, upDateTime);
+    }
+
+    @Override
+    public void readDataFromDB(DBReaderTask dbReaderTask) {
+        dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
+                DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
+                DBHelper.COLUMN_NAME_CB_RF_RATE);
+    }
+
+    @Override
+    public LocalDateTime loadUpDateTime(Context context) {
+        return AppPreferences.loadCBRateUpdaterUpDateTime(context);
+    }
+
+    @Override
+    public int getDecimalScale() {
+        return 4;
+    }
+
+    @Override
+    public SpinnersPositions loadSpinnersPositions(Context context) {
+        return AppPreferences.loadMainActivityCBRateUpdaterSpinnersPositions(context);
     }
 }

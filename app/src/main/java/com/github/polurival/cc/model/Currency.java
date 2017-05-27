@@ -1,9 +1,5 @@
 package com.github.polurival.cc.model;
 
-/**
- * Created by Polurival
- * on 10.04.2016.
- */
 public final class Currency {
     private String charCode;
     private int nominal;

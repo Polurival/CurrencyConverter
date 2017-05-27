@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,14 @@ import android.widget.Spinner;
 
 import com.github.polurival.cc.adapter.AutoCompleteTVAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Logger;
 
 /**
- * Created by Polurival
- * on 14.07.2016.
- *
  * <p>See <a href="http://www.vogella.com/tutorials/AndroidFragments/article.html">Source</a></p>
  */
 public class SearcherFragment extends Fragment {
 
-    private Context appContext;
     private Cursor searchCursor;
     private SearcherFragment.Listener listener;
 
@@ -57,8 +55,6 @@ public class SearcherFragment extends Fragment {
 
     public interface Listener {
         Cursor getCursor();
-
-        String getRateUpdaterClassName();
     }
 
     @Override
@@ -77,7 +73,6 @@ public class SearcherFragment extends Fragment {
         super.onAttach(activity);
         Logger.logD(Logger.getTag(), "onAttach");
 
-        appContext = AppContext.getContext();
         if (activity instanceof SearcherFragment.Listener) {
             listener = (SearcherFragment.Listener) activity;
         }
@@ -112,22 +107,24 @@ public class SearcherFragment extends Fragment {
     private void initCurrencySearcher() {
         Logger.logD(Logger.getTag(), "initSearchAdapter");
 
-        String rateUpdaterClassName = listener.getRateUpdaterClassName();
-
         AutoCompleteTVAdapter autoCompleteTvAdapter;
         if (listener instanceof CurrencySwitchingActivity) {
-            searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, false);
-            autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                    appContext, searchCursor, rateUpdaterClassName, false);
+            autoCompleteTvAdapter = initCursorAndAdapter(false);
         } else {
-            searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, true);
-            autoCompleteTvAdapter = new AutoCompleteTVAdapter(
-                    appContext, searchCursor, rateUpdaterClassName, true);
+            autoCompleteTvAdapter = initCursorAndAdapter(true);
         }
 
         currencySearcher.setAdapter(autoCompleteTvAdapter);
         currencySearcher.setThreshold(1);
         currencySearcher.setOnItemClickListener(searcherClickListener);
+    }
+
+    @NonNull
+    private AutoCompleteTVAdapter initCursorAndAdapter(boolean withSwitching) {
+        String rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(getActivity());
+        searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, withSwitching);
+        return new AutoCompleteTVAdapter(
+                getActivity().getApplicationContext(), searchCursor, rateUpdaterClassName, withSwitching);
     }
 
     private final AdapterView.OnItemClickListener searcherClickListener

@@ -2,10 +2,8 @@ package com.github.polurival.cc;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,11 +11,14 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Logger;
 
 public class DataSourceActivity extends Activity implements SearcherFragment.Listener {
 
-    private SharedPreferences preferences;
+    private static final int CB_SPINNER_POSITION = 0;
+    private static final int YAHOO_SPINNER_POSITION = 1;
+    private static final int CUSTOM_SPINNER_POSITION = 2;
 
     private String rateUpdaterClassName;
 
@@ -33,19 +34,17 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
 
         setContentView(R.layout.activity_data_source);
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        rateUpdaterClassName = loadRateUpdaterNameProperty();
+        rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(this);
 
         customRateFragmentLayout = (LinearLayout) findViewById(R.id.custom_rates_fragment);
         searcherFragmentLayout =
                 (LinearLayout) findViewById(R.id.searcher_custom_rates_fragment_layout);
 
         cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
-        cbAutoUpdate.setChecked(loadIsSetAutoUpdateProperty());
+        cbAutoUpdate.setChecked(AppPreferences.loadIsSetAutoUpdate(this));
 
         initSourceSpinner();
     }
@@ -53,7 +52,7 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     public void setAutoUpdate(View view) {
         Logger.logD(Logger.getTag(), "setAutoUpdate");
 
-        saveIsSetAutoUpdateProperty(((CheckBox) view).isChecked());
+        AppPreferences.saveIsSetAutoUpdate(this, cbAutoUpdate.isChecked());
     }
 
     private void initSourceSpinner() {
@@ -69,7 +68,9 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (position == 2) {
+                // TODO: 25.05.2017 дать имена магическим числам
+                // TODO: попробовать применить енум CUSTOM(2, CBRateUpdaterTask.class.getName()) и т.д.
+                if (position == CUSTOM_SPINNER_POSITION) {
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
 
                     searcherFragmentLayout.setVisibility(View.VISIBLE);
@@ -80,13 +81,14 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
                     searcherFragmentLayout.setVisibility(View.GONE);
                     cbAutoUpdate.setEnabled(true);
 
-                    if (position == 0) {
+                    if (position == CB_SPINNER_POSITION) {
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
-                    } else if (position == 1) {
+                    } else if (position == YAHOO_SPINNER_POSITION) {
                         rateUpdaterClassName = getString(R.string.yahoo_rate_updater_class);
                     }
                 }
-                saveRateUpdaterNameProperty();
+
+                AppPreferences.saveRateUpdaterClassName(DataSourceActivity.this, rateUpdaterClassName);
             }
 
             @Override
@@ -95,49 +97,14 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
         });
 
         if (rateUpdaterClassName.equals(getString(R.string.cb_rf_rate_updater_class))) {
-            sourceSpinner.setSelection(0);
+            sourceSpinner.setSelection(CB_SPINNER_POSITION);
         } else if (rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
-            sourceSpinner.setSelection(1);
+            sourceSpinner.setSelection(YAHOO_SPINNER_POSITION);
         } else if (rateUpdaterClassName.equals(getString(R.string.custom_rate_updater_class))) {
-            sourceSpinner.setSelection(2);
+            sourceSpinner.setSelection(CUSTOM_SPINNER_POSITION);
         }
 
         setNewSearcherFragment();
-    }
-
-    private boolean loadIsSetAutoUpdateProperty() {
-        Logger.logD(Logger.getTag(), "loadIsSetAutoUpdateProperty");
-
-        return preferences.getBoolean(getString(R.string.saved_is_set_auto_update),
-                Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
-    }
-
-    private void saveIsSetAutoUpdateProperty(boolean isSetAutoUpdate) {
-        Logger.logD(Logger.getTag(), "saveIsSetAutoUpdateProperty");
-
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putBoolean(getString(R.string.saved_is_set_auto_update), isSetAutoUpdate);
-
-        editor.apply();
-    }
-
-    private void saveRateUpdaterNameProperty() {
-        Logger.logD(Logger.getTag(), "saveRateUpdaterNameProperty");
-
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putString(getString(R.string.saved_rate_updater_class), rateUpdaterClassName);
-
-        editor.apply();
-        Logger.logD("Successful saving rateUpdaterClassName = " + rateUpdaterClassName);
-    }
-
-    private String loadRateUpdaterNameProperty() {
-        Logger.logD(Logger.getTag(), "loadRateUpdaterNameProperty");
-
-        return preferences.getString(getString(R.string.saved_rate_updater_class),
-                getString(R.string.saved_rate_updater_class_default));
     }
 
     private void setNewSearcherFragment() {
@@ -159,10 +126,5 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     @Override
     public Cursor getCursor() {
         return customRateFragment.getSpinnerCursor();
-    }
-
-    @Override
-    public String getRateUpdaterClassName() {
-        return rateUpdaterClassName;
     }
 }

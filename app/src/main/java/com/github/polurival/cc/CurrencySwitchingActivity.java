@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +18,7 @@ import android.widget.TextView;
 
 import com.github.polurival.cc.adapter.ListViewCursorAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
@@ -95,7 +94,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
                     initLvAllCurrencies();
 
                 } catch (SQLiteException e) {
-                    Toaster.showCenterToast(getString(R.string.db_reading_error));
+                    Toaster.showBottomToast(getString(R.string.db_reading_error));
                 }
             }
         });
@@ -220,12 +219,12 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
 
                     db.setTransactionSuccessful();
 
-                    saveDefaultPositionProperties();
+                    AppPreferences.resetSpinnersPositionsToZero(CurrencySwitchingActivity.this);
 
                     readListDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toaster.showCenterToast(getString(R.string.db_writing_error));
+                    Toaster.showBottomToast(getString(R.string.db_writing_error));
                 } finally {
                     db.endTransaction();
                 }
@@ -245,34 +244,8 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         return where;
     }
 
-    private void saveDefaultPositionProperties() {
-        Logger.logD(Logger.getTag(), "saveDefaultPositionProperties");
-
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putInt(getString(R.string.saved_cb_rf_from_spinner_pos), 0);
-        editor.putInt(getString(R.string.saved_cb_rf_to_spinner_pos), 0);
-
-        editor.putInt(getString(R.string.saved_yahoo_from_spinner_pos), 0);
-        editor.putInt(getString(R.string.saved_yahoo_to_spinner_pos), 0);
-
-        editor.putInt(getString(R.string.saved_custom_from_spinner_pos), 0);
-        editor.putInt(getString(R.string.saved_custom_to_spinner_pos), 0);
-
-        editor.putInt(getString(R.string.saved_custom_fragment_spinner_pos), 0);
-
-        editor.apply();
-    }
-
     @Override
     public Cursor getCursor() {
         return listCursor;
-    }
-
-    @Override
-    public String getRateUpdaterClassName() {
-        return rateUpdaterClassName;
     }
 }

@@ -9,13 +9,9 @@ import android.widget.Spinner;
 
 import com.github.polurival.cc.util.Logger;
 
-/**
- * Created by Polurival
- * on 10.07.2016.
- */
 public class SpinnerSelectionDialog extends DialogFragment {
 
-    private Spinner fromSpinner;
+    private Spinner fromSpinner; // TODO: 25.05.2017 посмотреть как лучше убрать отсюда сами вьюхи
     private Spinner toSpinner;
     private int searchedCharCodeSpinnerPos;
 

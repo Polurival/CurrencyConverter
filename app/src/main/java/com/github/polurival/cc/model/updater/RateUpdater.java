@@ -1,12 +1,19 @@
 package com.github.polurival.cc.model.updater;
 
-import com.github.polurival.cc.RateUpdaterListener;
+import android.content.Context;
 
-/**
- * Created by Polurival
- * on 10.04.2016.
- */
+import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.model.db.DBReaderTask;
+import com.github.polurival.cc.model.dto.SpinnersPositions;
+
+import org.joda.time.LocalDateTime;
+
 public interface RateUpdater {
+
+    /**
+     * See <a href="http://stackoverflow.com/a/24788257/5349748">Source</a>
+     */
+    void execute();
 
     /**
      * Set Activity that get data from RateUpdater
@@ -23,4 +30,17 @@ public interface RateUpdater {
      */
     String getDescription();
 
+    void saveSelectedCurrencySpinnersPositions(Context context,
+                                               int fromSpinnerSelectedPos,
+                                               int toSpinnerSelectedPos);
+
+    void saveUpDateTime(Context context, LocalDateTime upDateTime);
+
+    void readDataFromDB(DBReaderTask dbReaderTask);
+
+    LocalDateTime loadUpDateTime(Context context);
+
+    int getDecimalScale();
+
+    SpinnersPositions loadSpinnersPositions(Context context);
 }

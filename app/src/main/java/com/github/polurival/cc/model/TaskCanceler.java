@@ -9,9 +9,6 @@ import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 /**
- * Created by Polurival
- * on 15.06.2016.
- * <p/>
  * <p>See <a href="http://stackoverflow.com/questions/17315372/cancel-asynctask-after-some-time">source</a></p>
  */
 //todo удалить этот ужас
@@ -38,7 +35,7 @@ public class TaskCanceler implements Runnable {
             rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
             rateUpdaterListener.readDataFromDB();
 
-            Toaster.showCenterToast(AppContext.getContext().getString(R.string.update_error));
+            Toaster.showBottomToast(AppContext.getContext().getString(R.string.update_error));
         }
     }
 }

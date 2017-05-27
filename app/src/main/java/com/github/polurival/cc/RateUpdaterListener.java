@@ -6,10 +6,6 @@ import com.github.polurival.cc.model.updater.RateUpdater;
 
 import org.joda.time.LocalDateTime;
 
-/**
- * Created by Polurival
- * on 28.05.2016.
- */
 public interface RateUpdaterListener {
 
     /**

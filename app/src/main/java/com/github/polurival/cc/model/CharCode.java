@@ -1,9 +1,5 @@
 package com.github.polurival.cc.model;
 
-/**
- * Created by Polurival
- * on 10.04.2016.
- */
 public enum CharCode {
     AED,
     AFN,

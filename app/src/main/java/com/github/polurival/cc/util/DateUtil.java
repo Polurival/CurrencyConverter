@@ -9,10 +9,6 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Locale;
 
-/**
- * Created by Polurival
- * on 11.05.2016.
- */
 public class DateUtil {
 
     private static DateTimeFormatter formatter =
@@ -24,9 +20,8 @@ public class DateUtil {
         return LocalDateTime.now();
     }
 
-    @NonNull
-    public static LocalDate getCurrentDate() {
-        return LocalDate.now();
+    public static String getUpDateTimeStr(LocalDateTime upDateTime) {
+        return upDateTime.toString(formatter);
     }
 
     public static long getDefaultDateTimeInSeconds() {
@@ -39,18 +34,12 @@ public class DateUtil {
         return new LocalDateTime(upDateTimeInSeconds);
     }
 
-    public static String getUpDateTimeStr(LocalDateTime upDateTime) {
-        return upDateTime.toString(formatter);
-    }
-
     public static long getUpDateTimeInSeconds(LocalDateTime upDateTime) {
         return upDateTime.toDate().getTime();
     }
 
-    public static boolean compareUpDateWithCurrentDate(LocalDateTime upDateTime) {
+    public static boolean isUpDateTimeLessThenCurrentDateTime(LocalDateTime upDateTime) {
         LocalDate upDate = upDateTime.toLocalDate();
-        LocalDate currentDate = getCurrentDate();
-
-        return upDate.compareTo(currentDate) < 0;
+        return upDate.compareTo(LocalDate.now()) < 0;
     }
 }

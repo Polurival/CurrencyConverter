@@ -14,18 +14,14 @@ import com.github.polurival.cc.util.Toaster;
 
 import java.util.EnumMap;
 
-/**
- * Created by Polurival
- * on 19.06.2016.
- */
-public abstract class CommonRateUpdater
+abstract class CommonRateUpdater
         extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
 
-    protected Context appContext;
-    protected EnumMap<CharCode, Currency> currencyMap;
+    Context appContext;
+    EnumMap<CharCode, Currency> currencyMap;
     private RateUpdaterListener rateUpdaterListener;
 
-    public CommonRateUpdater() {
+    CommonRateUpdater() {
         this.appContext = AppContext.getContext();
     }
 
@@ -53,7 +49,7 @@ public abstract class CommonRateUpdater
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();
         } else {
-            Toaster.showCenterToast(appContext.getString(R.string.update_error));
+            Toaster.showBottomToast(appContext.getString(R.string.update_error));
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);

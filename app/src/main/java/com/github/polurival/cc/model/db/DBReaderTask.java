@@ -8,10 +8,6 @@ import com.github.polurival.cc.R;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
-/**
- * Created by Polurival
- * on 29.05.2016.
- */
 public class DBReaderTask extends DBTask {
 
     private Cursor cursor;
@@ -62,7 +58,7 @@ public class DBReaderTask extends DBTask {
                 rateUpdaterListener.setPropertiesLoaded(true);
             }
         } else {
-            Toaster.showCenterToast(appContext.getString(R.string.db_reading_error));
+            Toaster.showBottomToast(appContext.getString(R.string.db_reading_error));
         }
     }
 }

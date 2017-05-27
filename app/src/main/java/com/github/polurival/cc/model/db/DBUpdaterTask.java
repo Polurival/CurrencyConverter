@@ -4,11 +4,10 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
@@ -17,10 +16,6 @@ import com.github.polurival.cc.util.Toaster;
 
 import java.util.EnumMap;
 
-/**
- * Created by Polurival
- * on 29.05.2016.
- */
 public class DBUpdaterTask extends DBTask {
 
     private EnumMap<CharCode, Currency> currencyMap;
@@ -72,8 +67,6 @@ public class DBUpdaterTask extends DBTask {
         Logger.logD(Logger.getTag(), "onPostExecute " + result.toString());
 
         if (result) {
-            Toaster.showCenterToast(appContext.getString(R.string.db_update_success));
-
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
 
@@ -82,7 +75,7 @@ public class DBUpdaterTask extends DBTask {
 
             rateUpdaterListener.readDataFromDB();
         } else {
-            Toaster.showCenterToast(appContext.getString(R.string.db_writing_error));
+            Toaster.showBottomToast(appContext.getString(R.string.db_writing_error));
         }
     }
 }

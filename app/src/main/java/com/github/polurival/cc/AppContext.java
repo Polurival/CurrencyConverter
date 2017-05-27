@@ -11,14 +11,10 @@ import java.net.CookiePolicy;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
-/**
- * Created by Polurival
- * on 09.05.2016.
- */
 public class AppContext extends Application {
 
     private static Context appContext;
-    private static boolean isActivityVisible;
+    private static boolean isActivityVisible; // TODO: 25.05.2017 выпилить это после применения Loader вместо AsyncTask
 
     @Override
     public void onCreate() {

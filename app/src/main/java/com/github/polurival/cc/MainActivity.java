@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -35,10 +33,11 @@ import com.github.polurival.cc.adapter.SpinnerCursorAdapter;
 import com.github.polurival.cc.model.TaskCanceler;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
+import com.github.polurival.cc.model.dto.SpinnersPositions;
 import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.updater.RateUpdater;
-import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
@@ -59,10 +58,6 @@ import uk.co.senab.actionbarpulltorefresh.library.ActionBarPullToRefresh;
 import uk.co.senab.actionbarpulltorefresh.library.PullToRefreshLayout;
 import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
-/**
- * Created by Polurival
- * on 24.03.2016.
- */
 public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener,
         SearcherFragment.Listener {
 
@@ -71,8 +66,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private SpinnerCursorAdapter cursorAdapter;
     private Cursor fromCursor;
     private Cursor toCursor;
-
-    private SharedPreferences preferences;
 
     private ShareActionProvider shareActionProvider;
 
@@ -87,8 +80,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private PullToRefreshLayout mPullToRefreshLayout;
 
-    private EditText editFromAmount;
-    private EditText editToAmount;
+    private EditText editFromAmountEditText;
+    private EditText editToAmountEditText;
 
     private boolean isPropertiesLoaded;
     private boolean isNeedToReSwapValues;
@@ -152,7 +145,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         tvLabelForCurrentCurrencies = (TextView) findViewById(R.id.tv_label_for_current_currencies);
 
         db = DBHelper.getInstance(getApplicationContext()).getReadableDatabase();
-        preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         ignoreEditFromAmountChange = false;
         ignoreEditToAmountChange = false;
@@ -176,15 +168,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         super.onStart();
         Logger.logD(Logger.getTag(), "onStart");
 
-        loadRateUpdaterProperties();
+        loadRateUpdaterClassName();
         setRateUpdaterAndTaskCanceler();
 
         setNewSearcherFragment();
 
-        loadUpDateTimeProperty();
+        loadUpDateTime();
 
-        if (loadIsSetAutoUpdateProperty()) {
-            if (DateUtil.compareUpDateWithCurrentDate(upDateTime)) {
+        if (AppPreferences.loadIsSetAutoUpdate(this)) {
+            if (DateUtil.isUpDateTimeLessThenCurrentDateTime(upDateTime)) {
                 readDataFromDB();
                 if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
                     mPullToRefreshLayout.setRefreshing(true);
@@ -220,8 +212,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     protected void onStop() {
         Logger.logD(Logger.getTag(), "onStop");
 
-        saveProperties();
-        saveSpinnersProperties();
+        AppPreferences.saveMainActivityProperties(this,
+                editFromAmountEditText.getText().toString(),
+                editToAmountEditText.getText().toString(),
+                rateUpdater.getClass().getName());
+        rateUpdater.saveSelectedCurrencySpinnersPositions(this, fromSpinnerSelectedPos, toSpinnerSelectedPos);
 
         super.onStop();
     }
@@ -356,7 +351,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         if (rateUpdater instanceof AsyncTask) {
             if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
-                loadRateUpdaterProperties();
+                loadRateUpdaterClassName();
                 setRateUpdaterAndTaskCanceler();
             }
         }
@@ -367,7 +362,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onRefreshStarted");
 
         if (rateUpdater instanceof CustomRateUpdaterMock) {
-            Toaster.showCenterToast(getString(R.string.custom_updating_info));
+            Toaster.showBottomToast(getString(R.string.custom_updating_info));
             stopRefresh();
         } else {
             checkAsyncTaskStatusAndSetNewInstance();
@@ -384,19 +379,12 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    /**
-     * See <a href="http://stackoverflow.com/a/24788257/5349748">Source</a>
-     */
     private void updateRatesFromSource() {
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
         taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
 
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            ((CBRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            ((YahooRateUpdaterTask) rateUpdater).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
+        rateUpdater.execute();
 
         hideMenuWhileUpdating();
     }
@@ -412,22 +400,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void readDataFromDB() {
         Logger.logD(Logger.getTag(), "readDataFromDB");
 
-        DBReaderTask dbReaderTask = new DBReaderTask();
+        final DBReaderTask dbReaderTask = new DBReaderTask();
         dbReaderTask.setRateUpdaterListener(this);
 
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
-                    DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
-                    DBHelper.COLUMN_NAME_CB_RF_RATE);
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            dbReaderTask.execute(DBHelper.COLUMN_NAME_YAHOO_SOURCE,
-                    DBHelper.COLUMN_NAME_YAHOO_NOMINAL,
-                    DBHelper.COLUMN_NAME_YAHOO_RATE);
-        } else if (rateUpdater instanceof CustomRateUpdaterMock) {
-            dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
-                    DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
-                    DBHelper.COLUMN_NAME_CUSTOM_RATE);
-        }
+        rateUpdater.readDataFromDB(dbReaderTask);
     }
 
     @Override
@@ -448,9 +424,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                     fromSpinnerSelectedPos = position;
 
-                    editFromAmount.setText(editFromAmount.getText());
+                    editFromAmountEditText.setText(editFromAmountEditText.getText());
 
-                    saveSpinnersProperties();
+                    rateUpdater.saveSelectedCurrencySpinnersPositions(MainActivity.this, fromSpinnerSelectedPos, toSpinnerSelectedPos);
 
                     tvLabelForCurrentCurrencies.setText(composeTextForLabel());
                     syncShareActionData();
@@ -471,9 +447,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                     toSpinnerSelectedPos = position;
 
-                    editFromAmount.setText(editFromAmount.getText());
+                    editFromAmountEditText.setText(editFromAmountEditText.getText());
 
-                    saveSpinnersProperties();
+                    rateUpdater.saveSelectedCurrencySpinnersPositions(MainActivity.this, fromSpinnerSelectedPos, toSpinnerSelectedPos);
 
                     tvLabelForCurrentCurrencies.setText(composeTextForLabel());
                     syncShareActionData();
@@ -492,7 +468,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         toSpinner.setAdapter(cursorAdapter);
 
         if (fromSpinner.getCount() == 0) {
-            Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
+            Toaster.showBottomToast(getString(R.string.all_currencies_disabled));
         }
     }
 
@@ -507,10 +483,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         span.setSpan(
                 new RelativeSizeSpan(0.8f), 0, hint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-        editFromAmount = (EditText) findViewById(R.id.edit_from_amount);
-        editFromAmount.requestFocus();
-        editFromAmount.setHint(span);
-        editFromAmount.addTextChangedListener(new TextWatcher() {
+        editFromAmountEditText = (EditText) findViewById(R.id.edit_from_amount);
+        editFromAmountEditText.requestFocus();
+        editFromAmountEditText.setHint(span);
+        editFromAmountEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -520,7 +496,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if (s.length() != 0 && isPropertiesLoaded) {
                     if (!ignoreEditFromAmountChange) {
                         ignoreEditToAmountChange = true;
-                        convertAndSetResult(editFromAmount);
+                        convertAndSetResult(editFromAmountEditText);
                     }
                 }
             }
@@ -534,27 +510,27 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                 String s = editable.toString();
                 if ("".equals(s)) {
-                    editToAmount.getText().clear();
+                    editToAmountEditText.getText().clear();
                 }
 
                 syncShareActionData();
 
-                if (null == editFromAmount) return;
+                if (null == editFromAmountEditText) return;
                 if (s.isEmpty()) return;
 
                 String[] sParts = getPartsOfEditAmountText(s);
 
-                editFromAmount.removeTextChangedListener(this);
+                editFromAmountEditText.removeTextChangedListener(this);
 
-                formatAndSetEditAmountText(editFromAmount, s, sParts);
+                formatAndSetEditAmountText(editFromAmountEditText, s, sParts);
 
-                editFromAmount.addTextChangedListener(this);
+                editFromAmountEditText.addTextChangedListener(this);
             }
         });
 
-        editToAmount = (EditText) findViewById(R.id.edit_to_amount);
-        editToAmount.setHint(span);
-        editToAmount.addTextChangedListener(new TextWatcher() {
+        editToAmountEditText = (EditText) findViewById(R.id.edit_to_amount);
+        editToAmountEditText.setHint(span);
+        editToAmountEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -564,7 +540,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 if (s.length() != 0 && isPropertiesLoaded) {
                     if (!ignoreEditToAmountChange) {
                         ignoreEditFromAmountChange = true;
-                        convertAndSetResult(editToAmount);
+                        convertAndSetResult(editToAmountEditText);
                     }
                 }
             }
@@ -575,21 +551,21 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
                 String s = editable.toString();
                 if ("".equals(s)) {
-                    editFromAmount.getText().clear();
+                    editFromAmountEditText.getText().clear();
                 }
 
                 syncShareActionData();
 
-                if (null == editToAmount) return;
+                if (null == editToAmountEditText) return;
                 if (s.isEmpty()) return;
 
                 String[] sParts = getPartsOfEditAmountText(s);
 
-                editToAmount.removeTextChangedListener(this);
+                editToAmountEditText.removeTextChangedListener(this);
 
-                formatAndSetEditAmountText(editToAmount, s, sParts);
+                formatAndSetEditAmountText(editToAmountEditText, s, sParts);
 
-                editToAmount.addTextChangedListener(this);
+                editToAmountEditText.addTextChangedListener(this);
             }
         });
     }
@@ -614,7 +590,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         editText.setText(formatted);
         if (formatted.length() > 19) {
             editText.setSelection(formatted.length() - 1);
-            Toaster.showCenterToast(getString(R.string.number_limit));
+            Toaster.showBottomToast(getString(R.string.number_limit));
         } else {
             editText.setSelection(formatted.length());
         }
@@ -662,7 +638,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "convertAndSetResult " + v.toString());
 
         if (cancelConvertingIfNothingToConvert()) {
-            Toaster.showCenterToast(getString(R.string.all_currencies_disabled));
+            Toaster.showBottomToast(getString(R.string.all_currencies_disabled));
             return;
         }
 
@@ -674,20 +650,20 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         String resultStr = formatBigDecimal(result, 2);
 
         if (v.getId() == R.id.edit_from_amount) {
-            if ("".equals(editFromAmount.getText().toString())) {
-                editToAmount.setText("");
+            if ("".equals(editFromAmountEditText.getText().toString())) {
+                editToAmountEditText.setText("");
             } else {
-                editToAmount.setText(resultStr);
+                editToAmountEditText.setText(resultStr);
             }
         } else if (v.getId() == R.id.edit_to_amount) {
-            if ("".equals(editToAmount.getText().toString())) {
-                editFromAmount.setText("");
+            if ("".equals(editToAmountEditText.getText().toString())) {
+                editFromAmountEditText.setText("");
             } else {
-                editFromAmount.setText(resultStr);
+                editFromAmountEditText.setText(resultStr);
             }
         }
         if (resultStr.length() > 19) {
-            Toaster.showCenterToast(getString(R.string.number_limit));
+            Toaster.showBottomToast(getString(R.string.number_limit));
         }
     }
 
@@ -700,13 +676,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         checkNeedToSwapValues(v);
 
         BigDecimal result = calculateResult(BigDecimal.ONE);
-
-        int scale;
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            scale = 4;
-        } else {
-            scale = 6;
-        }
+        int scale = rateUpdater.getDecimalScale();
 
         return formatBigDecimal(result, scale);
     }
@@ -776,9 +746,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         String editText;
         if (v.getId() == R.id.edit_from_amount) {
-            editText = editFromAmount.getText().toString().replaceAll(" ", "");
+            editText = editFromAmountEditText.getText().toString().replaceAll(" ", "");
         } else {
-            editText = editToAmount.getText().toString().replaceAll(" ", "");
+            editText = editToAmountEditText.getText().toString().replaceAll(" ", "");
         }
         if (TextUtils.isEmpty(editText)) {
             return BigDecimal.ZERO;
@@ -816,137 +786,43 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         return result;
     }
 
-    private void saveProperties() {
-        Logger.logD(Logger.getTag(), "saveProperties");
-
-        SharedPreferences.Editor editor = preferences.edit();
-
-        editor.putString(getString(R.string.saved_from_edit_amount_text),
-                editFromAmount.getText().toString());
-        editor.putString(getString(R.string.saved_to_edit_amount_text),
-                editToAmount.getText().toString());
-
-        editor.putString(getString(R.string.saved_rate_updater_class),
-                rateUpdater.getClass().getName());
-
-        editor.apply();
-    }
-
-    private void saveSpinnersProperties() {
-        Logger.logD(Logger.getTag(), "saveSpinnersProperties");
-
-        SharedPreferences.Editor editor = preferences.edit();
-
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            editor.putInt(getString(R.string.saved_cb_rf_from_spinner_pos),
-                    fromSpinnerSelectedPos);
-            editor.putInt(getString(R.string.saved_cb_rf_to_spinner_pos),
-                    toSpinnerSelectedPos);
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            editor.putInt(getString(R.string.saved_yahoo_from_spinner_pos),
-                    fromSpinnerSelectedPos);
-            editor.putInt(getString(R.string.saved_yahoo_to_spinner_pos),
-                    toSpinnerSelectedPos);
-        } else {
-            editor.putInt(getString(R.string.saved_custom_from_spinner_pos),
-                    fromSpinnerSelectedPos);
-            editor.putInt(getString(R.string.saved_custom_to_spinner_pos),
-                    toSpinnerSelectedPos);
-        }
-
-        editor.apply();
-    }
-
     @Override
     public void saveUpDateTimeProperty() {
         Logger.logD(Logger.getTag(), "saveUpDateTimeProperty");
 
-        SharedPreferences.Editor editor = preferences.edit();
-
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            editor.putLong(getString(R.string.saved_cb_rf_up_date_time),
-                    DateUtil.getUpDateTimeInSeconds(upDateTime));
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            editor.putLong(getString(R.string.saved_yahoo_up_date_time),
-                    DateUtil.getUpDateTimeInSeconds(upDateTime));
-        }
-
-        editor.apply();
-    }
-
-    private boolean loadIsSetAutoUpdateProperty() {
-        Logger.logD(Logger.getTag(), "loadIsSetAutoUpdateProperty");
-
-        return preferences.getBoolean(getString(R.string.saved_is_set_auto_update),
-                Boolean.valueOf(getString(R.string.saved_is_set_auto_update_default)));
+        rateUpdater.saveUpDateTime(this, upDateTime);
     }
 
     private void loadEditAmountProperties() {
         Logger.logD(Logger.getTag(), "loadEditAmountProperties");
 
-        String editFromAmountText =
-                preferences.getString(getString(R.string.saved_from_edit_amount_text),
-                        getString(R.string.saved_edit_amount_text_default));
-        editFromAmount.setText(editFromAmountText);
-        String editToAmountText =
-                preferences.getString(getString(R.string.saved_to_edit_amount_text),
-                        getString(R.string.saved_edit_amount_text_default));
-        editToAmount.setText(editToAmountText);
+        final String editFromAmount = AppPreferences.loadMainActivityEditFromAmount(this);
+        editFromAmountEditText.setText(editFromAmount);
+
+        final String editToAmount = AppPreferences.loadMainActivityEditToAmount(this);
+        editToAmountEditText.setText(editToAmount);
     }
 
-    private void loadUpDateTimeProperty() {
-        Logger.logD(Logger.getTag(), "loadUpDateTimeProperty");
+    private void loadUpDateTime() {
+        Logger.logD(Logger.getTag(), "loadUpDateTime");
 
-        String savedUpDateTime;
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            savedUpDateTime = getString(R.string.saved_cb_rf_up_date_time);
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            savedUpDateTime = getString(R.string.saved_yahoo_up_date_time);
-        } else {
-            savedUpDateTime = getString(R.string.saved_custom_up_date_time);
-        }
-        long upDateTimeInSeconds =
-                preferences.getLong(savedUpDateTime, DateUtil.getDefaultDateTimeInSeconds());
-        upDateTime = DateUtil.getUpDateTime(upDateTimeInSeconds);
+        upDateTime = rateUpdater.loadUpDateTime(this);
     }
 
     @Override
     public void loadSpinnersProperties() {
         Logger.logD(Logger.getTag(), "loadSpinnersProperties");
 
-        if (rateUpdater instanceof CBRateUpdaterTask) {
-            fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_cb_rf_from_spinner_pos),
-                    Constants.DEFAULT_CBRF_USD_POS);
-            toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_cb_rf_to_spinner_pos),
-                    Constants.DEFAULT_CBRF_RUB_POS);
-        } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-            fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_yahoo_from_spinner_pos),
-                    Constants.DEFAULT_YAHOO_USD_POS);
-            toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_yahoo_to_spinner_pos),
-                    Constants.DEFAULT_YAHOO_RUB_POS);
-        } else {
-            fromSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_custom_from_spinner_pos),
-                    Constants.DEFAULT_CUSTOM_USD_POS);
-            toSpinnerSelectedPos = preferences.getInt(getString(
-                    R.string.saved_custom_to_spinner_pos),
-                    Constants.DEFAULT_CUSTOM_RUB_POS);
-        }
+        final SpinnersPositions spinnersPositions = rateUpdater.loadSpinnersPositions(this);
 
-        fromSpinner.setSelection(fromSpinnerSelectedPos);
-        toSpinner.setSelection(toSpinnerSelectedPos);
+        fromSpinner.setSelection(spinnersPositions.getFromSpinnerSelectedPos());
+        toSpinner.setSelection(spinnersPositions.getToSpinnerSelectedPos());
     }
 
-    private void loadRateUpdaterProperties() {
-        Logger.logD(Logger.getTag(), "loadRateUpdaterProperties");
+    private void loadRateUpdaterClassName() {
+        Logger.logD(Logger.getTag(), "loadRateUpdaterClassName");
 
-        rateUpdaterClassName =
-                preferences.getString(getString(R.string.saved_rate_updater_class),
-                        getString(R.string.saved_rate_updater_class_default));
+        rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(this);
     }
 
     private void setRateUpdaterAndTaskCanceler() {
@@ -989,14 +865,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private String composeTextForShare() {
         Logger.logD(Logger.getTag(), "composeTextForShare");
 
-        String fromCurrencyValue = editFromAmount.getText().toString();
+        String fromCurrencyValue = editFromAmountEditText.getText().toString();
         String toCurrencyValue;
 
         if (fromCurrencyValue.length() == 0) {
             fromCurrencyValue = "1";
-            toCurrencyValue = convertForLabel(editFromAmount);
+            toCurrencyValue = convertForLabel(editFromAmountEditText);
         } else {
-            toCurrencyValue = editToAmount.getText().toString();
+            toCurrencyValue = editToAmountEditText.getText().toString();
         }
 
         return getFormattedText(fromCurrencyValue, toCurrencyValue);
@@ -1006,7 +882,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "composeTextForLabel");
 
         String fromCurrencyValue = "1";
-        String toCurrencyValue = convertForLabel(editFromAmount);
+        String toCurrencyValue = convertForLabel(editFromAmountEditText);
 
         return getFormattedText(fromCurrencyValue, toCurrencyValue);
     }
@@ -1035,10 +911,4 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public Cursor getCursor() {
         return cursor;
     }
-
-    @Override
-    public String getRateUpdaterClassName() {
-        return rateUpdaterClassName;
-    }
-
 }
