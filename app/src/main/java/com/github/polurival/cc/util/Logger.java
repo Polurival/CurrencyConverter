@@ -6,15 +6,9 @@ import com.github.polurival.cc.BuildConfig;
 
 public class Logger {
 
-    public static void logD(String log) {
+    public static void logD(String tag, String log) {
         if (BuildConfig.DEBUG) {
-            Log.d(Constants.LOG, log);
-        }
-    }
-
-    public static void logD(final String TAG, String log) {
-        if (BuildConfig.DEBUG) {
-            Log.d(TAG, log);
+            Log.d(tag, log == null ? "" : log);
         }
     }
 

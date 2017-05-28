@@ -6,7 +6,7 @@ import com.github.polurival.cc.AppContext;
 
 public class Toaster {
 
-    public static void showBottomToast(String text) {
+    public static void showToast(String text) {
         Toast toast = Toast.makeText(AppContext.getContext(),
                 text,
                 Toast.LENGTH_SHORT);

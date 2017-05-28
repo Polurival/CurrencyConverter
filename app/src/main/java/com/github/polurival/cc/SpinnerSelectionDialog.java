@@ -39,21 +39,20 @@ public class SpinnerSelectionDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Logger.logD(Logger.getTag(), "onCreateDialog");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.title_list_selection_dialog);
-
-        builder.setNeutralButton(R.string.convert_from, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                fromSpinner.setSelection(searchedCharCodeSpinnerPos);
-            }
-        });
-        builder.setPositiveButton(R.string.convert_to, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                toSpinner.setSelection(searchedCharCodeSpinnerPos);
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.title_list_selection_dialog)
+                .setNeutralButton(R.string.convert_from, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        fromSpinner.setSelection(searchedCharCodeSpinnerPos);
+                    }
+                })
+                .setPositiveButton(R.string.convert_to, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        toSpinner.setSelection(searchedCharCodeSpinnerPos);
+                    }
+                });
 
         return builder.create();
     }

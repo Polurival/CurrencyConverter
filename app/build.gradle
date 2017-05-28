@@ -30,26 +30,18 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            useProguard true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
     }
     dependencies {
-
-        repositories {
-            mavenCentral()
-        }
-
-        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
-            // Necessary if your app targets Marshmallow (since Espresso
-            // hasn't moved to Marshmallow yet)
+        compile fileTree(dir: 'libs', include: ['*.jar'])
+        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
             exclude group: 'com.android.support', module: 'support-annotations'
         }
-        androidTestCompile('com.android.support.test:runner:0.3') {
-            // Necessary if your app targets Marshmallow (since the test runner
-            // hasn't moved to Marshmallow yet)
-            exclude group: 'com.android.support', module: 'support-annotations'
-        }
+        compile 'com.android.support:appcompat-v7:25.3.1'
+        testCompile 'junit:junit:4.12'
 
         //https://github.com/chrisjenx/Calligraphy#inject-into-context
         compile 'uk.co.chrisjenx:calligraphy:2.2.0'
@@ -59,12 +51,5 @@ android {
 
         //https://github.com/chrisbanes/ActionBar-PullToRefresh/wiki/QuickStart-Stock
         compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
-
-        //https://commons.apache.org/proper/commons-io/
-        compile "commons-io:commons-io:+" //todo выпилить
-    }
-    packagingOptions {
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE.txt'
     }
 }

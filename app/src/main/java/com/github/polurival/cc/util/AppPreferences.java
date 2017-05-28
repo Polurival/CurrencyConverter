@@ -11,6 +11,13 @@ import org.joda.time.LocalDateTime;
 
 public class AppPreferences {
 
+    private static final int DEFAULT_CBRF_USD_POS = 30;
+    private static final int DEFAULT_CBRF_RUB_POS = 23;
+    private static final int DEFAULT_YAHOO_USD_POS = 144;
+    private static final int DEFAULT_YAHOO_RUB_POS = 117;
+    private static final int DEFAULT_CUSTOM_USD_POS = 144;
+    private static final int DEFAULT_CUSTOM_RUB_POS = 117;
+
     //region ===================== MainActivityPreferences =====================
 
     public static void saveMainActivityProperties(Context context,
@@ -165,10 +172,10 @@ public class AppPreferences {
 
         int fromSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_cb_rf_from_spinner_pos),
-                Constants.DEFAULT_CBRF_USD_POS);
+                DEFAULT_CBRF_USD_POS);
         int toSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_cb_rf_to_spinner_pos),
-                Constants.DEFAULT_CBRF_RUB_POS);
+                DEFAULT_CBRF_RUB_POS);
 
         return new SpinnersPositions(fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }
@@ -180,10 +187,10 @@ public class AppPreferences {
 
         int fromSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_yahoo_from_spinner_pos),
-                Constants.DEFAULT_YAHOO_USD_POS);
+                DEFAULT_YAHOO_USD_POS);
         int toSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_yahoo_to_spinner_pos),
-                Constants.DEFAULT_YAHOO_RUB_POS);
+                DEFAULT_YAHOO_RUB_POS);
 
         return new SpinnersPositions(fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }
@@ -195,10 +202,10 @@ public class AppPreferences {
 
         int fromSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_custom_from_spinner_pos),
-                Constants.DEFAULT_CUSTOM_USD_POS);
+                DEFAULT_CUSTOM_USD_POS);
         int toSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_custom_to_spinner_pos),
-                Constants.DEFAULT_CUSTOM_RUB_POS);
+                DEFAULT_CUSTOM_RUB_POS);
 
         return new SpinnersPositions(fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }

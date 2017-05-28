@@ -38,9 +38,10 @@ import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.CustomRateUpdaterMock;
 import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.util.AppPreferences;
-import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.DateUtil;
+import com.github.polurival.cc.util.InternetChecker;
 import com.github.polurival.cc.util.Logger;
+import com.github.polurival.cc.util.SimpleTextWatcher;
 import com.github.polurival.cc.util.Toaster;
 
 import org.joda.time.LocalDateTime;
@@ -60,6 +61,13 @@ import uk.co.senab.actionbarpulltorefresh.library.listeners.OnRefreshListener;
 
 public class MainActivity extends Activity implements RateUpdaterListener, OnRefreshListener,
         SearcherFragment.Listener {
+
+    private static final int DEFAULT_SCALE = 10;
+
+    /**
+     * Hide menu while updating from source
+     */
+    private static final String MENU_HIDE = "menuHide";
 
     private SQLiteDatabase db;
     private Cursor cursor;
@@ -91,14 +99,14 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private Spinner fromSpinner;
     private int fromSpinnerSelectedPos;
     private String currencyFromCharCode;
-    private double currencyFromNominal;
-    private double currencyFromToXRate;
+    private BigDecimal currencyFromNominal;
+    private BigDecimal currencyFromToXRate;
 
     private Spinner toSpinner;
     private int toSpinnerSelectedPos;
     private String currencyToCharCode;
-    private double currencyToNominal;
-    private double currencyToToXRate;
+    private BigDecimal currencyToNominal;
+    private BigDecimal currencyToToXRate;
 
     private TextView tvLabelForCurrentCurrencies;
     private TextView tvDateTime;
@@ -178,9 +186,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         if (AppPreferences.loadIsSetAutoUpdate(this)) {
             if (DateUtil.isUpDateTimeLessThenCurrentDateTime(upDateTime)) {
                 readDataFromDB();
-                if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
-                    mPullToRefreshLayout.setRefreshing(true);
-                }
                 updateRatesFromSource();
             }
         }
@@ -259,7 +264,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (Constants.MENU_HIDE.equals(menuState) &&
+        if (MENU_HIDE.equals(menuState) &&
                 !(rateUpdater instanceof CustomRateUpdaterMock)) {
             for (int i = 0; i < menu.size(); i++) {
                 menu.getItem(i).setVisible(false);
@@ -286,7 +291,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     m.setAccessible(true);
                     m.invoke(menu, true);
                 } catch (Exception e) {
-                    Logger.logD("onMenuOpened error");
+                    Logger.logD(Logger.getTag(), "onMenuOpened error");
                     throw new RuntimeException(e);
                 }
             }
@@ -311,8 +316,6 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 cancelAsyncTask();
 
                 Intent currencySwitchingIntent = new Intent(this, CurrencySwitchingActivity.class);
-                currencySwitchingIntent.putExtra(
-                        Constants.RATE_UPDATER_CLASS_NAME, rateUpdater.getClass().getName());
                 startActivity(currencySwitchingIntent);
                 return true;
 
@@ -349,11 +352,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void checkAsyncTaskStatusAndSetNewInstance() {
         Logger.logD(Logger.getTag(), "checkAsyncTaskStatusAndSetNewInstance()");
 
-        if (rateUpdater instanceof AsyncTask) {
-            if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
-                loadRateUpdaterClassName();
-                setRateUpdaterAndTaskCanceler();
-            }
+        if (((AsyncTask) rateUpdater).getStatus() != AsyncTask.Status.PENDING) {
+            loadRateUpdaterClassName();
+            setRateUpdaterAndTaskCanceler();
         }
     }
 
@@ -361,12 +362,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void onRefreshStarted(View view) {
         Logger.logD(Logger.getTag(), "onRefreshStarted");
 
+        checkAsyncTaskStatusAndSetNewInstance();
+        updateRatesFromSource();
         if (rateUpdater instanceof CustomRateUpdaterMock) {
-            Toaster.showBottomToast(getString(R.string.custom_updating_info));
-            stopRefresh();
-        } else {
-            checkAsyncTaskStatusAndSetNewInstance();
-            updateRatesFromSource();
+            Toaster.showToast(getString(R.string.custom_updating_info));
         }
     }
 
@@ -382,17 +381,23 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void updateRatesFromSource() {
         Logger.logD(Logger.getTag(), "updateRatesFromSource");
 
-        taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
-
-        rateUpdater.execute();
-
-        hideMenuWhileUpdating();
+        if (InternetChecker.isOnline(getApplicationContext())) {
+            mPullToRefreshLayout.setRefreshing(true);
+            taskCancelerHandler.postDelayed(taskCanceler, 15 * 1000);
+            rateUpdater.execute();
+            hideMenuWhileUpdating();
+        } else {
+            stopRefresh();
+            if (!(rateUpdater instanceof CustomRateUpdaterMock)) {
+                Toaster.showToast(getString(R.string.unavailable_network));
+            }
+        }
     }
 
     private void hideMenuWhileUpdating() {
         Logger.logD(Logger.getTag(), "hideMenuWhileUpdating");
 
-        menuState = Constants.MENU_HIDE;
+        menuState = MENU_HIDE;
         invalidateOptionsMenu();
     }
 
@@ -419,8 +424,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     fromCursor = (Cursor) parent.getItemAtPosition(position);
 
                     currencyFromCharCode = fromCursor.getString(1);
-                    currencyFromNominal = (double) fromCursor.getInt(2);
-                    currencyFromToXRate = fromCursor.getDouble(3);
+                    currencyFromNominal = BigDecimal.valueOf(fromCursor.getInt(2));
+                    currencyFromToXRate = BigDecimal.valueOf(fromCursor.getDouble(3));
 
                     fromSpinnerSelectedPos = position;
 
@@ -442,8 +447,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                     toCursor = (Cursor) parent.getItemAtPosition(position);
 
                     currencyToCharCode = toCursor.getString(1);
-                    currencyToNominal = (double) toCursor.getInt(2);
-                    currencyToToXRate = toCursor.getDouble(3);
+                    currencyToNominal = BigDecimal.valueOf(toCursor.getInt(2));
+                    currencyToToXRate = BigDecimal.valueOf(toCursor.getDouble(3));
 
                     toSpinnerSelectedPos = position;
 
@@ -468,24 +473,18 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         toSpinner.setAdapter(cursorAdapter);
 
         if (fromSpinner.getCount() == 0) {
-            Toaster.showBottomToast(getString(R.string.all_currencies_disabled));
+            Toaster.showToast(getString(R.string.all_currencies_disabled));
         }
     }
 
     private void initEditAmount() {
         Logger.logD(Logger.getTag(), "initEditAmount");
 
-        /**
-         See <a href="http://stackoverflow.com/a/19925406/5349748">Source</a>
-         */
-        String hint = getString(R.string.enter_amount_hint);
-        SpannableString span = new SpannableString(hint);
-        span.setSpan(
-                new RelativeSizeSpan(0.8f), 0, hint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString enterAmountHint = getScaledSpannableString();
 
         editFromAmountEditText = (EditText) findViewById(R.id.edit_from_amount);
         editFromAmountEditText.requestFocus();
-        editFromAmountEditText.setHint(span);
+        editFromAmountEditText.setHint(enterAmountHint);
         editFromAmountEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -529,7 +528,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         });
 
         editToAmountEditText = (EditText) findViewById(R.id.edit_to_amount);
-        editToAmountEditText.setHint(span);
+        editToAmountEditText.setHint(enterAmountHint);
         editToAmountEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -570,6 +569,18 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         });
     }
 
+    /**
+     * See <a href="http://stackoverflow.com/a/19925406/5349748">Source</a>
+     */
+    @NonNull
+    private SpannableString getScaledSpannableString() {
+        String hint = getString(R.string.enter_amount_hint);
+        SpannableString span = new SpannableString(hint);
+        span.setSpan(
+                new RelativeSizeSpan(0.8f), 0, hint.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return span;
+    }
+
     private String[] getPartsOfEditAmountText(String s) {
         String[] sParts = null;
         if (s.contains(".")) {
@@ -590,7 +601,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         editText.setText(formatted);
         if (formatted.length() > 19) {
             editText.setSelection(formatted.length() - 1);
-            Toaster.showBottomToast(getString(R.string.number_limit));
+            Toaster.showToast(getString(R.string.number_limit));
         } else {
             editText.setSelection(formatted.length());
         }
@@ -608,15 +619,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         if (tvDateTime == null) {
             tvDateTime = (TextView) findViewById(R.id.tv_date_time);
-            tvDateTime.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
+            tvDateTime.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                     fromSpinner.setSelection(fromSpinner.getSelectedItemPosition());
@@ -634,28 +637,28 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 rateUpdater.getDescription(), DateUtil.getUpDateTimeStr(upDateTime)));
     }
 
-    private void convertAndSetResult(View v) {
-        Logger.logD(Logger.getTag(), "convertAndSetResult " + v.toString());
+    private void convertAndSetResult(EditText amountEditText) {
+        Logger.logD(Logger.getTag(), "convertAndSetResult " + amountEditText.toString());
 
         if (cancelConvertingIfNothingToConvert()) {
-            Toaster.showBottomToast(getString(R.string.all_currencies_disabled));
+            Toaster.showToast(getString(R.string.all_currencies_disabled));
             return;
         }
 
-        checkNeedToSwapValues(v);
+        checkNeedToSwapValues(amountEditText);
 
-        BigDecimal amount = getEnteredAmountOfMoney(v);
+        BigDecimal amount = getEnteredAmountOfMoney(amountEditText.getText().toString());
         BigDecimal result = calculateResult(amount);
 
         String resultStr = formatBigDecimal(result, 2);
 
-        if (v.getId() == R.id.edit_from_amount) {
+        if (amountEditText.getId() == R.id.edit_from_amount) {
             if ("".equals(editFromAmountEditText.getText().toString())) {
                 editToAmountEditText.setText("");
             } else {
                 editToAmountEditText.setText(resultStr);
             }
-        } else if (v.getId() == R.id.edit_to_amount) {
+        } else if (amountEditText.getId() == R.id.edit_to_amount) {
             if ("".equals(editToAmountEditText.getText().toString())) {
                 editFromAmountEditText.setText("");
             } else {
@@ -663,17 +666,17 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             }
         }
         if (resultStr.length() > 19) {
-            Toaster.showBottomToast(getString(R.string.number_limit));
+            Toaster.showToast(getString(R.string.number_limit));
         }
     }
 
     @Nullable
-    private String convertForLabel(View v) {
+    private String convertForLabel(EditText editTextAmount) {
         Logger.logD(Logger.getTag(), "convertForLabel");
 
         if (cancelConvertingIfNothingToConvert()) return null;
 
-        checkNeedToSwapValues(v);
+        checkNeedToSwapValues(editTextAmount);
 
         BigDecimal result = calculateResult(BigDecimal.ONE);
         int scale = rateUpdater.getDecimalScale();
@@ -682,7 +685,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     }
 
     private boolean cancelConvertingIfNothingToConvert() {
-        return null == fromSpinner.getSelectedItem() || null == toSpinner.getSelectedItem();
+        return fromSpinner.getSelectedItem() == null || toSpinner.getSelectedItem() == null;
     }
 
     /**
@@ -702,13 +705,13 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         return scaledResult.toPlainString();
     }
 
-    private void checkNeedToSwapValues(View v) {
-        if (isNeedToReSwapValues && (v.getId() != R.id.edit_to_amount)) {
+    private void checkNeedToSwapValues(EditText amountEditText) {
+        if (isNeedToReSwapValues && (amountEditText.getId() != R.id.edit_to_amount)) {
             reSwapEditAmountsValues();
             isNeedToReSwapValues = false;
         }
 
-        if (!isNeedToReSwapValues && (v.getId() == R.id.edit_to_amount)) {
+        if (!isNeedToReSwapValues && (amountEditText.getId() == R.id.edit_to_amount)) {
             reSwapEditAmountsValues();
             isNeedToReSwapValues = true;
         }
@@ -717,13 +720,15 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private void reSwapEditAmountsValues() {
         Logger.logD(Logger.getTag(), "reSwapEditAmountsValues");
 
-        double tempValFrom = currencyFromToXRate;
-        currencyFromToXRate = currencyToToXRate;
-        currencyToToXRate = tempValFrom;
+        //rate
+        currencyFromToXRate = currencyFromToXRate.add(currencyToToXRate);
+        currencyToToXRate = currencyFromToXRate.subtract(currencyToToXRate);
+        currencyFromToXRate = currencyFromToXRate.subtract(currencyToToXRate);
 
-        double tempNomFrom = currencyFromNominal;
-        currencyFromNominal = currencyToNominal;
-        currencyToNominal = tempNomFrom;
+        //nominal
+        currencyFromNominal = currencyFromNominal.add(currencyToNominal);
+        currencyToNominal = currencyFromNominal.subtract(currencyToNominal);
+        currencyFromNominal = currencyFromNominal.subtract(currencyToNominal);
     }
 
     public void swapFromTo(View v) {
@@ -741,45 +746,37 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    private BigDecimal getEnteredAmountOfMoney(View v) {
-        Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney " + v.toString());
+    private BigDecimal getEnteredAmountOfMoney(String amountOfMoneyWithGaps) {
+        Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney = " + amountOfMoneyWithGaps);
 
-        String editText;
-        if (v.getId() == R.id.edit_from_amount) {
-            editText = editFromAmountEditText.getText().toString().replaceAll(" ", "");
-        } else {
-            editText = editToAmountEditText.getText().toString().replaceAll(" ", "");
-        }
-        if (TextUtils.isEmpty(editText)) {
+        if (TextUtils.isEmpty(amountOfMoneyWithGaps)) {
             return BigDecimal.ZERO;
         }
-        return new BigDecimal(editText);
+        String amountOfMoney = amountOfMoneyWithGaps.replaceAll(" ", "");
+        return new BigDecimal(amountOfMoney);
     }
 
     private BigDecimal calculateResult(BigDecimal enteredAmountOfMoney) {
-        if (enteredAmountOfMoney.equals(BigDecimal.ZERO)
-                || currencyFromToXRate == 0 || currencyToToXRate == 0
-                || currencyToNominal == 0 || currencyFromNominal == 0) {
+        if (enteredAmountOfMoney == null || enteredAmountOfMoney.equals(BigDecimal.ZERO) ||
+                currencyFromToXRate == null || currencyFromToXRate.equals(BigDecimal.ZERO) ||
+                currencyToToXRate == null || currencyToToXRate.equals(BigDecimal.ZERO) ||
+                currencyToNominal == null || currencyToNominal.equals(BigDecimal.ZERO) ||
+                currencyFromNominal == null || currencyFromNominal.equals(BigDecimal.ZERO)) {
             return BigDecimal.ZERO;
         }
 
-        BigDecimal fromXRate = BigDecimal.valueOf(currencyFromToXRate);
-        BigDecimal toXRate = BigDecimal.valueOf(currencyToToXRate);
-        BigDecimal toNominal = BigDecimal.valueOf(currencyToNominal);
-        BigDecimal fromNominal = BigDecimal.valueOf(currencyFromNominal);
         BigDecimal result;
-
         if (rateUpdater instanceof CBRateUpdaterTask) {
-            result = fromXRate
-                    .divide(toXRate, 10, RoundingMode.HALF_EVEN)
-                    .multiply(toNominal)
-                    .divide(fromNominal, 10, RoundingMode.HALF_EVEN)
+            result = currencyFromToXRate
+                    .divide(currencyToToXRate, DEFAULT_SCALE, RoundingMode.HALF_EVEN)
+                    .multiply(currencyToNominal)
+                    .divide(currencyFromNominal, DEFAULT_SCALE, RoundingMode.HALF_EVEN)
                     .multiply(enteredAmountOfMoney);
         } else {
-            result = toXRate
-                    .divide(fromXRate, 10, RoundingMode.HALF_EVEN)
-                    .multiply(fromNominal)
-                    .divide(toNominal, 10, RoundingMode.HALF_EVEN)
+            result = currencyToToXRate
+                    .divide(currencyFromToXRate, DEFAULT_SCALE, RoundingMode.HALF_EVEN)
+                    .multiply(currencyFromNominal)
+                    .divide(currencyToNominal, DEFAULT_SCALE, RoundingMode.HALF_EVEN)
                     .multiply(enteredAmountOfMoney);
 
         }

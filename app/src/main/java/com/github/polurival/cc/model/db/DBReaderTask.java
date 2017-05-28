@@ -58,7 +58,7 @@ public class DBReaderTask extends DBTask {
                 rateUpdaterListener.setPropertiesLoaded(true);
             }
         } else {
-            Toaster.showBottomToast(appContext.getString(R.string.db_reading_error));
+            Toaster.showToast(appContext.getString(R.string.db_reading_error));
         }
     }
 }

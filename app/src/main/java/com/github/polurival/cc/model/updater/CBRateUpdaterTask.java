@@ -1,60 +1,77 @@
 package com.github.polurival.cc.model.updater;
 
+import android.content.ContentValues;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 import com.github.polurival.cc.util.AppPreferences;
-import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 
 import org.joda.time.LocalDateTime;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class CBRateUpdaterTask extends CommonRateUpdater {
+
+    /**
+     * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
+     */
+    private final static String CBRF_URL = "http://www.cbr.ru/scripts/XML_daily.asp";
+    private final static String CURRENCY_NODE_LIST = "Valute";
+    private final static String CHAR_CODE_NODE = "CharCode";
+    private final static String NOMINAL_NODE = "Nominal";
+    private final static String RATE_NODE = "Value";
 
     @Override
     protected Boolean doInBackground(Void... params) {
         Logger.logD(Logger.getTag(), "doInBackground");
 
         try {
-            URL url = new URL(Constants.CBRF_URL);
-            URLConnection connection = url.openConnection();
-
-            Document doc = parseXML(connection.getInputStream());
-
-            fillCurrencyMapFromSource(doc);
-        } catch (Exception e) {
+            InputStream inputStream = downloadData(CBRF_URL);
+            if (inputStream != null) {
+                Document xml = parseDataToXmlDocument(inputStream);
+                inputStream.close();
+                if (xml != null) {
+                    return fillCurrencyMap(xml);
+                }
+            }
+        } catch (IOException e) {
             e.printStackTrace();
-            Logger.logD(Logger.getTag(), "changes in source! handle it");
-            return false;
+            Logger.logD(Logger.getTag(), "can't connect or read from source!");
         }
-        return true;
+        return false;
     }
 
-    @Override
-    public void execute() {
-        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    private Document parseDataToXmlDocument(InputStream inputStream) throws IOException {
+        try {
+            DocumentBuilderFactory objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
+            return objDocumentBuilder.parse(inputStream);
+        } catch (ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
+            Logger.logD(Logger.getTag(), "can't parse - changes in source! handle it");
+            return null;
+        }
     }
 
-    @Override
-    public <T> void fillCurrencyMapFromSource(T doc) {
-        Logger.logD(Logger.getTag(), "fillCurrencyMapFromSource");
+    private boolean fillCurrencyMap(Document document) {
+        Logger.logD(Logger.getTag(), "fillCurrencyMap");
 
-        NodeList descNodes = ((Document) doc).getElementsByTagName(Constants.CURRENCY_NODE_LIST);
+        NodeList descNodes = document.getElementsByTagName(CURRENCY_NODE_LIST);
 
         for (int i = 0; i < descNodes.getLength(); i++) {
             NodeList currencyNodeList = descNodes.item(i).getChildNodes();
@@ -66,11 +83,11 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
                 String nodeName = currencyNodeList.item(j).getNodeName();
                 String textContent = currencyNodeList.item(j).getTextContent();
 
-                if (Constants.CHAR_CODE_NODE.equals(nodeName)) {
+                if (CHAR_CODE_NODE.equals(nodeName)) {
                     charCode = CharCode.valueOf(textContent);
-                } else if (Constants.NOMINAL_NODE.equals(nodeName)) {
+                } else if (NOMINAL_NODE.equals(nodeName)) {
                     nominal = textContent;
-                } else if (Constants.RATE_NODE.equals(nodeName)) {
+                } else if (RATE_NODE.equals(nodeName)) {
                     rate = textContent.replace(',', '.');
                 }
 
@@ -81,20 +98,7 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
                 }
             }
         }
-    }
-
-    private Document parseXML(InputStream stream) throws Exception {
-        Logger.logD(Logger.getTag(), "parseXML");
-
-        DocumentBuilderFactory objDocumentBuilderFactory;
-        DocumentBuilder objDocumentBuilder;
-        Document doc;
-
-        objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
-        objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
-        doc = objDocumentBuilder.parse(stream);
-
-        return doc;
+        return true;
     }
 
     @Override
@@ -132,5 +136,10 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
     @Override
     public SpinnersPositions loadSpinnersPositions(Context context) {
         return AppPreferences.loadMainActivityCBRateUpdaterSpinnersPositions(context);
+    }
+
+    @Override
+    public void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency) {
+        DBOperations.fillContentValuesForUpdatingCbRfColumns(contentValues, currency);
     }
 }

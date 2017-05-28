@@ -1,40 +1,28 @@
 package com.github.polurival.cc.model.updater;
 
+import android.content.ContentValues;
 import android.content.Context;
 
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 import com.github.polurival.cc.util.AppPreferences;
+import com.github.polurival.cc.util.Toaster;
 
 import org.joda.time.LocalDateTime;
 
 public class CustomRateUpdaterMock extends CommonRateUpdater {
 
     @Override
-    public void execute() {
-        //do nothing
-    }
-
-    @Override
-    public void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener) {
-        //do nothing
-    }
-    @Override
     protected void onPreExecute() {
-        //do nothing
+        Toaster.showToast(appContext.getString(R.string.custom_updating_info));
     }
 
     @Override
     protected Boolean doInBackground(Void... params) {
         return null;
-    }
-
-    @Override
-    protected void onPostExecute(Boolean result) {
-        //do nothing
     }
 
     @Override
@@ -70,7 +58,7 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
     }
 
     @Override
-    public <T> void fillCurrencyMapFromSource(T doc) {
+    public void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency) {
         //do nothing
     }
 

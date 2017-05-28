@@ -1,12 +1,17 @@
 package com.github.polurival.cc.model.updater;
 
+import android.content.ContentValues;
 import android.content.Context;
 
 import com.github.polurival.cc.RateUpdaterListener;
+import com.github.polurival.cc.model.Currency;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 
 import org.joda.time.LocalDateTime;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public interface RateUpdater {
 
@@ -15,15 +20,12 @@ public interface RateUpdater {
      */
     void execute();
 
+    InputStream downloadData(String url) throws IOException;
+
     /**
      * Set Activity that get data from RateUpdater
      */
     void setRateUpdaterListener(RateUpdaterListener rateUpdaterListener);
-
-    /**
-     * Map used for writing data to the database
-     */
-    <T> void fillCurrencyMapFromSource(T doc) throws Exception;
 
     /**
      * return RateUpdater source name
@@ -43,4 +45,6 @@ public interface RateUpdater {
     int getDecimalScale();
 
     SpinnersPositions loadSpinnersPositions(Context context);
+
+    void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency);
 }

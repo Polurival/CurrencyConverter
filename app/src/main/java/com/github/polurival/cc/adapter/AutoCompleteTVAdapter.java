@@ -13,9 +13,6 @@ import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.ResourcesLoader;
 
 /**
- * Created by Polurival
- * on 10.07.2016.
- * <p/>
  * <p>See <a href='http://hello-android.blogspot.ru/2011/06/using-autocompletetextview-with-sqlite.html'>source</a></p>
  */
 public class AutoCompleteTVAdapter extends CursorAdapter {
@@ -23,7 +20,7 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
     private String rateUpdaterClassName;
     private boolean withSwitching;
 
-    public AutoCompleteTVAdapter(Context context, Cursor c) {
+    private AutoCompleteTVAdapter(Context context, Cursor c) {
         super(context, c, 0);
     }
 

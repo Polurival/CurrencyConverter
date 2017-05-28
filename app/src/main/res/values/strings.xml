@@ -42,7 +42,8 @@
     <string name="convert_to">Convert to</string>
 
     <!-- for Toasts -->
-    <string name="update_error">Update Error. Bad Source or Internet Connection</string>
+    <string name="unavailable_network">Internet connection turned off!</string>
+    <string name="update_error">Update Error.\nSource side limitations or data changes</string>
     <string name="db_writing_error">Error writing to the database</string>
     <string name="db_reading_error">Error reading from the database</string>
     <string name="db_update_success">Database has been successfully updated</string>

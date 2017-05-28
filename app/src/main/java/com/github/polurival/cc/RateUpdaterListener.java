@@ -11,7 +11,7 @@ public interface RateUpdaterListener {
     /**
      * For hide menu when updating
      *
-     * @param menuState - Constants.MENU_HIDE or NULL
+     * @param menuState - MENU_HIDE or NULL
      */
     void setMenuState(String menuState);
 

@@ -121,7 +121,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         Logger.logD(Logger.getTag(), "saveCurrencyCustomValueAndCustomNominal");
 
         if (null == customCurrencySpinner || customCurrencySpinner.getCount() == 0) {
-            Toaster.showBottomToast(getActivity().getString(R.string.all_currencies_disabled));
+            Toaster.showToast(getActivity().getString(R.string.all_currencies_disabled));
             return;
         }
 
@@ -131,7 +131,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         String customRate = editCustomCurrency.getText().toString();
         customRate = customRate.replace(",", ".");
         if ("".equals(customRate) || (Double.valueOf(customRate) == 0)) {
-            Toaster.showBottomToast(getActivity().getString(R.string.db_custom_update_invalid_value));
+            Toaster.showToast(getActivity().getString(R.string.db_custom_update_invalid_value));
             return;
         }
 
@@ -156,7 +156,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                             new String[]{currencyCharCode});
                     db.setTransactionSuccessful();
 
-                    Toaster.showBottomToast(getActivity().getString(
+                    Toaster.showToast(getActivity().getString(
                             R.string.db_custom_update_success) + preparedCustomNominal);
 
                     AppPreferences.saveCustomRateUpDateTime(getActivity());
@@ -164,7 +164,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                     readSpinnerDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toaster.showBottomToast(getActivity().getString(R.string.db_writing_error));
+                    Toaster.showToast(getActivity().getString(R.string.db_writing_error));
                 } finally {
                     db.endTransaction();
                 }
@@ -213,7 +213,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                     initCurrencyDataFromCustomSpinnerCursor();
 
                 } catch (SQLiteException e) {
-                    Toaster.showBottomToast(getActivity().getString(R.string.db_reading_error));
+                    Toaster.showToast(getActivity().getString(R.string.db_reading_error));
                 }
             }
         });
@@ -258,7 +258,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             tvCustomCurrencyNominal.setText(String.format("%s %s",
                     getActivity().getString(R.string.custom_currency_nominal), currencyNominal));
         } else {
-            Toaster.showBottomToast(getActivity().getString(R.string.all_currencies_disabled));
+            Toaster.showToast(getActivity().getString(R.string.all_currencies_disabled));
         }
     }
 

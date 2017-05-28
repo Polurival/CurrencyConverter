@@ -182,7 +182,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
             searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);
         } catch (SQLiteException e) {
-            Toaster.showBottomToast(AppContext.getContext().getString(R.string.db_reading_error));
+            Toaster.showToast(AppContext.getContext().getString(R.string.db_reading_error));
         }
         return searchCursor;
     }

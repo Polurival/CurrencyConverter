@@ -14,9 +14,6 @@ import com.github.polurival.cc.R;
 import com.github.polurival.cc.util.ResourcesLoader;
 
 /**
- * Created by Polurival
- * on 16.06.2016.
- *
  * <p>See <a href="http://stackoverflow.com/questions/4567969/viewholder-pattern-correctly-implemented-in-custom-cursoradapter/36955882#36955882">source</a></p>
  */
 public class ListViewCursorAdapter extends CursorAdapter {
@@ -38,6 +35,7 @@ public class ListViewCursorAdapter extends CursorAdapter {
         return view;
     }
 
+    // TODO: 28.05.2017 отрефакторить магические числа
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder viewHolder = (ViewHolder) view.getTag();

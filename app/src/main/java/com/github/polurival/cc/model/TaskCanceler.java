@@ -35,7 +35,7 @@ public class TaskCanceler implements Runnable {
             rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
             rateUpdaterListener.readDataFromDB();
 
-            Toaster.showBottomToast(AppContext.getContext().getString(R.string.update_error));
+            Toaster.showToast(AppContext.getContext().getString(R.string.update_error));
         }
     }
 }

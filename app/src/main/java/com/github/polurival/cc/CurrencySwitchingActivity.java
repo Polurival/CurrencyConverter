@@ -3,7 +3,6 @@ package com.github.polurival.cc;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -19,11 +18,16 @@ import android.widget.TextView;
 import com.github.polurival.cc.adapter.ListViewCursorAdapter;
 import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.AppPreferences;
-import com.github.polurival.cc.util.Constants;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
 public class CurrencySwitchingActivity extends Activity implements SearcherFragment.Listener {
+
+    /**
+     * For enable or disable all or one currency
+     */
+    private static final String MULTIPLE = "multiple";
+    private static final String SINGLE = "single";
 
     private String rateUpdaterClassName;
 
@@ -50,9 +54,6 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         if (isAllCurrenciesTurnOn()) {
             cbTurnOnOffAllCurrencies.setChecked(true);
         }
-
-        Intent intent = getIntent();
-        rateUpdaterClassName = intent.getStringExtra(Constants.RATE_UPDATER_CLASS_NAME);
     }
 
     @Override
@@ -60,6 +61,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         super.onResume();
         Logger.logD(Logger.getTag(), "onResume");
 
+        rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(this);
         readListDataFromDB();
         setNewSearcherFragment();
     }
@@ -94,7 +96,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
                     initLvAllCurrencies();
 
                 } catch (SQLiteException e) {
-                    Toaster.showBottomToast(getString(R.string.db_reading_error));
+                    Toaster.showToast(getString(R.string.db_reading_error));
                 }
             }
         });
@@ -116,9 +118,9 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
                     CheckBox currencyCondition = (CheckBox) ((ViewGroup) rowLayout).getChildAt(3);
 
                     if (currencyCondition.isChecked()) {
-                        saveCurrencyOnOffCondition(currencyCharCode, 0, Constants.SINGLE);
+                        saveCurrencyOnOffCondition(currencyCharCode, 0, SINGLE);
                     } else {
-                        saveCurrencyOnOffCondition(currencyCharCode, 1, Constants.SINGLE);
+                        saveCurrencyOnOffCondition(currencyCharCode, 1, SINGLE);
                     }
                 }
             });
@@ -169,9 +171,9 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         Logger.logD(Logger.getTag(), "turnOnOffAllCurrencies");
 
         if (cbTurnOnOffAllCurrencies.isChecked()) {
-            saveCurrencyOnOffCondition(null, 1, Constants.MULTIPLE);
+            saveCurrencyOnOffCondition(null, 1, MULTIPLE);
         } else {
-            saveCurrencyOnOffCondition(null, 0, Constants.MULTIPLE);
+            saveCurrencyOnOffCondition(null, 0, MULTIPLE);
         }
     }
 
@@ -202,7 +204,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
             public void run() {
                 db.beginTransaction();
                 try {
-                    if (Constants.SINGLE.equals(mode)) {
+                    if (SINGLE.equals(mode)) {
                         if (null == currencyCharCode) {
                             Logger.logD(Logger.getTag(), "SINGLE Error: currencyCharCode = null");
                         }
@@ -224,7 +226,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
                     readListDataFromDB();
 
                 } catch (SQLiteException e) {
-                    Toaster.showBottomToast(getString(R.string.db_writing_error));
+                    Toaster.showToast(getString(R.string.db_writing_error));
                 } finally {
                     db.endTransaction();
                 }

@@ -12,10 +12,6 @@ import android.widget.TextView;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.util.ResourcesLoader;
 
-/**
- * Created by Polurival
- * on 16.06.2016.
- */
 public class SpinnerCursorAdapter extends CursorAdapter {
 
     public SpinnerCursorAdapter(Context context, Cursor cursor) {

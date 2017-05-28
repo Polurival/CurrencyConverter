@@ -7,9 +7,7 @@ import android.database.sqlite.SQLiteException;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.updater.CBRateUpdaterTask;
 import com.github.polurival.cc.model.updater.RateUpdater;
-import com.github.polurival.cc.model.updater.YahooRateUpdaterTask;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
@@ -36,16 +34,8 @@ public class DBUpdaterTask extends DBTask {
             db.beginTransaction();
             try {
                 for (EnumMap.Entry<CharCode, Currency> entry : currencyMap.entrySet()) {
-                    int nominal = entry.getValue().getNominal();
-                    double rate = entry.getValue().getRate();
 
-                    if (rateUpdater instanceof CBRateUpdaterTask) {
-                        contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, nominal);
-                        contentValues.put(DBHelper.COLUMN_NAME_CB_RF_RATE, rate);
-                    } else if (rateUpdater instanceof YahooRateUpdaterTask) {
-                        contentValues.put(DBHelper.COLUMN_NAME_YAHOO_NOMINAL, nominal);
-                        contentValues.put(DBHelper.COLUMN_NAME_YAHOO_RATE, rate);
-                    }
+                    rateUpdater.fillContentValuesForUpdatingColumns(contentValues, entry.getValue());
 
                     db.update(DBHelper.TABLE_NAME,
                             contentValues,
@@ -75,7 +65,7 @@ public class DBUpdaterTask extends DBTask {
 
             rateUpdaterListener.readDataFromDB();
         } else {
-            Toaster.showBottomToast(appContext.getString(R.string.db_writing_error));
+            Toaster.showToast(appContext.getString(R.string.db_writing_error));
         }
     }
 }

@@ -12,10 +12,13 @@ import com.github.polurival.cc.model.db.DBUpdaterTask;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.EnumMap;
 
-abstract class CommonRateUpdater
-        extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
+public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> implements RateUpdater {
 
     Context appContext;
     EnumMap<CharCode, Currency> currencyMap;
@@ -49,10 +52,24 @@ abstract class CommonRateUpdater
             dbUpdaterTask.setCurrencyMap(currencyMap);
             dbUpdaterTask.execute();
         } else {
-            Toaster.showBottomToast(appContext.getString(R.string.update_error));
+            Toaster.showToast(appContext.getString(R.string.update_error));
 
             rateUpdaterListener.stopRefresh();
             rateUpdaterListener.setMenuState(null);
         }
+    }
+
+    @Override
+    public void execute() {
+        executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    public InputStream downloadData(String url) throws IOException {
+        Logger.logD(Logger.getTag(), "download data from: " + url);
+
+        final URL sourceUrl = new URL(url);
+        URLConnection connection = sourceUrl.openConnection();
+        return connection.getInputStream();
     }
 }
