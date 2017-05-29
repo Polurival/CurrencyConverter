@@ -12,6 +12,12 @@ public class Logger {
         }
     }
 
+    public static void logE(String tag, String log) {
+        if (BuildConfig.DEBUG) {
+            Log.e(tag, log == null ? "" : log);
+        }
+    }
+
     /**
      * Makes TAG looks like 'MainActivity.java:136'
      * <p>See <a href="http://stackoverflow.com/a/29107315">source</a></p>
