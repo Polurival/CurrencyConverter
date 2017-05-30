@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     private static final String MENU_HIDE = "menuHide";
 
     private SQLiteDatabase db;
-    private Cursor cursor;
+    private Cursor commonCursor;
     private SpinnerCursorAdapter cursorAdapter;
     private Cursor fromCursor;
     private Cursor toCursor;
@@ -114,9 +114,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         invalidateOptionsMenu();
     }
 
-    @Override
-    public void setCursor(Cursor cursor) {
-        this.cursor = cursor;
+    public void setCommonCursor(Cursor commonCursor) {
+        this.commonCursor = commonCursor;
     }
 
     @Override
@@ -225,7 +224,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         if (null != fromCursor) fromCursor.close();
         if (null != toCursor) toCursor.close();
-        if (null != cursor) cursor.close();
+        if (null != commonCursor) commonCursor.close();
 
         if (null != db) db.close();
 
@@ -409,7 +408,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "initSpinners");
 
         if (cursorAdapter == null) {
-            cursorAdapter = new SpinnerCursorAdapter(getApplicationContext(), cursor);
+            cursorAdapter = new SpinnerCursorAdapter(getApplicationContext(), commonCursor);
 
             fromSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -458,7 +457,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
                 }
             });
         } else {
-            cursorAdapter.changeCursor(cursor);
+            cursorAdapter.changeCursor(commonCursor);
             cursorAdapter.notifyDataSetChanged();
         }
 
@@ -896,8 +895,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         }
     }
 
-    @Override
-    public Cursor getCursor() {
-        return cursor;
+    public Cursor getCommonCursor() {
+        return commonCursor;
     }
 }

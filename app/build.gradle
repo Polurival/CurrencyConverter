@@ -44,7 +44,7 @@ android {
         testCompile 'junit:junit:4.12'
 
         //https://github.com/chrisjenx/Calligraphy#inject-into-context
-        compile 'uk.co.chrisjenx:calligraphy:2.2.0'
+        compile 'uk.co.chrisjenx:calligraphy:2.3.0'
 
         //https://github.com/dlew/joda-time-android
         compile 'net.danlew:android.joda:2.9.3.1'

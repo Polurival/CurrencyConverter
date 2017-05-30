@@ -16,6 +16,9 @@ import com.github.polurival.cc.util.Toaster;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.polurival.cc.model.updater.CBRateUpdaterTask.CB_RATE_UPDATER_CLASS_NAME;
+import static com.github.polurival.cc.model.updater.YahooRateUpdaterTask.YAHOO_RATE_UPDATER_CLASS_NAME;
+
 public class DBHelper extends SQLiteOpenHelper {
 
     private static DBHelper instance;
@@ -136,12 +139,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
         boolean custom = false;
         String sourceColumnName = null;
-        if (AppContext.getContext().getString(R.string.cb_rf_rate_updater_class)
-                .equals(rateUpdaterClassName)) {
+        if (CB_RATE_UPDATER_CLASS_NAME.equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_CB_RF_SOURCE;
 
-        } else if (AppContext.getContext().getString(R.string.yahoo_rate_updater_class)
-                .equals(rateUpdaterClassName)) {
+        } else if (YAHOO_RATE_UPDATER_CLASS_NAME.equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_YAHOO_SOURCE;
 
         } else {

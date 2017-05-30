@@ -49,7 +49,7 @@ public class DBReaderTask extends DBTask {
 
         if (result) {
             if (rateUpdaterListener != null) {
-                rateUpdaterListener.setCursor(cursor);
+                rateUpdaterListener.setCommonCursor(cursor);
 
                 rateUpdaterListener.initSpinners();
                 rateUpdaterListener.loadSpinnersProperties();

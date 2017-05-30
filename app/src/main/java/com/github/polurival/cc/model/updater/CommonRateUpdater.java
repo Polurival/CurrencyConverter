@@ -22,7 +22,7 @@ public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> i
 
     Context appContext;
     EnumMap<CharCode, Currency> currencyMap;
-    private RateUpdaterListener rateUpdaterListener;
+    protected RateUpdaterListener rateUpdaterListener;
 
     CommonRateUpdater() {
         this.appContext = AppContext.getContext();
@@ -42,7 +42,7 @@ public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> i
 
     @Override
     protected void onPostExecute(Boolean result) {
-        Logger.logD(Logger.getTag(), "onPostExecute " + result.toString());
+        Logger.logD(Logger.getTag(), "onPostExecute " + result);
 
         if (result) {
             rateUpdaterListener.checkAsyncTaskStatusAndSetNewInstance();
@@ -65,7 +65,7 @@ public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> i
     }
 
     @Override
-    public InputStream downloadData(String url) throws IOException {
+    public InputStream getDataInputStream(String url) throws IOException {
         Logger.logD(Logger.getTag(), "download data from: " + url);
 
         final URL sourceUrl = new URL(url);

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <style name="AppTheme" parent="android:Theme.Holo.Light" />
+    <style name="AppTheme" parent="android:Theme.Holo.Light">
+        <item name="android:textViewStyle">@style/AppTheme.Widget.TextView</item>
+    </style>
+
+    <style name="AppTheme.Widget"/>
+
+    <style name="AppTheme.Widget.TextView" parent="android:Widget.Holo.Light.TextView">
+        <item name="fontPath">fonts/Roboto-ThinItalic.ttf</item>
+    </style>
 
 </resources>

@@ -2,6 +2,7 @@ package com.github.polurival.cc;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Spinner;
 
 import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Logger;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class DataSourceActivity extends Activity implements SearcherFragment.Listener {
 
@@ -26,6 +29,11 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     private LinearLayout customRateFragmentLayout;
     private LinearLayout searcherFragmentLayout;
     private CheckBox cbAutoUpdate;
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +131,7 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
         transaction.commit();
     }
 
-    @Override
-    public Cursor getCursor() {
+    public Cursor getCommonCursor() {
         return customRateFragment.getSpinnerCursor();
     }
 }

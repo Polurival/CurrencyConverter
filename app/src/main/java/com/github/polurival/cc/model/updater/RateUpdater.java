@@ -20,7 +20,7 @@ public interface RateUpdater {
      */
     void execute();
 
-    InputStream downloadData(String url) throws IOException;
+    InputStream getDataInputStream(String url) throws IOException;
 
     /**
      * Set Activity that get data from RateUpdater

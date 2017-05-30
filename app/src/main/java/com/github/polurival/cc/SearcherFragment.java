@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.github.polurival.cc.adapter.AutoCompleteTVAdapter;
-import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Logger;
 
@@ -24,7 +23,6 @@ import com.github.polurival.cc.util.Logger;
  */
 public class SearcherFragment extends Fragment {
 
-    private Cursor searchCursor;
     private SearcherFragment.Listener listener;
 
     private Spinner fromSpinner;
@@ -54,7 +52,7 @@ public class SearcherFragment extends Fragment {
     }
 
     public interface Listener {
-        Cursor getCursor();
+        Cursor getCommonCursor();
     }
 
     @Override
@@ -97,13 +95,6 @@ public class SearcherFragment extends Fragment {
         initCurrencySearcher();
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        if (null != searchCursor) searchCursor.close();
-    }
-
     private void initCurrencySearcher() {
         Logger.logD(Logger.getTag(), "initSearchAdapter");
 
@@ -122,9 +113,8 @@ public class SearcherFragment extends Fragment {
     @NonNull
     private AutoCompleteTVAdapter initCursorAndAdapter(boolean withSwitching) {
         String rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(getActivity());
-        searchCursor = DBHelper.getSearchCursor("", rateUpdaterClassName, withSwitching);
         return new AutoCompleteTVAdapter(
-                getActivity().getApplicationContext(), searchCursor, rateUpdaterClassName, withSwitching);
+                getActivity().getApplicationContext(), rateUpdaterClassName, withSwitching);
     }
 
     private final AdapterView.OnItemClickListener searcherClickListener
@@ -138,7 +128,7 @@ public class SearcherFragment extends Fragment {
             Cursor searchedCurrency = (Cursor) parent.getItemAtPosition(position);
             String searchedCharCode = searchedCurrency.getString(1);
 
-            Cursor cursor = listener.getCursor();
+            Cursor cursor = listener.getCommonCursor();
             int searchedCharCodePos = 0;
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 String cursorCurrentCharCode = cursor.getString(1);

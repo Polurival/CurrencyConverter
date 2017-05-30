@@ -6,7 +6,6 @@ import android.content.Context;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
@@ -27,6 +26,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 public class CBRateUpdaterTask extends CommonRateUpdater {
 
+    public static final String CB_RATE_UPDATER_CLASS_NAME = CBRateUpdaterTask.class.getName();
+
     /**
      * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
      */
@@ -41,10 +42,9 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
         Logger.logD(Logger.getTag(), "doInBackground");
 
         try {
-            InputStream inputStream = downloadData(CBRF_URL);
+            InputStream inputStream = getDataInputStream(CBRF_URL);
             if (inputStream != null) {
                 Document xml = parseDataToXmlDocument(inputStream);
-                inputStream.close();
                 if (xml != null) {
                     return fillCurrencyMap(xml);
                 }
@@ -60,7 +60,10 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
         try {
             DocumentBuilderFactory objDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder objDocumentBuilder = objDocumentBuilderFactory.newDocumentBuilder();
-            return objDocumentBuilder.parse(inputStream);
+            Document document = objDocumentBuilder.parse(inputStream);
+
+            inputStream.close();
+            return document;
         } catch (ParserConfigurationException | SAXException e) {
             e.printStackTrace();
             Logger.logD(Logger.getTag(), "can't parse - changes in source! handle it");
@@ -118,9 +121,7 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     public void readDataFromDB(DBReaderTask dbReaderTask) {
-        dbReaderTask.execute(DBHelper.COLUMN_NAME_CB_RF_SOURCE,
-                DBHelper.COLUMN_NAME_CB_RF_NOMINAL,
-                DBHelper.COLUMN_NAME_CB_RF_RATE);
+        dbReaderTask.execute(DBOperations.getColumnsForReadForCBSource());
     }
 
     @Override

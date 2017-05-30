@@ -5,7 +5,7 @@ import android.content.Context;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.db.DBHelper;
+import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 import com.github.polurival.cc.util.AppPreferences;
@@ -22,7 +22,14 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
 
     @Override
     protected Boolean doInBackground(Void... params) {
-        return null;
+        return false;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+        rateUpdaterListener.stopRefresh();
+        rateUpdaterListener.setMenuState(null);
+
     }
 
     @Override
@@ -37,9 +44,7 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
 
     @Override
     public void readDataFromDB(DBReaderTask dbReaderTask) {
-        dbReaderTask.execute(DBHelper.CUSTOM_SOURCE_MOCK,
-                DBHelper.COLUMN_NAME_CUSTOM_NOMINAL,
-                DBHelper.COLUMN_NAME_CUSTOM_RATE);
+        dbReaderTask.execute(DBOperations.getColumnsForReadForCustomSource());
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.github.polurival.cc;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -21,6 +22,8 @@ import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 public class CurrencySwitchingActivity extends Activity implements SearcherFragment.Listener {
 
     /**
@@ -37,6 +40,10 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
     private ListView lvAllCurrencies;
     private CheckBox cbTurnOnOffAllCurrencies;
 
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,8 +253,7 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         return where;
     }
 
-    @Override
-    public Cursor getCursor() {
+    public Cursor getCommonCursor() {
         return listCursor;
     }
 }

@@ -24,9 +24,9 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
         super(context, c, 0);
     }
 
-    public AutoCompleteTVAdapter(Context context, Cursor c, String rateUpdaterClassName,
+    public AutoCompleteTVAdapter(Context context, String rateUpdaterClassName,
                                  boolean withSwitching) {
-        this(context, c);
+        this(context, DBHelper.getSearchCursor("", rateUpdaterClassName, withSwitching));
         this.rateUpdaterClassName = rateUpdaterClassName;
         this.withSwitching = withSwitching;
     }

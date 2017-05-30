@@ -18,7 +18,7 @@ public interface RateUpdaterListener {
     /**
      * Set Cursor after reading from database
      */
-    void setCursor(Cursor cursor);
+    void setCommonCursor(Cursor commonCursor);
 
     /**
      * Start convert after loading all necessary SharedPreferences

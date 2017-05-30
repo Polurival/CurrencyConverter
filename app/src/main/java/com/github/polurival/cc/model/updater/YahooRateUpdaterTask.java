@@ -6,7 +6,6 @@ import android.content.Context;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.Currency;
-import com.github.polurival.cc.model.db.DBHelper;
 import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
@@ -25,6 +24,8 @@ import java.io.InputStream;
 
 public class YahooRateUpdaterTask extends CommonRateUpdater {
 
+    public static final String YAHOO_RATE_UPDATER_CLASS_NAME = YahooRateUpdaterTask.class.getName();
+
     /**
      * See <a href="http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json">source</a>
      */
@@ -42,10 +43,9 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
         Logger.logD(Logger.getTag(), "doInBackground");
 
         try {
-            InputStream inputStream = downloadData(YAHOO_URL);
+            InputStream inputStream = getDataInputStream(YAHOO_URL);
             if (inputStream != null) {
                 String json = parseDataToJsonString(inputStream);
-                inputStream.close();
                 if (json != null) {
                     Logger.logD(Logger.getTag(), json);
                     return fillCurrencyMap(json);
@@ -65,6 +65,7 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
         while ((length = inputStream.read(buffer)) != -1) {
             byteArrayOutputStream.write(buffer, 0, length);
         }
+        inputStream.close();
         return byteArrayOutputStream.toString("UTF-8");
     }
 
@@ -126,9 +127,7 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
 
     @Override
     public void readDataFromDB(DBReaderTask dbReaderTask) {
-        dbReaderTask.execute(DBHelper.COLUMN_NAME_YAHOO_SOURCE,
-                DBHelper.COLUMN_NAME_YAHOO_NOMINAL,
-                DBHelper.COLUMN_NAME_YAHOO_RATE);
+        dbReaderTask.execute(DBOperations.getColumnsForReadForYahooSource());
     }
 
     @Override
