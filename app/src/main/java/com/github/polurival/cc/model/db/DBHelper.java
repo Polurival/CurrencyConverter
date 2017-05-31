@@ -10,14 +10,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.util.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.github.polurival.cc.model.updater.CBRateUpdaterTask.CB_RATE_UPDATER_CLASS_NAME;
-import static com.github.polurival.cc.model.updater.YahooRateUpdaterTask.YAHOO_RATE_UPDATER_CLASS_NAME;
 
 public class DBHelper extends SQLiteOpenHelper {
 
@@ -139,10 +136,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
         boolean custom = false;
         String sourceColumnName = null;
-        if (CB_RATE_UPDATER_CLASS_NAME.equals(rateUpdaterClassName)) {
+        if (AppContext.getContext().getString(R.string.cb_rf_rate_updater_class)
+                .equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_CB_RF_SOURCE;
-
-        } else if (YAHOO_RATE_UPDATER_CLASS_NAME.equals(rateUpdaterClassName)) {
+        } else if (AppContext.getContext().getString(R.string.yahoo_rate_updater_class)
+                .equals(rateUpdaterClassName)) {
             sourceColumnName = COLUMN_NAME_YAHOO_SOURCE;
 
         } else {
@@ -422,5 +420,9 @@ public class DBHelper extends SQLiteOpenHelper {
         currencyValues.put(COLUMN_NAME_SWITCHING, switching);
 
         db.insert(TABLE_NAME, null, currencyValues);
+    }
+
+    public static void closeDb() {
+        instance.close();
     }
 }

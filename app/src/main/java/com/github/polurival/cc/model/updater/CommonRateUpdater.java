@@ -7,7 +7,7 @@ import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.RateUpdaterListener;
 import com.github.polurival.cc.model.CharCode;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.db.DBUpdaterTask;
 import com.github.polurival.cc.util.Logger;
 import com.github.polurival.cc.util.Toaster;

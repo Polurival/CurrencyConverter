@@ -4,7 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.github.polurival.cc.RateUpdaterListener;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.CurrenciesRelations;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 
@@ -12,6 +13,7 @@ import org.joda.time.LocalDateTime;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 public interface RateUpdater {
 
@@ -46,5 +48,11 @@ public interface RateUpdater {
 
     SpinnersPositions loadSpinnersPositions(Context context);
 
-    void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency);
+    void fillContentValuesForUpdatingColumns(ContentValues contentValues,
+                                             Currency currency);
+
+    BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
+                                         BigDecimal enteredAmountOfMoney);
+
+    boolean isUpdateFromNetworkUnavailable();
 }

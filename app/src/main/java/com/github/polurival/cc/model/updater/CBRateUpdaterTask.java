@@ -5,7 +5,8 @@ import android.content.Context;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.CurrenciesRelations;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
@@ -19,14 +20,13 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 public class CBRateUpdaterTask extends CommonRateUpdater {
-
-    public static final String CB_RATE_UPDATER_CLASS_NAME = CBRateUpdaterTask.class.getName();
 
     /**
      * See <a href="http://www.cbr.ru/scripts/XML_daily.asp">source</a>
@@ -110,7 +110,9 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
     }
 
     @Override
-    public void saveSelectedCurrencySpinnersPositions(Context context, int fromSpinnerSelectedPos, int toSpinnerSelectedPos) {
+    public void saveSelectedCurrencySpinnersPositions(Context context,
+                                                      int fromSpinnerSelectedPos,
+                                                      int toSpinnerSelectedPos) {
         AppPreferences.saveMainActivityCBRateUpdaterSpinnersPositions(context, fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }
 
@@ -140,7 +142,19 @@ public class CBRateUpdaterTask extends CommonRateUpdater {
     }
 
     @Override
-    public void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency) {
+    public void fillContentValuesForUpdatingColumns(ContentValues contentValues,
+                                                    Currency currency) {
         DBOperations.fillContentValuesForUpdatingCbRfColumns(contentValues, currency);
+    }
+
+    @Override
+    public BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
+                                                BigDecimal enteredAmountOfMoney) {
+        return currenciesRelations.calculateConversionResultForCB(enteredAmountOfMoney);
+    }
+
+    @Override
+    public boolean isUpdateFromNetworkUnavailable() {
+        return false;
     }
 }

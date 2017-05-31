@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteException;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.updater.RateUpdater;
 import com.github.polurival.cc.util.DateUtil;
 import com.github.polurival.cc.util.Logger;

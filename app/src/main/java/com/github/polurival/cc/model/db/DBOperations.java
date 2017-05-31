@@ -2,7 +2,7 @@ package com.github.polurival.cc.model.db;
 
 import android.content.ContentValues;
 
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.Currency;
 
 public class DBOperations {
 

@@ -5,12 +5,12 @@ import android.content.Context;
 
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.CurrenciesRelations;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
 import com.github.polurival.cc.util.AppPreferences;
-import com.github.polurival.cc.util.CurrencyUtil;
 import com.github.polurival.cc.util.Logger;
 
 import org.joda.time.LocalDateTime;
@@ -21,10 +21,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 public class YahooRateUpdaterTask extends CommonRateUpdater {
-
-    public static final String YAHOO_RATE_UPDATER_CLASS_NAME = YahooRateUpdaterTask.class.getName();
 
     /**
      * See <a href="http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json">source</a>
@@ -99,7 +98,7 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
                     continue;
                 }
 
-                final Currency currency = CurrencyUtil.getCurrency(rate);
+                final Currency currency = getNormalizedCurrency(rate);
                 currencyMap.put(charCode, currency);
             }
             return true;
@@ -110,13 +109,28 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
         }
     }
 
+    private Currency getNormalizedCurrency(double rate) {
+        int nominal = 1;
+        if (rate < 1) {
+            int j = 0;
+            while (rate < 1) {
+                rate *= 10;
+                j++;
+            }
+            nominal = (int) Math.pow(10, j);
+        }
+        return new Currency(nominal, rate);
+    }
+
     @Override
     public String getDescription() {
         return appContext.getString(R.string.yahoo);
     }
 
     @Override
-    public void saveSelectedCurrencySpinnersPositions(Context context, int fromSpinnerSelectedPos, int toSpinnerSelectedPos) {
+    public void saveSelectedCurrencySpinnersPositions(Context context,
+                                                      int fromSpinnerSelectedPos,
+                                                      int toSpinnerSelectedPos) {
         AppPreferences.saveMainActivityYahooRateUpdaterSpinnersPositions(context, fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }
 
@@ -146,7 +160,19 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
     }
 
     @Override
-    public void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency) {
+    public void fillContentValuesForUpdatingColumns(ContentValues contentValues,
+                                                    Currency currency) {
         DBOperations.fillContentValuesForUpdatingYahooColumns(contentValues, currency);
+    }
+
+    @Override
+    public BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
+                                                BigDecimal enteredAmountOfMoney) {
+        return currenciesRelations.calculateConversionResultForYahooOrCustom(enteredAmountOfMoney);
+    }
+
+    @Override
+    public boolean isUpdateFromNetworkUnavailable() {
+        return false;
     }
 }

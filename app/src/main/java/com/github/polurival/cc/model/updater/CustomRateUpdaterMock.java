@@ -4,7 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.github.polurival.cc.R;
-import com.github.polurival.cc.model.Currency;
+import com.github.polurival.cc.model.dto.CurrenciesRelations;
+import com.github.polurival.cc.model.dto.Currency;
 import com.github.polurival.cc.model.db.DBOperations;
 import com.github.polurival.cc.model.db.DBReaderTask;
 import com.github.polurival.cc.model.dto.SpinnersPositions;
@@ -12,6 +13,8 @@ import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Toaster;
 
 import org.joda.time.LocalDateTime;
+
+import java.math.BigDecimal;
 
 public class CustomRateUpdaterMock extends CommonRateUpdater {
 
@@ -33,7 +36,9 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
     }
 
     @Override
-    public void saveSelectedCurrencySpinnersPositions(Context context, int fromSpinnerSelectedPos, int toSpinnerSelectedPos) {
+    public void saveSelectedCurrencySpinnersPositions(Context context,
+                                                      int fromSpinnerSelectedPos,
+                                                      int toSpinnerSelectedPos) {
         AppPreferences.saveMainActivityCustomRateUpdaterSpinnersPositions(context, fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }
 
@@ -63,8 +68,20 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
     }
 
     @Override
-    public void fillContentValuesForUpdatingColumns(ContentValues contentValues, Currency currency) {
+    public void fillContentValuesForUpdatingColumns(ContentValues contentValues,
+                                                    Currency currency) {
         //do nothing
+    }
+
+    @Override
+    public BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
+                                                BigDecimal enteredAmountOfMoney) {
+        return currenciesRelations.calculateConversionResultForYahooOrCustom(enteredAmountOfMoney);
+    }
+
+    @Override
+    public boolean isUpdateFromNetworkUnavailable() {
+        return true;
     }
 
     @Override
