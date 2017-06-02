@@ -17,7 +17,7 @@ import com.github.polurival.cc.util.Logger;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class DataSourceActivity extends Activity implements SearcherFragment.Listener {
+public class DataSourceActivity extends Activity implements SearcherFragment.Listener, CustomRateFragment.Listener {
 
     private static final int CB_SPINNER_POSITION = 0;
     private static final int YAHOO_SPINNER_POSITION = 1;
@@ -26,6 +26,7 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     private String rateUpdaterClassName;
 
     private CustomRateFragment customRateFragment;
+    //private Spinner customCurrencySpinner;
     private LinearLayout customRateFragmentLayout;
     private LinearLayout searcherFragmentLayout;
     private CheckBox cbAutoUpdate;
@@ -120,10 +121,10 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
 
         customRateFragment = (CustomRateFragment)
                 getFragmentManager().findFragmentById(R.id.custom_rates_fragment);
-        Spinner customCurrencySpinner = customRateFragment.getCustomCurrencySpinner();
+        //customCurrencySpinner = customRateFragment.getCustomCurrencySpinner();
 
         SearcherFragment searcherFragment = new SearcherFragment();
-        searcherFragment.setCustomSpinner(customCurrencySpinner);
+        //searcherFragment.setCustomSpinner(customCurrencySpinner);
 
         FragmentTransaction transaction
                 = getFragmentManager().beginTransaction();
@@ -133,5 +134,10 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
 
     public Cursor getCommonCursor() {
         return customRateFragment.getSpinnerCursor();
+    }
+
+    @Override
+    public void setSelection(int searchedCharCodePos) {
+        customRateFragment.setSelection(searchedCharCodePos);
     }
 }

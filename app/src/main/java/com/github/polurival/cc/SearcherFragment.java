@@ -27,7 +27,7 @@ public class SearcherFragment extends Fragment {
 
     private Spinner fromSpinner;
     private Spinner toSpinner;
-    private Spinner customSpinner;
+    //private Spinner customSpinner;
     private ListView switchingListView;
 
     private AutoCompleteTextView currencySearcher;
@@ -43,9 +43,9 @@ public class SearcherFragment extends Fragment {
         this.toSpinner = toSpinner;
     }
 
-    public void setCustomSpinner(Spinner customSpinner) {
+    /*public void setCustomSpinner(Spinner customSpinner) {
         this.customSpinner = customSpinner;
-    }
+    }*/
 
     public void setSwitchingListView(ListView switchingListView) {
         this.switchingListView = switchingListView;
@@ -53,6 +53,8 @@ public class SearcherFragment extends Fragment {
 
     public interface Listener {
         Cursor getCommonCursor();
+
+        void setSelection(int searchedCharCodePos);
     }
 
     @Override
@@ -73,6 +75,8 @@ public class SearcherFragment extends Fragment {
 
         if (activity instanceof SearcherFragment.Listener) {
             listener = (SearcherFragment.Listener) activity;
+        } else {
+            throw new ClassCastException(activity.getClass().getName() + " must implement " + SearcherFragment.Listener.class.getName());
         }
     }
 
@@ -148,7 +152,8 @@ public class SearcherFragment extends Fragment {
                 switchingListView.setSelection(searchedCharCodePos);
 
             } else if (listener instanceof DataSourceActivity) {
-                customSpinner.setSelection(searchedCharCodePos);
+                //customSpinner.setSelection(searchedCharCodePos);
+                listener.setSelection(searchedCharCodePos);
             }
         }
     };

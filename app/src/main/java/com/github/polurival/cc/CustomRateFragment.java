@@ -1,5 +1,6 @@
 package com.github.polurival.cc;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -46,8 +47,30 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         return spinnerCursor;
     }
 
-    public Spinner getCustomCurrencySpinner() {
+    /*public Spinner getCustomCurrencySpinner() {
         return customCurrencySpinner;
+    }*/
+
+    private CustomRateFragment.Listener listener;
+
+    public void setSelection(int selection) {
+        customCurrencySpinner.setSelection(selection);
+    }
+
+    public interface Listener {
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Logger.logD(Logger.getTag(), "onAttach");
+
+        if (activity instanceof CustomRateFragment.Listener) {
+            listener = (CustomRateFragment.Listener) activity;
+        } else {
+            throw new ClassCastException(activity.getClass().getName() + " must implement " + CustomRateFragment.Listener.class.getName());
+        }
     }
 
     @Override
