@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -826,10 +827,5 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     public Cursor getCommonCursor() {
         return commonCursor;
-    }
-
-    @Override
-    public void setSelection(int searchedCharCodePos) {
-
     }
 }

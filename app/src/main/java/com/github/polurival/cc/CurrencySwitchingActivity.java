@@ -256,9 +256,4 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
     public Cursor getCommonCursor() {
         return listCursor;
     }
-
-    @Override
-    public void setSelection(int searchedCharCodePos) {
-
-    }
 }
