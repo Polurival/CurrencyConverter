@@ -31,7 +31,7 @@
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>
-        <item>Яху!</item>
+        <!--<item>Яху!</item>-->
         <item>Настраиваемый источник</item>
     </string-array>
 

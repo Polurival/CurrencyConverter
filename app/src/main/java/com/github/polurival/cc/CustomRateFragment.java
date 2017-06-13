@@ -143,7 +143,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_NOMINAL, preparedCustomNominal);
         contentValues.put(DBHelper.COLUMN_NAME_CUSTOM_RATE, preparedCustomRate);
 
-        final SQLiteDatabase db = DBHelper.getInstance(getActivity()).getWritableDatabase();
+        final SQLiteDatabase db = DBHelper.getInstance(getActivity().getApplicationContext()).getWritableDatabase();
         Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override
@@ -192,7 +192,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
     private void readSpinnerDataFromDB() {
         Logger.logD(Logger.getTag(), "readSpinnerDataFromDB");
 
-        final SQLiteDatabase db = DBHelper.getInstance(getActivity()).getWritableDatabase();
+        final SQLiteDatabase db = DBHelper.getInstance(getActivity().getApplicationContext()).getWritableDatabase();
         Handler handler = new Handler();
         handler.post(new Runnable() {
             @Override

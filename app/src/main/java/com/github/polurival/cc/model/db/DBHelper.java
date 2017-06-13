@@ -11,6 +11,7 @@ import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.dto.Currency;
+import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Toaster;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private boolean isUpgrade;
 
     private static final String DB_NAME = "converter";
-    private static final int DB_VERSION = 6;
+    private static final int DB_VERSION = 7;
 
     public static final String TABLE_NAME = "currency";
 
@@ -87,6 +88,8 @@ public class DBHelper extends SQLiteOpenHelper {
             if (isUpgrade && null != userData) {
                 copyUserDataToTable(db, userData);
             }
+        } else if (oldVersion < 7) {
+            AppPreferences.saveRateUpdaterClassName(AppContext.getContext(), AppContext.getContext().getString(R.string.saved_rate_updater_class_default));
         }
     }
 
@@ -179,7 +182,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 }
             }
 
-            searchCursor = instance.getReadableDatabase().rawQuery(sqlQuery, null);
+            searchCursor = getInstance(AppContext.getContext()).getReadableDatabase().rawQuery(sqlQuery, null);
         } catch (SQLiteException e) {
             Toaster.showToast(AppContext.getContext().getString(R.string.db_reading_error));
         }

@@ -3,10 +3,9 @@ package com.github.polurival.cc;
 import android.app.Application;
 import android.content.Context;
 
-import net.danlew.android.joda.JodaTimeAndroid;
+import com.github.polurival.cc.model.db.DBHelper;
 
-import java.net.CookieHandler;
-import java.net.CookieManager;
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
@@ -20,7 +19,7 @@ public class AppContext extends Application {
         super.onCreate();
         appContext = this;
 
-        maintainUserSession();
+        initDatabase();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("font/Roboto-Regular.ttf")
@@ -31,9 +30,8 @@ public class AppContext extends Application {
         JodaTimeAndroid.init(this);
     }
 
-    private void maintainUserSession() {
-        //http://stackoverflow.com/a/11036882/5349748 - for avoid java.net.ProtocolException: Server redirected too many times Error
-        CookieHandler.setDefault(new CookieManager(null, null));
+    private void initDatabase() {
+        DBHelper.getInstance(this);
     }
 
     public static Context getContext() {
