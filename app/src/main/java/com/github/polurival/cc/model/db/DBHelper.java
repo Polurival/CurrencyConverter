@@ -11,7 +11,6 @@ import com.github.polurival.cc.AppContext;
 import com.github.polurival.cc.R;
 import com.github.polurival.cc.model.CharCode;
 import com.github.polurival.cc.model.dto.Currency;
-import com.github.polurival.cc.util.AppPreferences;
 import com.github.polurival.cc.util.Toaster;
 
 import java.util.ArrayList;
@@ -88,8 +87,6 @@ public class DBHelper extends SQLiteOpenHelper {
             if (isUpgrade && null != userData) {
                 copyUserDataToTable(db, userData);
             }
-        } else if (oldVersion < 7) {
-            AppPreferences.saveRateUpdaterClassName(AppContext.getContext(), AppContext.getContext().getString(R.string.saved_rate_updater_class_default));
         }
     }
 

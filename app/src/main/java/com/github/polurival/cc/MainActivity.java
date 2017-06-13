@@ -688,7 +688,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     public void swapFromTo(View v) {
         Logger.logD(Logger.getTag(), "swapFromTo");
 
-        if (fromSpinner != null && toSpinner != null) {
+        if (fromSpinner == null || toSpinner == null ||
+                fromSpinner.getAdapter().isEmpty() || toSpinner.getAdapter().isEmpty()) {
+            Toaster.showToast(getString(R.string.all_currencies_disabled));
+        } else {
             int fromSpinnerSelectedItemPos = fromSpinner.getSelectedItemPosition();
             fromSpinner.setSelection(toSpinner.getSelectedItemPosition());
             toSpinner.setSelection(fromSpinnerSelectedItemPos);

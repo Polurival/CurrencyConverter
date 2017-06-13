@@ -29,7 +29,7 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
      * See <a href="http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json">source</a>
      */
     private static final String YAHOO_URL =
-            "http://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
+            "https://finance.yahoo.com/webservice/v1/symbols/allcurrencies/quote?format=json";
     private static final String LIST_OBJECT = "list";
     private static final String RESOURCES_ARRAY = "resources";
     private static final String RESOURCE_OBJECT = "resource";
