@@ -568,7 +568,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
     private void formatAndSetEditAmountText(EditText editText, String s, String[] sParts) {
         String formatted;
-        if (null == sParts) {
+        if (sParts == null) {
             formatted = currenciesRelations.formatBigDecimal(prepareBigDecimal(s), 2);
         } else {
             formatted = currenciesRelations.formatBigDecimal(prepareBigDecimal(sParts[0]), 2) + sParts[1];
@@ -585,6 +585,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
     @NonNull
     private BigDecimal prepareBigDecimal(CharSequence s) {
         String plainEditAmountText = s.toString().replaceAll(" ", "");
+        if (TextUtils.isEmpty(plainEditAmountText) || plainEditAmountText.equals(".")) {
+            return BigDecimal.ZERO;
+        }
         return new BigDecimal(plainEditAmountText);
     }
 

@@ -42,7 +42,7 @@ public class CurrenciesRelations {
     public BigDecimal getEnteredAmountOfMoney(String amountOfMoneyWithGaps) {
         Logger.logD(Logger.getTag(), "getEnteredAmountOfMoney = " + amountOfMoneyWithGaps);
 
-        if (TextUtils.isEmpty(amountOfMoneyWithGaps)) {
+        if (TextUtils.isEmpty(amountOfMoneyWithGaps) || amountOfMoneyWithGaps.equals(".")) {
             return BigDecimal.ZERO;
         }
         String amountOfMoney = amountOfMoneyWithGaps.replaceAll(" ", "");

@@ -21,8 +21,8 @@ android {
         applicationId "com.github.polurival.cc"
         minSdkVersion 15
         targetSdkVersion 25
-        versionCode 25
-        versionName '3.3'
+        versionCode 26
+        versionName '3.3.1'
         setProperty("archivesBaseName", "currency-converter-$versionName")
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
