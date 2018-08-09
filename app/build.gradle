@@ -36,19 +36,19 @@ android {
         }
     }
     dependencies {
-        compile fileTree(dir: 'libs', include: ['*.jar'])
-        androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2') {
+        implementation fileTree(dir: 'libs', include: ['*.jar'])
+        androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2') {
             exclude group: 'com.android.support', module: 'support-annotations'
         }
-        testCompile 'junit:junit:4.12'
+        testImplementation 'junit:junit:4.12'
 
         //https://github.com/chrisjenx/Calligraphy#inject-into-context
-        compile 'uk.co.chrisjenx:calligraphy:2.3.0'
+        implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
 
         //https://github.com/dlew/joda-time-android
-        compile 'net.danlew:android.joda:2.9.3.1'
+        implementation 'net.danlew:android.joda:2.9.3.1'
 
         //https://github.com/chrisbanes/ActionBar-PullToRefresh/wiki/QuickStart-Stock
-        compile 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
+        implementation 'com.github.chrisbanes.actionbarpulltorefresh:library:+'
     }
 }
