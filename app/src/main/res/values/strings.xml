@@ -32,7 +32,8 @@
 
     <string-array name="data_source_array">
         <item>CB RF</item>
-        <item>Yahoo!</item>
+        <item>Free Currency Converter API</item>
+        <!--<item>Yahoo!</item>-->
         <item>Custom source</item>
     </string-array>
 
@@ -43,6 +44,7 @@
 
     <!-- for Toasts -->
     <string name="unavailable_network">Internet connection turned off!</string>
+    <string name="need_to_update">Internet required for initial initialization</string>
     <string name="update_error">Update Error.\nSource side limitations or data changes</string>
     <string name="db_writing_error">Error writing to the database</string>
     <string name="db_reading_error">Error reading from the database</string>
@@ -57,8 +59,9 @@
         Invalid result</string>
 
     <!-- Description -->
-    <string name="cb_rf">CB RF rate on\n</string>
-    <string name="yahoo">Yahoo! rate on\n</string>
+    <string name="cb_rf">CB RF rate\n</string>
+    <string name="yahoo">Yahoo! rate\n</string>
+    <string name="my_currency_net">Free Currency Converter API\n</string>
     <string name="custom">Custom source\nlast modified\n</string>
 
     <!-- Shared preferences -->
@@ -70,6 +73,10 @@
         saved_yahoo_from_spinner_pos</string>
     <string name="saved_yahoo_to_spinner_pos" translatable="false">
         saved_yahoo_to_spinner_pos</string>
+    <string name="saved_my_currency_net_from_spinner_pos" translatable="false">
+        saved_my_currency_net_from_spinner_pos</string>
+    <string name="saved_my_currency_net_to_spinner_pos" translatable="false">
+        saved_my_currency_net_to_spinner_pos</string>
     <string name="saved_custom_from_spinner_pos" translatable="false">
         saved_custom_from_spinner_pos</string>
     <string name="saved_custom_to_spinner_pos" translatable="false">
@@ -84,11 +91,13 @@
     <string name="saved_rate_updater_class" translatable="false">
         saved_rate_updater_class</string>
     <string name="saved_rate_updater_class_default" translatable="false">
-        com.github.polurival.cc.model.updater.YahooRateUpdaterTask</string>
+        com.github.polurival.cc.model.updater.MyCurrencyNetUpdaterTask</string>
     <string name="saved_cb_rf_up_date_time" translatable="false">
         saved_cb_rf_up_date_time</string>
     <string name="saved_yahoo_up_date_time" translatable="false">
         saved_yahoo_up_date_time</string>
+    <string name="saved_my_currency_net_up_date_time" translatable="false">
+        saved_my_currency_net_up_date_time</string>
     <string name="saved_custom_up_date_time" translatable="false">
         saved_custom_up_date_time</string>
     <string name="saved_is_set_auto_update" translatable="false">
@@ -101,6 +110,8 @@
         com.github.polurival.cc.model.updater.CBRateUpdaterTask</string>
     <string name="yahoo_rate_updater_class" translatable="false">
         com.github.polurival.cc.model.updater.YahooRateUpdaterTask</string>
+    <string name="my_currency_net_rate_updater_class" translatable="false">
+        com.github.polurival.cc.model.updater.MyCurrencyNetUpdaterTask</string>
     <string name="custom_rate_updater_class" translatable="false">
         com.github.polurival.cc.model.updater.CustomRateUpdaterMock</string>
 

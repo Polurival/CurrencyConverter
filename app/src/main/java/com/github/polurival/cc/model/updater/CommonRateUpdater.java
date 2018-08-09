@@ -22,7 +22,7 @@ public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> i
 
     Context appContext;
     EnumMap<CharCode, Currency> currencyMap;
-    protected RateUpdaterListener rateUpdaterListener;
+    RateUpdaterListener rateUpdaterListener;
 
     CommonRateUpdater() {
         this.appContext = AppContext.getContext();
@@ -71,5 +71,18 @@ public abstract class CommonRateUpdater extends AsyncTask<Void, Void, Boolean> i
         final URL sourceUrl = new URL(url);
         URLConnection connection = sourceUrl.openConnection();
         return connection.getInputStream();
+    }
+
+    Currency getNormalizedCurrency(double rate) {
+        int nominal = 1;
+        if (rate < 1) {
+            int j = 0;
+            while (rate < 1) {
+                rate *= 10;
+                j++;
+            }
+            nominal = (int) Math.pow(10, j);
+        }
+        return new Currency(nominal, rate);
     }
 }

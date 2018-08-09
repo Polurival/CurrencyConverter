@@ -20,7 +20,8 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class DataSourceActivity extends Activity implements SearcherFragment.Listener {
 
     private static final int CB_SPINNER_POSITION = 0;
-    private static final int YAHOO_SPINNER_POSITION = 1;
+    private static final int YAHOO_SPINNER_POSITION = -1; // Yahoo doesn't work
+    private static final int MY_CURRENCY_SPINNER_POSITION = 1;
     private static final int CUSTOM_SPINNER_POSITION = 2;
 
     private String rateUpdaterClassName;
@@ -47,11 +48,10 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
 
         rateUpdaterClassName = AppPreferences.loadRateUpdaterClassName(this);
 
-        customRateFragmentLayout = (LinearLayout) findViewById(R.id.custom_rates_fragment);
-        searcherFragmentLayout =
-                (LinearLayout) findViewById(R.id.searcher_custom_rates_fragment_layout);
+        customRateFragmentLayout = findViewById(R.id.custom_rates_fragment);
+        searcherFragmentLayout = findViewById(R.id.searcher_custom_rates_fragment_layout);
 
-        cbAutoUpdate = ((CheckBox) findViewById(R.id.cb_auto_update));
+        cbAutoUpdate = findViewById(R.id.cb_auto_update);
         cbAutoUpdate.setChecked(AppPreferences.loadIsSetAutoUpdate(this));
 
         initSourceSpinner();
@@ -66,7 +66,7 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
     private void initSourceSpinner() {
         Logger.logD(Logger.getTag(), "initSourceSpinner");
 
-        Spinner sourceSpinner = (Spinner) findViewById(R.id.source_spinner);
+        Spinner sourceSpinner = findViewById(R.id.source_spinner);
         ArrayAdapter<String> sourceAdapter = new ArrayAdapter<>(this,
                 R.layout.mode_spinner_item,
                 getResources().getStringArray(R.array.data_source_array));
@@ -75,8 +75,6 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
         sourceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-                // TODO: попробовать применить енум CUSTOM(2, CBRateUpdaterTask.class.getName()) и т.д.
                 if (position == CUSTOM_SPINNER_POSITION) {
                     rateUpdaterClassName = getString(R.string.custom_rate_updater_class);
 
@@ -92,6 +90,8 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
                         rateUpdaterClassName = getString(R.string.cb_rf_rate_updater_class);
                     } else if (position == YAHOO_SPINNER_POSITION) {
                         rateUpdaterClassName = getString(R.string.yahoo_rate_updater_class);
+                    } else if (position == MY_CURRENCY_SPINNER_POSITION) {
+                        rateUpdaterClassName = getString(R.string.my_currency_net_rate_updater_class);
                     }
                 }
 
@@ -107,6 +107,8 @@ public class DataSourceActivity extends Activity implements SearcherFragment.Lis
             sourceSpinner.setSelection(CB_SPINNER_POSITION);
         } else if (rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
             sourceSpinner.setSelection(YAHOO_SPINNER_POSITION);
+        } else if (rateUpdaterClassName.equals(getString(R.string.my_currency_net_rate_updater_class))) {
+            sourceSpinner.setSelection(MY_CURRENCY_SPINNER_POSITION);
         } else if (rateUpdaterClassName.equals(getString(R.string.custom_rate_updater_class))) {
             sourceSpinner.setSelection(CUSTOM_SPINNER_POSITION);
         }

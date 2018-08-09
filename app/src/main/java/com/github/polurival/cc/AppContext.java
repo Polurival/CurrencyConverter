@@ -12,7 +12,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 public class AppContext extends Application {
 
     private static Context appContext;
-    private static boolean isActivityVisible; // TODO: 25.05.2017 выпилить это после применения Loader вместо AsyncTask
+    private static boolean isActivityVisible;
 
     @Override
     public void onCreate() {
@@ -22,7 +22,7 @@ public class AppContext extends Application {
         initDatabase();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("font/Roboto-Regular.ttf")
+                        .setDefaultFontPath("fonts/Roboto-ThinItalic.ttf")
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );

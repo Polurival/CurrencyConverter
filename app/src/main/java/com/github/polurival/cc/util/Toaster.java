@@ -17,7 +17,7 @@ public class Toaster {
     public static void showToast(String text) {
         Toast toast = Toast.makeText(AppContext.getContext(),
                 text,
-                Toast.LENGTH_SHORT);
+                Toast.LENGTH_LONG);
         toast.show();
     }
 }

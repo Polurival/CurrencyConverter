@@ -15,6 +15,8 @@ public class AppPreferences {
     private static final int DEFAULT_CBRF_RUB_POS = 23;
     private static final int DEFAULT_YAHOO_USD_POS = 144;
     private static final int DEFAULT_YAHOO_RUB_POS = 117;
+    private static final int DEFAULT_MY_CURRENCY_NET_USD_POS = 135;
+    private static final int DEFAULT_MY_CURRENCY_NET_RUB_POS = 109;
     private static final int DEFAULT_CUSTOM_USD_POS = 144;
     private static final int DEFAULT_CUSTOM_RUB_POS = 117;
 
@@ -69,6 +71,22 @@ public class AppPreferences {
         editor.apply();
     }
 
+    public static void saveMainActivityMyCurrencyNetRateUpdaterSpinnersPositions(Context context,
+                                                                                 int fromSpinnerSelectedPos,
+                                                                                 int toSpinnerSelectedPos) {
+        Logger.logD(Logger.getTag(), "saveMainActivityMyCurrencyNetRateUpdaterSpinnersPositions");
+
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences.Editor editor = sp.edit();
+
+        editor.putInt(context.getString(R.string.saved_my_currency_net_from_spinner_pos),
+                fromSpinnerSelectedPos);
+        editor.putInt(context.getString(R.string.saved_my_currency_net_to_spinner_pos),
+                toSpinnerSelectedPos);
+
+        editor.apply();
+    }
+
     public static void saveMainActivityCustomRateUpdaterSpinnersPositions(Context context,
                                                                           int fromSpinnerSelectedPos,
                                                                           int toSpinnerSelectedPos) {
@@ -106,6 +124,19 @@ public class AppPreferences {
         final SharedPreferences.Editor editor = sp.edit();
 
         editor.putLong(context.getString(R.string.saved_yahoo_up_date_time),
+                DateUtil.getUpDateTimeInSeconds(upDateTime));
+
+        editor.apply();
+    }
+
+    public static void saveMyCurrencyNetRateUpdaterUpDateTime(Context context,
+                                                              LocalDateTime upDateTime) {
+        Logger.logD(Logger.getTag(), "saveMyCurrencyNetRateUpdaterUpDateTime");
+
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences.Editor editor = sp.edit();
+
+        editor.putLong(context.getString(R.string.saved_my_currency_net_up_date_time),
                 DateUtil.getUpDateTimeInSeconds(upDateTime));
 
         editor.apply();
@@ -150,6 +181,12 @@ public class AppPreferences {
         return loadRateUpdaterUpDateTime(context, context.getString(R.string.saved_yahoo_up_date_time));
     }
 
+    public static LocalDateTime loadMyCurrencyNetRateUpdaterUpDateTime(Context context) {
+        Logger.logD(Logger.getTag(), "loadMyCurrencyNetRateUpdaterUpDateTime");
+
+        return loadRateUpdaterUpDateTime(context, context.getString(R.string.saved_my_currency_net_up_date_time));
+    }
+
     public static LocalDateTime loadCustomRateUpdaterUpDateTime(Context context) {
         Logger.logD(Logger.getTag(), "loadCustomRateUpdaterUpDateTime");
 
@@ -191,6 +228,21 @@ public class AppPreferences {
         int toSpinnerSelectedPos = sp.getInt(context.getString(
                 R.string.saved_yahoo_to_spinner_pos),
                 DEFAULT_YAHOO_RUB_POS);
+
+        return new SpinnersPositions(fromSpinnerSelectedPos, toSpinnerSelectedPos);
+    }
+
+    public static SpinnersPositions loadMainActivityMyCurrencyNetRateUpdaterSpinnersPositions(Context context) {
+        Logger.logD(Logger.getTag(), "loadMainActivityMyCurrencyNetRateUpdaterSpinnersPositions");
+
+        final SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+
+        int fromSpinnerSelectedPos = sp.getInt(context.getString(
+                R.string.saved_my_currency_net_from_spinner_pos),
+                DEFAULT_MY_CURRENCY_NET_USD_POS);
+        int toSpinnerSelectedPos = sp.getInt(context.getString(
+                R.string.saved_my_currency_net_to_spinner_pos),
+                DEFAULT_MY_CURRENCY_NET_RUB_POS);
 
         return new SpinnersPositions(fromSpinnerSelectedPos, toSpinnerSelectedPos);
     }

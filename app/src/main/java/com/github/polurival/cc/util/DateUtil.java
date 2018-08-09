@@ -42,4 +42,8 @@ public class DateUtil {
         LocalDate upDate = upDateTime.toLocalDate();
         return upDate.compareTo(LocalDate.now()) < 0;
     }
+
+    public static boolean isCurrentSourceNeverUpdated(LocalDateTime upDateTime) {
+        return getUpDateTimeInSeconds(upDateTime) == getDefaultDateTimeInSeconds();
+    }
 }

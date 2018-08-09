@@ -55,7 +55,9 @@ public class ListViewCursorAdapter extends CursorAdapter {
         }
     }
 
-    /** Cache of the children views for a list item. */
+    /**
+     * Cache of the children views for a list item.
+     */
     private static class ViewHolder {
         final ImageView flagIcon;
         final TextView currencyName;
@@ -63,10 +65,10 @@ public class ListViewCursorAdapter extends CursorAdapter {
         final CheckBox turnOnOff;
 
         private ViewHolder(View view) {
-            flagIcon = (ImageView) view.findViewById(R.id.lv_flag_icon);
-            currencyName = (TextView) view.findViewById(R.id.lv_currency_name);
-            currencyCharCode = (TextView) view.findViewById(R.id.lv_currency_char_code);
-            turnOnOff = (CheckBox) view.findViewById(R.id.cb_currency_turn_on_off);
+            flagIcon = view.findViewById(R.id.lv_flag_icon);
+            currencyName = view.findViewById(R.id.lv_currency_name);
+            currencyCharCode = view.findViewById(R.id.lv_currency_char_code);
+            turnOnOff = view.findViewById(R.id.cb_currency_turn_on_off);
         }
     }
 }

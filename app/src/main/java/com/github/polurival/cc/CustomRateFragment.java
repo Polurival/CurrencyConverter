@@ -57,18 +57,17 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
 
         View fragmentView = inflater.inflate(R.layout.fragment_custom_rates, container, false);
 
-        ImageButton btnHint = (ImageButton) fragmentView.findViewById(R.id.btn_custom_hint);
+        ImageButton btnHint = fragmentView.findViewById(R.id.btn_custom_hint);
         btnHint.setOnClickListener(this);
-        ImageButton btnSave = (ImageButton) fragmentView.findViewById(R.id.btn_custom_save);
+        ImageButton btnSave =  fragmentView.findViewById(R.id.btn_custom_save);
         btnSave.setOnClickListener(this);
 
-        editCustomCurrency = (EditText) fragmentView.findViewById(R.id.edit_custom_currency);
-        customCurrencySpinner = (Spinner) fragmentView.findViewById(R.id.custom_currency_spinner);
+        editCustomCurrency =  fragmentView.findViewById(R.id.edit_custom_currency);
+        customCurrencySpinner =  fragmentView.findViewById(R.id.custom_currency_spinner);
 
-        tvCharCode = (TextView) fragmentView.findViewById(R.id.tv_char_code);
-        tvCustomCurrencyNominal =
-                (TextView) fragmentView.findViewById(R.id.tv_custom_currency_nominal);
-        tvCustomModeHelp = (TextView) fragmentView.findViewById(R.id.tv_custom_mode_help);
+        tvCharCode =  fragmentView.findViewById(R.id.tv_char_code);
+        tvCustomCurrencyNominal = fragmentView.findViewById(R.id.tv_custom_currency_nominal);
+        tvCustomModeHelp = fragmentView.findViewById(R.id.tv_custom_mode_help);
 
         return fragmentView;
     }
@@ -112,8 +111,11 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
             tvCustomModeHelp.setVisibility(View.GONE);
         } else {
             tvCustomModeHelp.setVisibility(View.VISIBLE);
-            ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(view.getWindowToken(), 0);
+            final InputMethodManager inputMethodManager =
+                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (inputMethodManager != null) {
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
         }
     }
 
@@ -156,8 +158,7 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
                             new String[]{currencyCharCode});
                     db.setTransactionSuccessful();
 
-                    Toaster.showToast(getActivity().getString(
-                            R.string.db_custom_update_success) + preparedCustomNominal);
+                    Toaster.showToast(getActivity().getString(R.string.db_custom_update_success) + preparedCustomNominal);
 
                     AppPreferences.saveCustomRateUpDateTime(getActivity());
                     saveCustomSpinnerSelectedPos();
@@ -172,6 +173,9 @@ public class CustomRateFragment extends Fragment implements View.OnClickListener
         });
     }
 
+    /**
+     * todo использовать Currency или еще что-то вместо Object[]
+     */
     private Object[] getCustomNominalAndRate(String customRate) {
         Logger.logD(Logger.getTag(), "getCustomNominalAndRate");
 

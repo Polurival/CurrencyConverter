@@ -55,8 +55,8 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         assert getActionBar() != null;
         getActionBar().setDisplayHomeAsUpEnabled(true);
 
-        lvAllCurrencies = (ListView) findViewById(R.id.lv_turn_on_off);
-        cbTurnOnOffAllCurrencies = (CheckBox) findViewById(R.id.cb_turn_all_on_off);
+        lvAllCurrencies = findViewById(R.id.lv_turn_on_off);
+        cbTurnOnOffAllCurrencies = findViewById(R.id.cb_turn_all_on_off);
 
         if (isAllCurrenciesTurnOn()) {
             cbTurnOnOffAllCurrencies.setChecked(true);
@@ -245,9 +245,11 @@ public class CurrencySwitchingActivity extends Activity implements SearcherFragm
         String where;
         if (rateUpdaterClassName.equals(getString(R.string.cb_rf_rate_updater_class))) {
             where = DBHelper.COLUMN_NAME_CB_RF_SOURCE + " = 1";
-        } else if(rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
+        } else if (rateUpdaterClassName.equals(getString(R.string.yahoo_rate_updater_class))) {
             where = DBHelper.COLUMN_NAME_YAHOO_SOURCE + " = 1";
-        } else{
+        } else if (rateUpdaterClassName.equals(getString(R.string.my_currency_net_rate_updater_class))) {
+            where = DBHelper.COLUMN_NAME_MY_CURRENCY_NET_SOURCE + " = 1";
+        } else {
             where = null;
         }
         return where;

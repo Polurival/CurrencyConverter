@@ -102,24 +102,12 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
                 currencyMap.put(charCode, currency);
             }
             return true;
+
         } catch (JSONException e) {
             e.printStackTrace();
             Logger.logD(Logger.getTag(), "can't parse - changes in source! handle it");
             return false;
         }
-    }
-
-    private Currency getNormalizedCurrency(double rate) {
-        int nominal = 1;
-        if (rate < 1) {
-            int j = 0;
-            while (rate < 1) {
-                rate *= 10;
-                j++;
-            }
-            nominal = (int) Math.pow(10, j);
-        }
-        return new Currency(nominal, rate);
     }
 
     @Override
@@ -168,7 +156,7 @@ public class YahooRateUpdaterTask extends CommonRateUpdater {
     @Override
     public BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
                                                 BigDecimal enteredAmountOfMoney) {
-        return currenciesRelations.calculateConversionResultForYahooOrCustom(enteredAmountOfMoney);
+        return currenciesRelations.calculateConversionResultByDefault(enteredAmountOfMoney);
     }
 
     @Override

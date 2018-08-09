@@ -30,6 +30,14 @@ public class DBOperations {
         };
     }
 
+    public static String[] getColumnsForReadForMyCurrencyNetSource() {
+        return new String[] {
+               DBHelper.COLUMN_NAME_MY_CURRENCY_NET_SOURCE,
+               DBHelper.COLUMN_NAME_MY_CURRENCY_NET_NOMINAL,
+               DBHelper.COLUMN_NAME_MY_CURRENCY_NET_RATE
+        };
+    }
+
     public static void fillContentValuesForUpdatingCbRfColumns(ContentValues contentValues, Currency currency) {
         contentValues.put(DBHelper.COLUMN_NAME_CB_RF_NOMINAL, currency.getNominal());
         contentValues.put(DBHelper.COLUMN_NAME_CB_RF_RATE, currency.getRate());
@@ -38,5 +46,10 @@ public class DBOperations {
     public static void fillContentValuesForUpdatingYahooColumns(ContentValues contentValues, Currency currency) {
         contentValues.put(DBHelper.COLUMN_NAME_YAHOO_NOMINAL, currency.getNominal());
         contentValues.put(DBHelper.COLUMN_NAME_YAHOO_RATE, currency.getRate());
+    }
+
+    public static void fillContentValuesForUpdatingMyCurrencyNetColumns(ContentValues contentValues, Currency currency) {
+        contentValues.put(DBHelper.COLUMN_NAME_MY_CURRENCY_NET_NOMINAL, currency.getNominal());
+        contentValues.put(DBHelper.COLUMN_NAME_MY_CURRENCY_NET_RATE, currency.getRate());
     }
 }

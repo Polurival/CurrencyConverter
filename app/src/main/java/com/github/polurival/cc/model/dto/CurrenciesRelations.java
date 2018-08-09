@@ -74,7 +74,7 @@ public class CurrenciesRelations {
                 .multiply(enteredAmountOfMoney);
     }
 
-    public BigDecimal calculateConversionResultForYahooOrCustom(BigDecimal enteredAmountOfMoney) {
+    public BigDecimal calculateConversionResultByDefault(BigDecimal enteredAmountOfMoney) {
         return currencyTo.getRate()
                 .divide(currencyFrom.getRate(), DEFAULT_SCALE, RoundingMode.HALF_EVEN)
                 .multiply(currencyFrom.getNominal())

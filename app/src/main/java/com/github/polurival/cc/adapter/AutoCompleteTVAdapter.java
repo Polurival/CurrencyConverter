@@ -69,8 +69,8 @@ public class AutoCompleteTVAdapter extends CursorAdapter {
         final TextView currencyName;
 
         private ViewHolder(View view) {
-            currencyCharCode = (TextView) view.findViewById(R.id.autoCompleteTvCharCode);
-            currencyName = (TextView) view.findViewById(R.id.autoCompleteTvCurrencyName);
+            currencyCharCode = view.findViewById(R.id.autoCompleteTvCharCode);
+            currencyName = view.findViewById(R.id.autoCompleteTvCurrencyName);
         }
     }
 }

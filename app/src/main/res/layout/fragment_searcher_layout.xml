@@ -10,7 +10,6 @@
         android:id="@+id/tv_auto_complete"
         android:layout_width="match_parent"
         android:layout_height="@dimen/searcher_height"
-        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
         android:hint="@string/search_hint"
         android:inputType="text"
         android:maxLength="3"

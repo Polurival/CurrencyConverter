@@ -134,11 +134,11 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
 
         currenciesRelations = new CurrenciesRelations();
 
-        fromSpinner = (Spinner) findViewById(R.id.from_spinner);
-        toSpinner = (Spinner) findViewById(R.id.to_spinner);
-        tvLabelForCurrentCurrencies = (TextView) findViewById(R.id.tv_label_for_current_currencies);
+        fromSpinner = findViewById(R.id.from_spinner);
+        toSpinner = findViewById(R.id.to_spinner);
+        tvLabelForCurrentCurrencies = findViewById(R.id.tv_label_for_current_currencies);
 
-        mPullToRefreshLayout = (PullToRefreshLayout) findViewById(R.id.ptr_layout);
+        mPullToRefreshLayout = findViewById(R.id.ptr_layout);
         ActionBarPullToRefresh.from(this)
                 .allChildrenArePullable()
                 .listener(this)
@@ -147,20 +147,9 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         initEditAmount();
         loadEditAmountProperties();
 
-        checkScreenSizeAndSetSoftInputMode();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Logger.logD(Logger.getTag(), "onStart");
-
-        loadRateUpdaterClassName();
-        setRateUpdaterAndTaskCanceler();
-
         setNewSearcherFragment();
 
-        loadUpDateTime();
+        checkScreenSizeAndSetSoftInputMode();
     }
 
     @Override
@@ -169,6 +158,10 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "onResume");
 
         AppContext.activityResumed();
+
+        loadRateUpdaterClassName();
+        setRateUpdaterAndTaskCanceler();
+        loadUpDateTime();
 
         readDataFromDB();
         if (AppPreferences.loadIsSetAutoUpdate(this) && !rateUpdater.isUpdateFromNetworkUnavailable()) {
@@ -363,6 +356,8 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
             stopRefresh();
             if (rateUpdater.isUpdateFromNetworkUnavailable()) {
                 Toaster.showToast(getString(R.string.unavailable_network));
+            } else if (DateUtil.isCurrentSourceNeverUpdated(upDateTime)) {
+                Toaster.showToast(getString(R.string.need_to_update));
             }
         }
     }
@@ -596,7 +591,7 @@ public class MainActivity extends Activity implements RateUpdaterListener, OnRef
         Logger.logD(Logger.getTag(), "initTvDateTime");
 
         if (tvDateTime == null) {
-            tvDateTime = (TextView) findViewById(R.id.tv_date_time);
+            tvDateTime = findViewById(R.id.tv_date_time);
             tvDateTime.addTextChangedListener(new SimpleTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {

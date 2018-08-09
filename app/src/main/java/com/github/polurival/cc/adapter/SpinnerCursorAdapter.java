@@ -45,9 +45,9 @@ public class SpinnerCursorAdapter extends CursorAdapter {
         final TextView currencyCharCode;
 
         private ViewHolder(View view) {
-            flagIcon = (ImageView) view.findViewById(R.id.spinner_flag_icon);
-            currencyName = (TextView) view.findViewById(R.id.spinner_currency_name);
-            currencyCharCode = (TextView) view.findViewById(R.id.spinner_currency_char_code);
+            flagIcon = view.findViewById(R.id.spinner_flag_icon);
+            currencyName = view.findViewById(R.id.spinner_currency_name);
+            currencyCharCode = view.findViewById(R.id.spinner_currency_char_code);
         }
     }
 }

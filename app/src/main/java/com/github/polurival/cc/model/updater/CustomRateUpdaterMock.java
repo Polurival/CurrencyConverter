@@ -76,7 +76,7 @@ public class CustomRateUpdaterMock extends CommonRateUpdater {
     @Override
     public BigDecimal calculateConversionResult(CurrenciesRelations currenciesRelations,
                                                 BigDecimal enteredAmountOfMoney) {
-        return currenciesRelations.calculateConversionResultForYahooOrCustom(enteredAmountOfMoney);
+        return currenciesRelations.calculateConversionResultByDefault(enteredAmountOfMoney);
     }
 
     @Override

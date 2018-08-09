@@ -31,7 +31,8 @@
 
     <string-array name="data_source_array">
         <item>ЦБ РФ</item>
-        <item>Яху!</item>
+        <item>API бесплатного конвертера валют</item>
+        <!--<item>Яху!</item>-->
         <item>Настраиваемый источник</item>
     </string-array>
 
@@ -44,6 +45,7 @@
     <string name="db_writing_error">Ошибка записи в базу данных</string>
     <string name="db_reading_error">Ошибка чтения из базы данных</string>
     <string name="unavailable_network">Интернет выключен!</string>
+    <string name="need_to_update">Необходим интернет для первичной инициализации</string>
     <string name="update_error">Ошибка обновления.\n
         Ограничения или изменения в данных источника</string>
     <string name="db_update_success">База данных успешно обновлена</string>
@@ -57,8 +59,9 @@
         Неверный результат</string>
 
     <!-- Description -->
-    <string name="cb_rf">Курс ЦБ РФ на\n</string>
-    <string name="yahoo">Курс Яху! на\n</string>
+    <string name="cb_rf">Курс ЦБ РФ\n</string>
+    <string name="yahoo">Курс Яху!\n</string>
+    <string name="my_currency_net">Курс API бесплатного конвертера валют\n</string>
     <string name="custom">Настраиваемый источник\nдата последнего изменения\n</string>
 
     <!-- Currencies -->
